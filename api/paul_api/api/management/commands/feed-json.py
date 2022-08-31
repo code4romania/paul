@@ -112,7 +112,7 @@ class Command(BaseCommand):
         abonamente = models.Table.objects.get(name="Abonamente")
         entries = []
         # last_id = models.Entry.objects.last().pk if models.Entry.objects.last() else 1
-        for i in range(10000):
+        for i in range(10):
             entry = models.Entry(table=utilizatori)
             data = {}
             data["nume"] = fake.name().split(" ")[1]

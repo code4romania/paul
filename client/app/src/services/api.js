@@ -8,7 +8,7 @@ import { ToastService } from './buefy'
 
 const ApiService = {
   init(baseURL) {
-    // console.log('baseURL', baseURL)
+    console.log('baseURL', baseURL)
     axios.defaults.baseURL = baseURL
 
     axios.interceptors.response.use(
