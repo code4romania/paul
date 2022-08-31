@@ -31,7 +31,7 @@ services:
       context: ./
       dockerfile: nginx/Dockerfile
     ports:
-      - "81:80"
+      - "80:80"
     volumes:
       - ./api/paul_api/media:/var/www/paul-api/media
       - ./api/paul_api:/opt/paul_api/
