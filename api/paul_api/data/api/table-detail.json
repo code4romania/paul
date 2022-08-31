@@ -1,0 +1,10 @@
+{
+    "name": "Users",
+    "filters": [
+        {
+            "name": "Tara",
+            "values": ["Romania", "Bulgaria"]
+        }
+    ],
+    "active_filters"
+}

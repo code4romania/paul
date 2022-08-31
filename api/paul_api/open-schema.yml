@@ -1,0 +1,1979 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /users/:
+    get:
+      operationId: listUsers
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    url:
+                      type: string
+                      readOnly: true
+                    username:
+                      type: string
+                      description: Required. 150 characters or fewer. Letters, digits
+                        and @/./+/-/_ only.
+                      pattern: ^[\w.@+-]+\Z
+                      maxLength: 150
+                    email:
+                      type: string
+                      format: email
+                      maxLength: 254
+                    is_staff:
+                      type: boolean
+                      description: Designates whether the user can log into this admin
+                        site.
+                  required:
+                  - username
+          description: ''
+    post:
+      operationId: createUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id001
+              properties:
+                username:
+                  type: string
+                  description: Required. 150 characters or fewer. Letters, digits
+                    and @/./+/-/_ only.
+                  pattern: ^[\w.@+-]+\Z
+                  maxLength: 150
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                is_staff:
+                  type: boolean
+                  description: Designates whether the user can log into this admin
+                    site.
+              required:
+              - username
+          application/x-www-form-urlencoded:
+            schema: *id001
+          multipart/form-data:
+            schema: *id001
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  username:
+                    type: string
+                    description: Required. 150 characters or fewer. Letters, digits
+                      and @/./+/-/_ only.
+                    pattern: ^[\w.@+-]+\Z
+                    maxLength: 150
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  is_staff:
+                    type: boolean
+                    description: Designates whether the user can log into this admin
+                      site.
+                required:
+                - username
+          description: ''
+  /users/{username}/:
+    get:
+      operationId: retrieveUser
+      description: ''
+      parameters:
+      - name: username
+        in: path
+        required: true
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  username:
+                    type: string
+                    description: Required. 150 characters or fewer. Letters, digits
+                      and @/./+/-/_ only.
+                    pattern: ^[\w.@+-]+\Z
+                    maxLength: 150
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  is_staff:
+                    type: boolean
+                    description: Designates whether the user can log into this admin
+                      site.
+                required:
+                - username
+          description: ''
+    put:
+      operationId: updateUser
+      description: ''
+      parameters:
+      - name: username
+        in: path
+        required: true
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id002
+              properties:
+                username:
+                  type: string
+                  description: Required. 150 characters or fewer. Letters, digits
+                    and @/./+/-/_ only.
+                  pattern: ^[\w.@+-]+\Z
+                  maxLength: 150
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                is_staff:
+                  type: boolean
+                  description: Designates whether the user can log into this admin
+                    site.
+              required:
+              - username
+          application/x-www-form-urlencoded:
+            schema: *id002
+          multipart/form-data:
+            schema: *id002
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  username:
+                    type: string
+                    description: Required. 150 characters or fewer. Letters, digits
+                      and @/./+/-/_ only.
+                    pattern: ^[\w.@+-]+\Z
+                    maxLength: 150
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  is_staff:
+                    type: boolean
+                    description: Designates whether the user can log into this admin
+                      site.
+                required:
+                - username
+          description: ''
+    patch:
+      operationId: partial_updateUser
+      description: ''
+      parameters:
+      - name: username
+        in: path
+        required: true
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id003
+              properties:
+                username:
+                  type: string
+                  description: Required. 150 characters or fewer. Letters, digits
+                    and @/./+/-/_ only.
+                  pattern: ^[\w.@+-]+\Z
+                  maxLength: 150
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                is_staff:
+                  type: boolean
+                  description: Designates whether the user can log into this admin
+                    site.
+          application/x-www-form-urlencoded:
+            schema: *id003
+          multipart/form-data:
+            schema: *id003
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  username:
+                    type: string
+                    description: Required. 150 characters or fewer. Letters, digits
+                      and @/./+/-/_ only.
+                    pattern: ^[\w.@+-]+\Z
+                    maxLength: 150
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  is_staff:
+                    type: boolean
+                    description: Designates whether the user can log into this admin
+                      site.
+                required:
+                - username
+          description: ''
+    delete:
+      operationId: destroyUser
+      description: ''
+      parameters:
+      - name: username
+        in: path
+        required: true
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /databases/:
+    get:
+      operationId: listDatabases
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    url:
+                      type: string
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 100
+                    active_tables:
+                      type: array
+                      items:
+                        properties:
+                          url:
+                            type: string
+                            readOnly: true
+                          name:
+                            type: string
+                            maxLength: 100
+                          active:
+                            type: boolean
+                          entries:
+                            type: string
+                            readOnly: true
+                          last_edit_date:
+                            type: string
+                            format: date-time
+                            nullable: true
+                          last_edit_user:
+                            properties:
+                              url:
+                                type: string
+                                readOnly: true
+                              username:
+                                type: string
+                                description: Required. 150 characters or fewer. Letters,
+                                  digits and @/./+/-/_ only.
+                                pattern: ^[\w.@+-]+\Z
+                                maxLength: 150
+                              first_name:
+                                type: string
+                                maxLength: 150
+                              last_name:
+                                type: string
+                                maxLength: 150
+                            required:
+                            - username
+                            type: object
+                          owner:
+                            properties:
+                              url:
+                                type: string
+                                readOnly: true
+                              username:
+                                type: string
+                                description: Required. 150 characters or fewer. Letters,
+                                  digits and @/./+/-/_ only.
+                                pattern: ^[\w.@+-]+\Z
+                                maxLength: 150
+                              first_name:
+                                type: string
+                                maxLength: 150
+                              last_name:
+                                type: string
+                                maxLength: 150
+                            required:
+                            - username
+                            type: object
+                        required:
+                        - name
+                        - last_edit_user
+                        - owner
+                      readOnly: true
+                    archived_tables:
+                      type: array
+                      items:
+                        properties:
+                          url:
+                            type: string
+                            readOnly: true
+                          name:
+                            type: string
+                            maxLength: 100
+                          active:
+                            type: boolean
+                          entries:
+                            type: string
+                            readOnly: true
+                          last_edit_date:
+                            type: string
+                            format: date-time
+                            nullable: true
+                          last_edit_user:
+                            properties:
+                              url:
+                                type: string
+                                readOnly: true
+                              username:
+                                type: string
+                                description: Required. 150 characters or fewer. Letters,
+                                  digits and @/./+/-/_ only.
+                                pattern: ^[\w.@+-]+\Z
+                                maxLength: 150
+                              first_name:
+                                type: string
+                                maxLength: 150
+                              last_name:
+                                type: string
+                                maxLength: 150
+                            required:
+                            - username
+                            type: object
+                          owner:
+                            properties:
+                              url:
+                                type: string
+                                readOnly: true
+                              username:
+                                type: string
+                                description: Required. 150 characters or fewer. Letters,
+                                  digits and @/./+/-/_ only.
+                                pattern: ^[\w.@+-]+\Z
+                                maxLength: 150
+                              first_name:
+                                type: string
+                                maxLength: 150
+                              last_name:
+                                type: string
+                                maxLength: 150
+                            required:
+                            - username
+                            type: object
+                        required:
+                        - name
+                        - last_edit_user
+                        - owner
+                      readOnly: true
+                  required:
+                  - name
+          description: ''
+    post:
+      operationId: createDatabase
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id004
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+              required:
+              - name
+          application/x-www-form-urlencoded:
+            schema: *id004
+          multipart/form-data:
+            schema: *id004
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 100
+                  active_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                  archived_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                required:
+                - name
+          description: ''
+  /databases/{slug}/:
+    get:
+      operationId: retrieveDatabase
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 100
+                  active_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                  archived_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                required:
+                - name
+          description: ''
+    put:
+      operationId: updateDatabase
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id005
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+              required:
+              - name
+          application/x-www-form-urlencoded:
+            schema: *id005
+          multipart/form-data:
+            schema: *id005
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 100
+                  active_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                  archived_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                required:
+                - name
+          description: ''
+    patch:
+      operationId: partial_updateDatabase
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id006
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+          application/x-www-form-urlencoded:
+            schema: *id006
+          multipart/form-data:
+            schema: *id006
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 100
+                  active_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                  archived_tables:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+                    readOnly: true
+                required:
+                - name
+          description: ''
+    delete:
+      operationId: destroyDatabase
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /tables/:
+    get:
+      operationId: listTables
+      description: ''
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                  previous:
+                    type: string
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 100
+                        active:
+                          type: boolean
+                        entries:
+                          type: string
+                          readOnly: true
+                        last_edit_date:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        last_edit_user:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                        owner:
+                          properties:
+                            url:
+                              type: string
+                              readOnly: true
+                            username:
+                              type: string
+                              description: Required. 150 characters or fewer. Letters,
+                                digits and @/./+/-/_ only.
+                              pattern: ^[\w.@+-]+\Z
+                              maxLength: 150
+                            first_name:
+                              type: string
+                              maxLength: 150
+                            last_name:
+                              type: string
+                              maxLength: 150
+                          required:
+                          - username
+                          type: object
+                      required:
+                      - name
+                      - last_edit_user
+                      - owner
+          description: ''
+    post:
+      operationId: createTable
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: &id007
+              properties:
+                database:
+                  properties:
+                    url:
+                      type: string
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 100
+                    slug:
+                      type: string
+                      nullable: true
+                      maxLength: 50
+                      pattern: ^[-a-zA-Z0-9_]+$
+                  required:
+                  - name
+                  type: object
+                name:
+                  type: string
+                  maxLength: 100
+                slug:
+                  type: string
+                  nullable: true
+                  maxLength: 50
+                  pattern: ^[-a-zA-Z0-9_]+$
+                last_edit_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                active:
+                  type: boolean
+                fields:
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        maxLength: 50
+                      field_type:
+                        enum:
+                        - int
+                        - float
+                        - text
+                        - date
+                        - bool
+                        - object
+                        - enum
+                    required:
+                    - name
+                    - field_type
+              required:
+              - database
+              - name
+              - fields
+          application/x-www-form-urlencoded:
+            schema: *id007
+          multipart/form-data:
+            schema: *id007
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  database:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      name:
+                        type: string
+                        maxLength: 100
+                      slug:
+                        type: string
+                        nullable: true
+                        maxLength: 50
+                        pattern: ^[-a-zA-Z0-9_]+$
+                    required:
+                    - name
+                    type: object
+                  name:
+                    type: string
+                    maxLength: 100
+                  slug:
+                    type: string
+                    nullable: true
+                    maxLength: 50
+                    pattern: ^[-a-zA-Z0-9_]+$
+                  owner:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      first_name:
+                        type: string
+                        maxLength: 150
+                      last_name:
+                        type: string
+                        maxLength: 150
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_user:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      email:
+                        type: string
+                        format: email
+                        maxLength: 254
+                      is_staff:
+                        type: boolean
+                        description: Designates whether the user can log into this
+                          admin site.
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_date:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  active:
+                    type: boolean
+                  fields:
+                    type: array
+                    items:
+                      properties:
+                        name:
+                          type: string
+                          maxLength: 50
+                        field_type:
+                          enum:
+                          - int
+                          - float
+                          - text
+                          - date
+                          - bool
+                          - object
+                          - enum
+                      required:
+                      - name
+                      - field_type
+                  entries:
+                    type: string
+                    readOnly: true
+                required:
+                - database
+                - name
+                - fields
+          description: ''
+  /tables/{slug}/:
+    get:
+      operationId: retrieveTable
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  database:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      name:
+                        type: string
+                        maxLength: 100
+                      slug:
+                        type: string
+                        nullable: true
+                        maxLength: 50
+                        pattern: ^[-a-zA-Z0-9_]+$
+                    required:
+                    - name
+                    type: object
+                  name:
+                    type: string
+                    maxLength: 100
+                  slug:
+                    type: string
+                    nullable: true
+                    maxLength: 50
+                    pattern: ^[-a-zA-Z0-9_]+$
+                  owner:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      first_name:
+                        type: string
+                        maxLength: 150
+                      last_name:
+                        type: string
+                        maxLength: 150
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_user:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      email:
+                        type: string
+                        format: email
+                        maxLength: 254
+                      is_staff:
+                        type: boolean
+                        description: Designates whether the user can log into this
+                          admin site.
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_date:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  active:
+                    type: boolean
+                  fields:
+                    type: array
+                    items:
+                      properties:
+                        name:
+                          type: string
+                          maxLength: 50
+                        field_type:
+                          enum:
+                          - int
+                          - float
+                          - text
+                          - date
+                          - bool
+                          - object
+                          - enum
+                      required:
+                      - name
+                      - field_type
+                  entries:
+                    type: string
+                    readOnly: true
+                required:
+                - database
+                - name
+                - fields
+          description: ''
+    put:
+      operationId: updateTable
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id008
+              properties:
+                database:
+                  properties:
+                    url:
+                      type: string
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 100
+                    slug:
+                      type: string
+                      nullable: true
+                      maxLength: 50
+                      pattern: ^[-a-zA-Z0-9_]+$
+                  required:
+                  - name
+                  type: object
+                name:
+                  type: string
+                  maxLength: 100
+                slug:
+                  type: string
+                  nullable: true
+                  maxLength: 50
+                  pattern: ^[-a-zA-Z0-9_]+$
+                last_edit_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                active:
+                  type: boolean
+                fields:
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        maxLength: 50
+                      field_type:
+                        enum:
+                        - int
+                        - float
+                        - text
+                        - date
+                        - bool
+                        - object
+                        - enum
+                    required:
+                    - name
+                    - field_type
+              required:
+              - database
+              - name
+              - fields
+          application/x-www-form-urlencoded:
+            schema: *id008
+          multipart/form-data:
+            schema: *id008
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  database:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      name:
+                        type: string
+                        maxLength: 100
+                      slug:
+                        type: string
+                        nullable: true
+                        maxLength: 50
+                        pattern: ^[-a-zA-Z0-9_]+$
+                    required:
+                    - name
+                    type: object
+                  name:
+                    type: string
+                    maxLength: 100
+                  slug:
+                    type: string
+                    nullable: true
+                    maxLength: 50
+                    pattern: ^[-a-zA-Z0-9_]+$
+                  owner:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      first_name:
+                        type: string
+                        maxLength: 150
+                      last_name:
+                        type: string
+                        maxLength: 150
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_user:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      email:
+                        type: string
+                        format: email
+                        maxLength: 254
+                      is_staff:
+                        type: boolean
+                        description: Designates whether the user can log into this
+                          admin site.
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_date:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  active:
+                    type: boolean
+                  fields:
+                    type: array
+                    items:
+                      properties:
+                        name:
+                          type: string
+                          maxLength: 50
+                        field_type:
+                          enum:
+                          - int
+                          - float
+                          - text
+                          - date
+                          - bool
+                          - object
+                          - enum
+                      required:
+                      - name
+                      - field_type
+                  entries:
+                    type: string
+                    readOnly: true
+                required:
+                - database
+                - name
+                - fields
+          description: ''
+    patch:
+      operationId: partial_updateTable
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema: &id009
+              properties:
+                database:
+                  properties:
+                    url:
+                      type: string
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 100
+                    slug:
+                      type: string
+                      nullable: true
+                      maxLength: 50
+                      pattern: ^[-a-zA-Z0-9_]+$
+                  required:
+                  - name
+                  type: object
+                name:
+                  type: string
+                  maxLength: 100
+                slug:
+                  type: string
+                  nullable: true
+                  maxLength: 50
+                  pattern: ^[-a-zA-Z0-9_]+$
+                last_edit_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                active:
+                  type: boolean
+                fields:
+                  type: array
+                  items:
+                    properties:
+                      name:
+                        type: string
+                        maxLength: 50
+                      field_type:
+                        enum:
+                        - int
+                        - float
+                        - text
+                        - date
+                        - bool
+                        - object
+                        - enum
+                    required:
+                    - name
+                    - field_type
+          application/x-www-form-urlencoded:
+            schema: *id009
+          multipart/form-data:
+            schema: *id009
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  database:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      name:
+                        type: string
+                        maxLength: 100
+                      slug:
+                        type: string
+                        nullable: true
+                        maxLength: 50
+                        pattern: ^[-a-zA-Z0-9_]+$
+                    required:
+                    - name
+                    type: object
+                  name:
+                    type: string
+                    maxLength: 100
+                  slug:
+                    type: string
+                    nullable: true
+                    maxLength: 50
+                    pattern: ^[-a-zA-Z0-9_]+$
+                  owner:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      first_name:
+                        type: string
+                        maxLength: 150
+                      last_name:
+                        type: string
+                        maxLength: 150
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_user:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      email:
+                        type: string
+                        format: email
+                        maxLength: 254
+                      is_staff:
+                        type: boolean
+                        description: Designates whether the user can log into this
+                          admin site.
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_date:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  active:
+                    type: boolean
+                  fields:
+                    type: array
+                    items:
+                      properties:
+                        name:
+                          type: string
+                          maxLength: 50
+                        field_type:
+                          enum:
+                          - int
+                          - float
+                          - text
+                          - date
+                          - bool
+                          - object
+                          - enum
+                      required:
+                      - name
+                      - field_type
+                  entries:
+                    type: string
+                    readOnly: true
+                required:
+                - database
+                - name
+                - fields
+          description: ''
+    delete:
+      operationId: destroyTable
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /tables/{slug}/entries/:
+    get:
+      operationId: entriesTable
+      description: ''
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
+                    readOnly: true
+                  database:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      name:
+                        type: string
+                        maxLength: 100
+                      slug:
+                        type: string
+                        nullable: true
+                        maxLength: 50
+                        pattern: ^[-a-zA-Z0-9_]+$
+                    required:
+                    - name
+                    type: object
+                  name:
+                    type: string
+                    maxLength: 100
+                  slug:
+                    type: string
+                    nullable: true
+                    maxLength: 50
+                    pattern: ^[-a-zA-Z0-9_]+$
+                  owner:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      first_name:
+                        type: string
+                        maxLength: 150
+                      last_name:
+                        type: string
+                        maxLength: 150
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_user:
+                    properties:
+                      url:
+                        type: string
+                        readOnly: true
+                      username:
+                        type: string
+                        description: Required. 150 characters or fewer. Letters, digits
+                          and @/./+/-/_ only.
+                        pattern: ^[\w.@+-]+\Z
+                        maxLength: 150
+                      email:
+                        type: string
+                        format: email
+                        maxLength: 254
+                      is_staff:
+                        type: boolean
+                        description: Designates whether the user can log into this
+                          admin site.
+                    required:
+                    - username
+                    type: object
+                    readOnly: true
+                  last_edit_date:
+                    type: string
+                    format: date-time
+                    nullable: true
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  active:
+                    type: boolean
+                  fields:
+                    type: array
+                    items:
+                      properties:
+                        name:
+                          type: string
+                          maxLength: 50
+                        field_type:
+                          enum:
+                          - int
+                          - float
+                          - text
+                          - date
+                          - bool
+                          - object
+                          - enum
+                      required:
+                      - name
+                      - field_type
+                  entries:
+                    type: string
+                    readOnly: true
+                required:
+                - database
+                - name
+                - fields
+          description: ''

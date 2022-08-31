@@ -1,0 +1,252 @@
+@import 'buefy/src/scss/utils/_all.scss';
+
+// $notices-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04) !default;
+$toast-border-radius: 4px;
+$toast-opacity: 1;
+
+$checkbox-active-background-color: $blue;
+$checkbox-border-radius: $radius-small;
+$checkbox-border-width: 1px;
+$checkbox-checkmark-color: $white;
+$checkbox-size: $size-5;
+$checkbox-border-color: #c2cbd4;
+
+$taginput-height: 2em;
+
+$datepicker-item-color: $black;
+$datepicker-item-disabled-color: $grey-dark;
+$datepicker-header-color: $grey-darker;
+$datepicker-shadow: 0px 4px 10px rgba(48, 60, 108, 0.25);
+
+$table-sticky-header-height: 400px;
+
+@import 'buefy/src/scss/components/_checkbox.scss';
+// @import 'buefy/src/scss/components/_dropdown.scss';
+@import 'buefy/src/scss/components/_datepicker.scss';
+@import 'buefy/src/scss/components/_dialog.scss';
+@import 'buefy/src/scss/components/_form.scss';
+// @import 'buefy/src/scss/components/_icon.scss';
+@import 'buefy/src/scss/components/_loading.scss';
+// @import 'buefy/src/scss/components/_modal.scss';
+@import 'buefy/src/scss/components/_notices.scss';
+@import 'buefy/src/scss/components/_pagination.scss';
+// @import 'buefy/src/scss/components/_upload.scss';
+@import 'buefy/src/scss/components/_table.scss';
+// @import 'buefy/src/scss/components/_select.scss';
+@import 'buefy/src/scss/components/_radio.scss';
+@import 'buefy/src/scss/components/_switch.scss';
+@import 'buefy/src/scss/components/_tabs.scss';
+// @import 'buefy/src/scss/components/_tag.scss';
+@import 'buefy/src/scss/components/_taginput.scss';
+@import 'buefy/src/scss/components/_tooltip.scss';
+@import 'buefy/src/scss/components/_upload.scss';
+
+.notices {
+  padding-top: 3rem;
+}
+
+.taginput {
+  .taginput-container {
+    min-height: 44px;
+    border: 2px solid $blue;
+    border-radius: $radius;
+    padding: 8px 8px 1px 1px;
+
+    > .tag {
+      font-weight: $weight-semibold;
+      padding: 3px 8px;
+      font-size: $size-7;
+      margin-left: 7px;
+      margin-bottom: 7px;
+
+      .delete {
+        margin-left: 12px;
+      }
+    }
+  }
+}
+
+.datepicker.control {
+  font-size: 10px;
+
+  .dropdown-item {
+    padding: 8px;
+    outline: none;
+  }
+
+  .control {
+    > .icon:not(.has-text-danger) {
+      background-color: $blue;
+      border-radius: $radius-small 0 0 $radius-small;
+      color: $white;
+      font-size: $size-4;
+    }
+
+    .input {
+      padding-left: 48px;
+
+      &:focus ~ .icon {
+        color: $white;
+      }
+
+      &.is-danger + .icon {
+        background-color: $red;
+        color: $white;
+      }
+    }
+  }
+
+  .pagination {
+    a {
+      border: 0;
+      border-radius: 0;
+      height: 16px;
+      margin: 0;
+
+      .icon {
+        font-size: $size-4;
+        color: $blue !important;
+        border: 0;
+      }
+
+      &.pagination-previous {
+        border-right: 1px solid $grey-dark;
+      }
+
+      &.pagination-next {
+        border-left: 1px solid $grey-dark;
+      }
+    }
+
+    .pagination-list {
+      margin: 0 16px;
+    }
+
+    .select {
+      height: 24px;
+
+      select {
+        height: 24px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        font-size: $size-7;
+        padding-right: 24px;
+      }
+
+      &:after {
+        margin-top: -0.35em;
+        width: 0.5em;
+        height: 0.5em;
+        right: 8px;
+      }
+    }
+  }
+
+  .datepicker-cell {
+    font-weight: $weight-semibold;
+    line-height: $size-6;
+    padding: 8px 10px;
+  }
+}
+
+.loading-overlay .loading-icon,
+.select.is-loading {
+  &:after {
+    border-left-color: $blue;
+    border-bottom-color: $blue;
+  }
+}
+
+.b-tabs {
+  &.filter-tabs {
+    flex-wrap: nowrap;
+    height: 100%;
+
+    $cell-padding: 18px 24px;
+
+    .tab-content {
+      padding: 0;
+      border-left: 1px solid $grey;
+
+      .tab-item {
+        height: 100%;
+      }
+    }
+
+    .tabs {
+      display: block;
+      overflow-y: auto;
+
+      &:before {
+        content: 'Filter list';
+        display: block;
+        background: $white;
+        font-size: $size-6;
+        font-weight: $weight-semibold;
+        padding: $cell-padding;
+        position: sticky;
+        top: 0;
+      }
+
+      ul {
+        padding: 0 24px 18px 24px;
+        margin-left: -10px;
+      }
+
+      li {
+        a {
+          font-size: $size-6;
+          color: $grey-darker;
+          border: 0;
+          line-height: 24px;
+          padding: 0 30px 0 10px;
+          border-radius: $radius-small;
+          display: block;
+        }
+
+        &.is-active {
+          a {
+            background-color: $blue;
+            color: $white;
+          }
+        }
+
+        &.is-highlight:not(.is-active) {
+          a {
+            color: $blue;
+          }
+        }
+      }
+    }
+  }
+}
+
+// file upload
+
+fieldset[disabled] .file {
+  .file-cta,
+  .file-name {
+    background-color: $grey !important;
+    color: $grey-darker !important;
+    border-color: $grey;
+  }
+}
+
+.field.is-danger {
+  .file {
+    .file-cta {
+      background: $danger;
+    }
+
+    .file-name {
+      border-color: $danger;
+    }
+  }
+}
+
+.b-checkbox.checkbox {
+  &:hover,
+  input[type='checkbox']:checked ~ .control-label {
+    color: $blue;
+  }
+}

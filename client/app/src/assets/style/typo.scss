@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700&display=swap&subset=latin-ext');
+// @import '~vue-material-design-icons/styles.css';
+
+a {
+}
+
+b, strong, .is-bold {
+  font-family: $family-primary-bold;
+  font-weight: 700;
+}
+
+i {
+  font-family: $family-primary-italic;
+}
+
+h1 {
+  font-size: $size-1;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: $size-2;
+}
+
+h3 {
+  font-size: $size-3;
+}
+
+
+h4 {
+  font-style: $size-4;
+}

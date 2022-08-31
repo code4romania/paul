@@ -1,0 +1,77 @@
+$input-bg: #48527d;
+$danger: #f4976c;
+
+body.account-view {
+  background-color: $blue;
+  color: $grey-darker;
+
+  .navbar {
+    .navbar-item {
+      color: $white;
+    }
+
+    border-bottom: 1px solid $grey-darker;
+  }
+
+  .navbar-logo {
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .form-view {
+    margin-top: 5.125rem;
+
+    .title {
+      display: block;
+      text-align: center;
+      color: $white;
+    }
+
+    .subtitle {
+      display: block;
+      text-align: center;
+      color: $grey-darker;
+    }
+
+    .form {
+      margin: 0 auto;
+      max-width: 328px;
+      margin-top: 4rem;
+
+      .label {
+        text-align: left;
+      }
+
+      .input {
+        background-color: $input-bg;
+        color: $white;
+
+        &:not(.is-danger):not(:hover):not(:focus) {
+          border-color: transparent;
+        }
+      }
+    }
+  }
+
+  .is-danger,
+  .has-text-danger {
+    &.input {
+      border-color: $danger;
+    }
+
+    &.help,
+    &.icon {
+      color: $danger !important;
+    }
+  }
+
+  a:not(.button) {
+    color: $white;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .navbar-brand a { text-decoration: none; }
+}

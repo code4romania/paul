@@ -1,0 +1,30 @@
+{
+    "tables_stats": [
+        {
+            "name": "Total utilizatori DOR",
+            "count": 48123,
+            "icon": "user"
+        }
+    ],
+    "chart": {
+        "name": "Vanzari",
+        "filters": [
+            {
+                "name": "month",
+                "values": ["January", "February"] 
+            }
+        ],
+        "data":
+        {
+
+        }
+    },
+    "active_tables": [
+        {
+            "name": "Users",
+            "last_edit": "10/02/2020",
+            "last_edit_user": "Costi",
+            "entries": 34121
+        }
+    ]
+}

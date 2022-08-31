@@ -1,0 +1,32 @@
+{
+  "code": "en",
+  "messages": {
+    "alpha": "The field may only contain alphabetic characters",
+    "alpha_num": "The field may only contain alpha-numeric characters",
+    "alpha_dash": "The field may contain alpha-numeric characters as well as dashes and underscores",
+    "alpha_spaces": "The field may only contain alphabetic characters as well as spaces",
+    "between": "The field must be between {min} and {max}",
+    "confirmed": "The field confirmation does not match",
+    "digits": "The field must be numeric and exactly contain {length} digits",
+    "dimensions": "The field must be {width} pixels by {height} pixels",
+    "email": "The field must be a valid email",
+    "excluded": "The field is not a valid value",
+    "ext": "The field is not a valid file",
+    "image": "The field must be an image",
+    "integer": "The field must be an integer",
+    "length": "The field must be {length} long",
+    "max_value": "The field must be {max} or less",
+    "max": "The field may not be greater than {length} characters",
+    "mimes": "The field must have a valid file type",
+    "min_value": "The field must be {min} or more",
+    "min": "The field must be at least {length} characters",
+    "numeric": "The field may only contain numeric characters",
+    "oneOf": "The field is not a valid value",
+    "over": "The field must have at least {length} option(s)",
+    "regex": "The field format is invalid",
+    "required_if": "The field is required",
+    "required": "The field is required",
+    "size": "The field size must be less than {size}KB",
+    "under": "The field must have less than {length} options"
+  }
+}

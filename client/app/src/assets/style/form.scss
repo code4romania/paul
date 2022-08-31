@@ -1,0 +1,125 @@
+.field {
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  .icon {
+    font-size: 24px;
+  }
+}
+
+.label {
+  font-size: $size-6;
+
+  &:not(:last-child) {
+    margin-bottom: 3px;
+  }
+}
+
+.button {
+  font-size: $size-6;
+
+  &.button-submit {
+    font-size: $size-5;
+    margin-top: 4rem;
+    width: 100%;
+  }
+}
+
+.control {
+  .icon.is-clickable {
+    color: $grey-dark;
+    font-size: $size-3;
+  }
+}
+
+.checkbox {
+  line-height: 1.5;
+
+  input[type='checkbox']:checked + .check {
+    background-size: 70% !important;
+  }
+}
+
+.checkbox-list {
+  font-size: $size-6;
+  color: $grey-darker;
+
+  .field.has-addons {
+    flex-wrap: wrap;
+  }
+
+  .checkbox {
+    &:not(:last-child) {
+      padding-right: 32px;
+      margin-bottom: 12px;
+      margin-right: 0;
+    }
+  }
+
+  &.is-4 {
+    .checkbox {
+      width: 33.33%;
+    }
+  }
+
+  &.is-3 {
+    .checkbox {
+      width: 25%;
+    }
+  }
+  
+  &.is-2 {
+    .checkbox {
+      width: 20%;
+    }
+  }
+
+  &.is-1 {
+    .checkbox {
+      width: 12.5%;
+    }
+  }
+}
+
+
+.enum-values {
+  font-size: $size-6;
+  color: $grey-darker;
+  margin-bottom: 12px;
+
+  .taginput {
+    margin-top: 5px;
+  }
+}
+.radio-list {
+  .label {
+    margin-bottom: 12px;
+  }
+
+  .field-body {
+    .field {
+      flex-direction: column;
+
+      .b-radio.radio {
+        &:not(:last-child) {
+          margin-bottom: 24px;
+        }
+
+        input[type='radio']:checked + .check + .control-label {
+          color: $primary;
+        }
+      }
+    }
+  }
+}
+
+.select select {
+  background-color: $grey-select;
+  border-color: $grey-select;
+
+  &:hover, &:focus {
+    // border-color: $grey-select;
+    // background-color: $grey-lighter;
+  }
+}

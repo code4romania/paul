@@ -1,0 +1,97 @@
+version: '3.9'
+
+services:
+
+  api:
+    container_name: api
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dockerize -wait tcp://paul-db:5432 -timeout 90s -- web
+    env_file:
+      - .env
+    environment:
+      - "PYTHONUNBUFFERED=1"
+    ports:
+      - "8037:8000"
+    volumes:
+      - ./paul_api/media:/var/www/paul-api/media
+      - ./paul_api:/opt/paul_api/
+    restart: on-failure
+    depends_on:
+      - paul-db
+      # Redis is only needed for Celery
+      # - redis
+
+  paul-db:
+    hostname: paul-db
+    image: postgres:12
+    ports:
+      - "5434:5432"
+    env_file:
+      - .env
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+    restart: on-failure
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6879:6379'
+    profiles:
+      - with-task-queue
+    restart: on-failure
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dockerize -wait tcp://paul-db:5432 -wait tcp://redis:6379 -timeout 90s -- celery
+    depends_on:
+      - api
+      - paul-db
+      - redis
+    profiles:
+      - with-task-queue
+    env_file:
+      - .env
+    deploy:
+      # replicas: 2
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 200M
+    restart: on-failure
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dockerize -wait tcp://paul-db:5432 -wait tcp://redis:6379 -timeout 90s -- celerybeat
+    depends_on:
+      - api
+      - paul-db
+      - redis
+    profiles:
+      - with-task-queue
+    env_file:
+      - .env
+    restart: on-failure
+
+  flower:
+    image: mher/flower:0.9.5
+    command: ["flower", "--broker=redis://redis:6379/0", "--port=8888"]
+    ports:
+      - "8787:8888"
+    depends_on:
+      - redis
+    profiles:
+      - with-task-queue
+
+volumes:
+  database-data:
+    name: paul-pgdata
+  media:

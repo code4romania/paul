@@ -1,0 +1,143 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
+nav.navbar {
+  .navbar-item {
+    font-size: $size-6;
+    line-height: 1;
+
+    .icon {
+      font-size: $size-5;
+      margin-right: 6px;
+    }
+  }
+}
+
+#app-container {
+  .main-view {
+    padding-bottom: 8px;
+    padding-left: 294px;
+    transition: padding-left 0.15s;
+
+    .main-header {
+      display: flex;
+      align-items: flex-start;
+      margin-top: -68px;
+      margin-bottom: 28px;
+      padding-right: 220px;
+
+      .title {
+        line-height: 40px;
+      }
+
+      .back-button {
+        padding-right: 30px;
+        border-right: 1px solid $grey-dark;
+        margin-right: 30px;
+
+        .button {
+          z-index: 31;
+          box-shadow: 0px 2px 10px rgba(48, 60, 108, 0.1);
+
+          .icon {
+            font-size: $size-4;
+          }
+        }
+      }
+    }
+  }
+
+  #base-menu {
+    position: fixed;
+    margin-top: 27px;
+    width: 264px;
+    background-color: $blue;
+    font-size: $size-6;
+    padding: 12px 15px 36px;
+    border-radius: $radius;
+    transition: width 0.15s;
+    overflow: hidden;
+
+    .menu-logo-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .menu-logo {
+      background: #fff;
+      border-radius: 50%;
+      width: 150px;
+    }
+
+    .menu-logo-small {
+      padding: 7px;
+      width: 36px;
+    }
+
+    .menu-header {
+      border-bottom: 1px solid $grey;
+      margin-bottom: 16px;
+    }
+
+    .menu-list {
+      a {
+        display: flex;
+        align-items: center;
+        padding: 12px 7px;
+
+        &.is-active {
+          &:hover {
+            color: $grey-darker;
+          }
+        }
+
+        &.is-disabled {
+          cursor: not-allowed;
+          color: $grey;
+          &:hover {
+            color: $grey;
+          }
+        }
+      }
+
+      span:not(.icon) {
+        white-space: nowrap;
+        flex-grow: 1;
+      }
+
+      .icon {
+        font-size: $size-3;
+        &:not(.menu-tick) {
+          margin-right: 16px;
+        }
+      }
+
+      li ul {
+        padding-left: 28px;
+        margin-top: 0;
+        // border-left: 0;
+      }
+    }
+  }
+
+  &.menu-closed {
+    .main-view {
+      padding-left: 98px;
+    }
+
+    #base-menu {
+      width: 68px;
+
+      .menu-list {
+        a > span:not(:first-child) {
+          display: none;
+        }
+      }
+    }
+  }
+}

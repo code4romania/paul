@@ -1,0 +1,199 @@
+.card {
+  overflow: visible;
+  border-radius: $radius;
+
+  .card-header {
+    min-height: 80px;
+    border-bottom: 1px solid $grey-lighter;
+
+    .card-header-title {
+      font-size: 18px;
+      flex-wrap: wrap;
+
+      .entries {
+        color: $primary;
+        padding-left: 20px;
+      }
+
+      .info {
+        font-size: $size-6;
+        font-weight: $weight-normal;
+        color: $grey-darker;
+        width: 100%;
+        margin-top: 6px;
+
+        div {
+          max-width: 960px;
+        }
+      }
+    }
+
+    .card-header-actions {
+      display: flex;
+      align-items: center;
+      flex: none;
+      padding: $card-header-padding;
+    }
+  }
+
+  .card-body {
+    .card-container {
+      padding: 20px 24px;
+    }
+
+    .card-list {
+      list-style: none;
+
+      li {
+        padding: 24px;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $grey-lighter;
+        }
+      }
+    }
+
+    .card-form {
+      .columns {
+        margin-top: -4px;
+        margin-bottom: -4px;
+
+        .column {
+          padding-top: 4px;
+          padding-bottom: 4px;
+        }
+      }
+    }
+  }
+
+  .card-footer {
+    padding: 20px 24px;
+    justify-content: flex-end;
+  }
+
+  margin-bottom: 30px;
+}
+
+.modal {
+  .modal-card {
+    .modal-card-head {
+      .modal-card-title {
+        font-weight: $weight-bold;
+
+        .info {
+          font-size: $size-6;
+          font-weight: normal;
+          display: block;
+        }
+      }
+
+      .delete {
+        display: block;
+
+        height: 30px;
+        width: 30px;
+        max-height: 30px;
+        max-width: 30px;
+      }
+    }
+
+    .modal-card-body {
+      .button {
+        height: 34px;
+      }
+    }
+
+    .modal-card-foot {
+      justify-content: flex-end;
+
+      .button {
+        height: 34px;
+
+        &:not(:last-child) {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}
+
+.pagination {
+  .icon {
+    font-size: $size-4;
+  }
+
+  .pagination-link {
+    border-radius: 100%;
+    min-width: 35px;
+    height: 35px;
+  }
+}
+
+.chart-container {
+  height: 400px;
+  position: relative;
+  padding: 16px 20px;
+
+  canvas {
+  }
+}
+
+.card-chart {
+  width: 100%;
+  margin-bottom: 0;
+
+  &.card-button {
+    &:hover {
+      cursor: pointer;
+      background-color: $grey-light;
+    }
+  }
+
+  .card-header {
+    min-height: auto;
+    padding: 18px 24px 10px;
+    border: 0;
+  }
+
+  .card-body {
+    padding: 0 24px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      font-size: 30px;
+      padding-right: 16px;
+    }
+
+    .card-icon {
+      height: 84px;
+      width: 84px;
+      background: #fbe8a6;
+      border-radius: $radius;
+
+      font-size: 52px;
+      color: #bca34a;
+    }
+  }
+}
+
+.avatar-image {
+  img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .placeholder {
+    background-color: $grey-light;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    border-radius: 100%;
+
+    .icon {
+      margin: 0 !important;
+    }
+  }
+}

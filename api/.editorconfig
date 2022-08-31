@@ -1,0 +1,13 @@
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+
+[Makefile]
+indent_style = tab
+
+[{*.iml,*.xml, *.yml, *.yaml}]
+indent_size = 2
+
+[*.csv]
+insert_final_newline = false
