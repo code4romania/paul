@@ -1,5 +1,6 @@
 #!/bin/sh
 
+/etc/init.d/nginx start
 DOCKERIZE=""
 prefix="dockerize"
 
@@ -61,17 +62,6 @@ exec_web() {
         exec gunicorn paul_api.wsgi --bind "0.0.0.0:${PORT}" --log-level info -k gevent -w 10
     fi
 }
-
-# exec_celery() {
-#     PROCESS_TYPE="${1}"
-
-#     if [ "${DEBUG}" = "True" ]; then
-#         echo "Start celery ${PROCESS_TYPE} in DEBUG mode"
-#         exec celery -A paul_api "${PROCESS_TYPE}" -l DEBUG
-#     else
-#         exec celery -A paul_api "${PROCESS_TYPE}"
-#     fi
-# }
 
 case "${1}" in
 "web") exec_web ;;
