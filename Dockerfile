@@ -1,10 +1,10 @@
 FROM node:14 as build
-WORKDIR /app
+
+WORKDIR /build
 
 COPY ./client .
-RUN yarn add node-gyp
-RUN yarn install && yarn build
-
+RUN yarn install
+RUN yarn build
 
 FROM python:3.10.5-slim
 
@@ -19,7 +19,7 @@ RUN apt update && \
 
 COPY --from=jwilder/dockerize:0.6.1 /usr/local/bin/dockerize /usr/local/bin/dockerize
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /build/dist /usr/share/nginx/html
 
 WORKDIR /opt/
 
