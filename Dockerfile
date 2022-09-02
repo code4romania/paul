@@ -1,7 +1,7 @@
 FROM node:14 as build
 WORKDIR /app
 
-COPY ./client/app .
+COPY ./client .
 RUN yarn add node-gyp
 RUN yarn install && yarn build
 
