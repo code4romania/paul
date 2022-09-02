@@ -14,9 +14,6 @@ import './utils/filters'
 // Styles
 import './assets/style/base.scss'
 
-// Vendor init
-// 
-
 // Services
 ApiService.init(process.env.VUE_APP_ROOT_API)
 ApiService.setHeader()

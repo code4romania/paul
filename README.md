@@ -1,6 +1,6 @@
-# Paul api
+# Paul
 
-[![GitHub contributors](https://img.shields.io/github/contributors/code4romania/paul-api.svg?style=for-the-badge)](https://github.com/code4romania/paul-api/graphs/contributors) [![GitHub last commit](https://img.shields.io/github/last-commit/code4romania/paul-api.svg?style=for-the-badge)](https://github.com/code4romania/paul-api/commits/master) [![License: MPL 2.0](https://img.shields.io/badge/license-MPL%202.0-brightgreen.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
+[![GitHub contributors](https://img.shields.io/github/contributors/code4romania/paul.svg?style=for-the-badge)](https://github.com/code4romania/paul/graphs/contributors) [![GitHub last commit](https://img.shields.io/github/last-commit/code4romania/paul.svg?style=for-the-badge)](https://github.com/code4romania/paul/commits/master) [![License: MPL 2.0](https://img.shields.io/badge/license-MPL%202.0-brightgreen.svg?style=for-the-badge)](https://opensource.org/licenses/MPL-2.0)
 
 Insert bullets description of the project if available.
 

@@ -8,7 +8,6 @@ import { ToastService } from './buefy'
 
 const ApiService = {
   init(baseURL) {
-    // console.log('baseURL', baseURL)
     axios.defaults.baseURL = baseURL
 
     axios.interceptors.response.use(
@@ -53,7 +52,7 @@ const ApiService = {
   getPath(path, appendToken) {
     const newPath = axios.defaults.baseURL.slice(-1) == '/' ? path : '/' + path
     // console.log(appendToken)
-    
+
     return (
       axios.defaults.baseURL +
       newPath +
