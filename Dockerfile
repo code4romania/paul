@@ -1,41 +1,67 @@
 FROM node:14 as build
 
+ARG VUE_APP_ROOT_API=/api
+
 WORKDIR /build
 
 COPY ./client .
 RUN yarn install
 RUN yarn build
 
-FROM python:3.10.5-slim
+FROM python:3.10-alpine
 
-ARG ENVIRONMENT
+ARG S6_OVERLAY_VERSION=3.1.2.1
 
-ENV ENVIRONMENT ${ENVIRONMENT:-production}
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
+
+ENTRYPOINT ["/init"]
+
 ENV DJANGO_SETTINGS_MODULE=paul_api.settings
+ENV RUN_FEED="no"
+ENV RUN_MIGRATION="yes"
+ENV RUN_DEV_SERVER="no"
+ENV RUN_COLLECT_STATIC="no"
+ENV RUN_CREATE_SUPER_USER="no"
 
-RUN apt update && \
-    apt install -y nginx gettext git gcc g++ && \
-    pip install --upgrade pip setuptools cython
+WORKDIR /var/www
 
-COPY --from=jwilder/dockerize:0.6.1 /usr/local/bin/dockerize /usr/local/bin/dockerize
-COPY ./nginx/nginx.conf /etc/nginx/sites-available/default
-COPY --from=build /build/dist /var/www
+COPY ./api/requirements.txt ./
 
-WORKDIR /opt/
+RUN apk update && \
+    # build dependencies
+    apk add --no-cache --virtual .build-deps \
+    gettext \
+    git \
+    gcc \
+    g++ \
+    musl-dev \
+    libffi-dev \
+    zlib-dev \
+    python3-dev \
+    jpeg-dev \
+    make \
+    cython && \
+    #
+    # production dependencies
+    apk add --no-cache \
+    jpeg \
+    nginx && \
+    #
+    # install
+    pip install -r requirements.txt && \
+    #
+    # cleanup
+    apk del -f .build-deps
 
-RUN mkdir -p /var/www/paul-api/media
+COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
+COPY docker/s6-rc.d /etc/s6-overlay/s6-rc.d
+COPY --from=build /build/dist /var/www/html
 
-# Copy just the requirements for caching
-COPY ./api/requirements*.txt ./
-RUN if [ "${ENVIRONMENT}" = "production" ]; \
-    then pip install -r requirements.txt; \
-    else pip install -r requirements-dev.txt; \
-fi
+COPY ./api/paul_api/ /var/www/paul_api/
 
-WORKDIR /opt/paul_api/
+RUN mkdir -p /var/www/paul_api/media
 
-COPY ./api/docker-entrypoint.sh /
-COPY ./api/paul_api/ /opt/paul_api/
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
-EXPOSE 8000
+EXPOSE 80
