@@ -1,7 +1,10 @@
 #!/bin/sh
 
+/etc/init.d/nginx start
 DOCKERIZE=""
 prefix="dockerize"
+
+
 
 PORT=${PORT:-"8000"}
 
@@ -60,21 +63,8 @@ exec_web() {
     fi
 }
 
-exec_celery() {
-    PROCESS_TYPE="${1}"
-
-    if [ "${DEBUG}" = "True" ]; then
-        echo "Start celery ${PROCESS_TYPE} in DEBUG mode"
-        exec celery -A paul_api "${PROCESS_TYPE}" -l DEBUG
-    else
-        exec celery -A paul_api "${PROCESS_TYPE}"
-    fi
-}
-
 case "${1}" in
 "web") exec_web ;;
-"celery") exec_celery worker ;;
-"celerybeat") exec_celery beat ;;
 esac
 
 exec "${@}"

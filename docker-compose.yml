@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+
+  paul:
+    container_name: paul
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dockerize -wait tcp://paul-db:5432 -timeout 90s -- web
+    env_file:
+      - .env
+    environment:
+      - "PYTHONUNBUFFERED=1"
+    volumes:
+      - ./api/paul_api/media:/var/www/paul-api/media
+      - ./api/paul_api:/opt/paul_api/
+    restart: on-failure
+    ports:
+      - '80:80'
+    depends_on:
+      - paul-db
+
+  paul-db:
+    hostname: paul-db
+    image: postgres:12
+    ports:
+      - "5434:5432"
+    env_file:
+      - .env
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+    restart: on-failure
+
+
+volumes:
+  database-data:
+    name: paul-pgdata
+  media:

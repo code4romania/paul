@@ -511,3 +511,4 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-outline-success",
     },
 }
+LOGIN_URL='/api/admin/login/'

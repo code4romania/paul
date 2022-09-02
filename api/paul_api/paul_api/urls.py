@@ -40,13 +40,13 @@ if settings.PLUGIN_WOOCOMMERCE_ENABLED:
 
 
 urlpatterns = (
-    i18n_patterns(
+    [
+        *plugin_urlpatterns,
         path("api/api-token-auth/", include("rest_framework.urls")),
         path("api/admin/", admin.site.urls),
         # path("api/silk/", include("silk.urls", namespace="silk")),
-        *plugin_urlpatterns,
         path("api/", include("api.urls")),
-    )
+    ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )

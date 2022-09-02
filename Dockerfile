@@ -1,3 +1,11 @@
+FROM node:14 as build
+WORKDIR /app
+
+COPY ./client/app .
+RUN yarn add node-gyp
+RUN yarn install && yarn build
+
+
 FROM python:3.10.5-slim
 
 ARG ENVIRONMENT
@@ -6,17 +14,19 @@ ENV ENVIRONMENT ${ENVIRONMENT:-production}
 ENV DJANGO_SETTINGS_MODULE=paul_api.settings
 
 RUN apt update && \
-    apt install -y gettext git gcc g++ && \
+    apt install -y nginx gettext git gcc g++ && \
     pip install --upgrade pip setuptools cython
 
 COPY --from=jwilder/dockerize:0.6.1 /usr/local/bin/dockerize /usr/local/bin/dockerize
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/dist /usr/share/nginx/html
 
 WORKDIR /opt/
 
 RUN mkdir -p /var/www/paul-api/media
 
 # Copy just the requirements for caching
-COPY ./requirements*.txt ./
+COPY ./api/requirements*.txt ./
 RUN if [ "${ENVIRONMENT}" = "production" ]; \
     then pip install -r requirements.txt; \
     else pip install -r requirements-dev.txt; \
@@ -24,8 +34,8 @@ fi
 
 WORKDIR /opt/paul_api/
 
-COPY ./docker-entrypoint.sh /
-COPY ./paul_api/ /opt/paul_api/
+COPY ./api/docker-entrypoint.sh /
+COPY ./api/paul_api/ /opt/paul_api/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 EXPOSE 8000
