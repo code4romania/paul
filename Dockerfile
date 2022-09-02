@@ -18,8 +18,8 @@ RUN apt update && \
     pip install --upgrade pip setuptools cython
 
 COPY --from=jwilder/dockerize:0.6.1 /usr/local/bin/dockerize /usr/local/bin/dockerize
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /build/dist /usr/share/nginx/html
+COPY ./nginx/nginx.conf /etc/nginx/sites-available/default
+COPY --from=build /build/dist /var/www
 
 WORKDIR /opt/
 
