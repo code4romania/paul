@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
@@ -12,6 +13,7 @@ from api import utils
 
 import uuid
 import re
+import os
 
 
 @receiver(user_activated)
@@ -279,6 +281,28 @@ class CsvImport(models.Model):
 
     class Meta:
         pass
+
+    @staticmethod
+    def delete_file(instance):
+        if instance.file:
+            if settings.USE_S3 or settings.USE_AZURE:
+                instance.file.delete(save=False)
+            elif os.path.isfile(instance.file.path):
+                os.remove(instance.file.path)
+
+    def save(self, *args, **kwargs):
+        if self.pk and self.file:
+            # Delete the previous file when the model instance 
+            # is updated with a new file
+            instance = CsvImport.objects.get(pk=self.pk)
+            CsvImport.delete_file(instance)
+        return super().save(*args, **kwargs)
+
+
+@receiver(models.signals.post_delete, sender=CsvImport)
+def auto_delete_import_file(sender, instance, **kwargs):
+    """Delete the uploaded file when the model instance is deleted"""
+    CsvImport.delete_file(instance)
 
 
 class Entry(models.Model):
