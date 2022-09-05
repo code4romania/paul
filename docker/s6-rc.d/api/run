@@ -1,4 +1,4 @@
 #!/command/with-contenv sh
 cd /var/www/paul_api
 
-gunicorn paul_api.wsgi --bind "unix:///run/gunicorn.sock" --log-level info -k gevent -w 10
+gunicorn paul_api.wsgi --bind "unix:///run/gunicorn.sock" --log-level info -k gevent -w 1
