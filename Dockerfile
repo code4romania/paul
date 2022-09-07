@@ -5,8 +5,8 @@ ARG VUE_APP_ROOT_API=/api
 WORKDIR /build
 
 COPY ./client .
-RUN yarn install
-RUN yarn build
+RUN npm ci --no-audit --ignore-scripts
+RUN npm run build
 
 FROM python:3.10-alpine
 
