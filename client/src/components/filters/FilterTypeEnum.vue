@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/ .b-checkbox.checkbox {
+::v-deep(.b-checkbox.checkbox) {
   align-items: flex-start;
 
   .check {

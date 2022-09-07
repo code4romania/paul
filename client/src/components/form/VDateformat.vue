@@ -158,7 +158,7 @@ export default {
     margin-right: 0 !important;
     width: 24px;
 
-    /deep/ .input {
+    ::v-deep(.input) {
       border-color: $grey-select;
     }
   }

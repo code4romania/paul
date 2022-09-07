@@ -214,7 +214,7 @@ export default {
   // display: flex;
   // align-items: center;
 
-  /deep/ .field-body .field {
+  .field-body ::v-deep(.field) {
     display: flex;
     align-items: center;
 
