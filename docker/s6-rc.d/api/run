@@ -1,9 +1,12 @@
 #!/command/with-contenv sh
 cd /var/www/paul_api
 
+# https://docs.gunicorn.org/en/latest/design.html#how-many-workers
+WORKERS=$(((2 * $(nproc)) + 1))
+
 gunicorn paul_api.wsgi \
     --bind "unix:///run/gunicorn.sock" \
     --log-level info \
     --worker-class gevent \
-    --workers 10 \
-    --timeout 60
+    --workers $WORKERS \
+    --timeout 30
