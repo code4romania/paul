@@ -1,4 +1,4 @@
-FROM node:16 as build
+FROM node:16-alpine as build
 
 ARG VUE_APP_ROOT_API=/api
 
@@ -20,7 +20,7 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz
 
 ENTRYPOINT ["/init"]
 
-ENV DJANGO_SETTINGS_MODULE=paul_api.settings
+ENV PYTHONUNBUFFERED="1"
 ENV RUN_FEED="no"
 ENV RUN_MIGRATION="yes"
 ENV RUN_DEV_SERVER="no"
