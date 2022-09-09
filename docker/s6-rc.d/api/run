@@ -7,6 +7,7 @@ WORKERS=$(((2 * $(nproc)) + 1))
 gunicorn paul_api.wsgi \
     --bind "unix:///run/gunicorn.sock" \
     --log-level info \
-    --worker-class gevent \
+    --worker-class gthread \
     --workers $WORKERS \
+    --threads 2 \
     --timeout 30
