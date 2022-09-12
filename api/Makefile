@@ -32,14 +32,14 @@ build-stage:                      ## builds the container with the staging flag
 	ENVIRONMENT=staging docker-compose up -d --build --force-recreate --remove-orphans
 
 superuser:                        ## creates a superuser for the API
-	docker-compose exec api ./manage.py createsuperuser
+	docker-compose exec paul ./paul_api/manage.py createsuperuser
 
 adminshell:                        ## opens the django-admin shell
 	docker-compose exec paul ./paul_api/manage.py shell
 
 init-db: superuser                ## sets up the database and fixtures
-	docker-compose exec api ./manage.py loaddata statistics
-	docker-compose exec api ./manage.py loaddata pages
+	docker-compose exec paul ./paul_api/manage.py loaddata statistics
+	docker-compose exec paul ./paul_api/manage.py loaddata pages
 
 drop-db:                          ## drops the database
 	docker-compose down -t 60
@@ -49,41 +49,41 @@ redo-db: drop-db init-db          ## drops the database, then sets up the databa
 
 ## [UTILS]
 requirements-build:               ## run pip compile and add requirements from the *.in files
-	docker-compose run --rm --no-deps --entrypoint "bash -c" api "cd /opt && pip-compile -o requirements.txt requirements.in && pip-compile -o requirements-dev.txt requirements-dev.in"
+	docker-compose run --rm --no-deps --entrypoint "bash -c" paul "cd /opt && pip-compile -o requirements.txt requirements.in && pip-compile -o requirements-dev.txt requirements-dev.in"
 
 requirements-update:              ## run pip compile and rebuild the requirements files
-	docker-compose run --rm --no-deps --entrypoint "bash -c" api "cd /opt && pip-compile -r -U -o requirements.txt requirements.in && pip-compile -r -U -o requirements-dev.txt requirements-dev.in && chmod a+r requirements.txt && chmod a+r requirements-dev.txt"
+	docker-compose run --rm --no-deps --entrypoint "bash -c" paul "cd /opt && pip-compile -r -U -o requirements.txt requirements.in && pip-compile -r -U -o requirements-dev.txt requirements-dev.in && chmod a+r requirements.txt && chmod a+r requirements-dev.txt"
 
 migrations:                       ## generate migrations in a clean container
-	docker-compose exec api ./manage.py makemigrations
+	docker-compose exec paul ./paul_api/manage.py makemigrations
 
 migrate:                          ## apply migrations in a clean container
-	docker-compose exec api ./manage.py migrate
+	docker-compose exec paul ./paul_api/manage.py migrate
 
 makemessages:                     ## generate the strings marked for translation
-	docker-compose exec api ./manage.py makemessages -a
+	docker-compose exec paul ./paul_api/manage.py makemessages -a
 
 compilemessages:                  ## compile the translations
-	docker-compose exec api ./manage.py compilemessages
+	docker-compose exec paul ./paul_api/manage.py compilemessages
 
 collectstatic:                    ## collect static files (this will take a while)
-	docker-compose exec api ./manage.py collectstatic --no-input
+	docker-compose exec paul ./paul_api/manage.py collectstatic --no-input
 
 pyshell:                          ## start a django shell
-	docker-compose exec api ./manage.py shell
+	docker-compose exec paul ./paul_api/manage.py shell
 
 black:                            ## run the Black formatter on the Python code
-	black --line-length 120 --target-version py39 --exclude migrations ./api
+	black --line-length 120 --target-version py39 --exclude migrations ./paul_api
 
 ## [TEST]
 test:                             ## run all tests
-	docker-compose run --rm api "pytest"
+	docker-compose run --rm paul "pytest"
 
 test-pdb:                         ## run tests and enter debugger on failed assert or error
-	docker-compose run --rm api "pytest --pdb"
+	docker-compose run --rm paul "pytest --pdb"
 
 test-lf:                          ## rerun tests that failed last time
-	docker-compose run --rm api "pytest --lf"
+	docker-compose run --rm paul "pytest --lf"
 
 ## [CLEAN]
 clean: clean-docker clean-py      ## remove all build, test, coverage and Python artifacts
@@ -93,10 +93,10 @@ clean-docker:                     ## stop docker containers and remove orphaned 
 	docker system prune -f
 
 clean-py:                         ## remove Python test, coverage, file artifacts, and compiled message files
-	find ./api -name '.coverage' -delete
-	find ./api -name '.pytest_cache' -delete
-	find ./api -name '__pycache__' -delete
-	find ./api -name 'htmlcov' -delete
-	find ./api -name '*.pyc' -delete
-	find ./api -name '*.pyo' -delete
-	find ./api -name '*.mo' -delete
+	find ./paul_api -name '.coverage' -delete
+	find ./paul_api -name '.pytest_cache' -delete
+	find ./paul_api -name '__pycache__' -delete
+	find ./paul_api -name 'htmlcov' -delete
+	find ./paul_api -name '*.pyc' -delete
+	find ./paul_api -name '*.pyo' -delete
+	find ./paul_api -name '*.mo' -delete
