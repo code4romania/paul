@@ -17,6 +17,9 @@ from typing import Any, Dict
 import environ
 from django.utils.translation import gettext_lazy as _
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
@@ -46,9 +49,12 @@ env = environ.Env(
     EMAIL_HOST_USER=(str, ""),
     EMAIL_HOST_PASSWORD=(str, ""),
     EMAIL_USE_TLS=(str, ""),
-    IS_CONTAINERIZED=(bool, True),
+    IS_CONTAINERIZED=(bool, False),
     LANGUAGE_CODE=(str, "ro"),
     SECRET_KEY=(str, "secret"),
+    SENTRY_DSN=(str, ""),
+    SENTRY_ENVIRONMENT=(str, ""),
+    SENTRY_TRACES_SAMPLE_RATE=(float, 0.0),
 )
 environ.Env.read_env(f"{root}/.env")  # reading .env file
 
@@ -119,6 +125,15 @@ if PLUGIN_MAILCHIMP_ENABLED:
 if not (USE_S3 or USE_AZURE):
     INSTALLED_APPS.append("whitenoise.runserver_nostatic")
 
+
+sentry_sdk.init(
+    dsn=env("SENTRY_DSN"),
+    integrations=[
+        DjangoIntegration(),
+    ],
+    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE"),
+    environment=env("SENTRY_ENVIRONMENT")
+)
 
 SITE_ID = 1
 
