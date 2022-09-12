@@ -235,9 +235,9 @@ class TableViewSet(viewsets.ModelViewSet):
         if not csv_import.delimiter:
             csv_import.file.seek(0)
             dialect = csv.Sniffer().sniff(file_content[:2000])
-            reader = csv.DictReader(decoded_file, delimiter=dialect.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=dialect.delimiter)
         else:
-            reader = csv.DictReader(decoded_file, delimiter=csv_import.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
         errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table)
         csv_import.errors = errors
@@ -293,9 +293,9 @@ class TableViewSet(viewsets.ModelViewSet):
         if not csv_import.delimiter:
             csv_import.file.seek(0)
             dialect = csv.Sniffer().sniff(file_content[:2000])
-            reader = csv.DictReader(decoded_file, delimiter=dialect.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=dialect.delimiter)
         else:
-            reader = csv.DictReader(decoded_file, delimiter=csv_import.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
 
         errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table, csv_import)
@@ -1140,9 +1140,9 @@ class CsvImportViewSet(viewsets.ModelViewSet):
         if not delimiter:
             file.seek(0)
             dialect = csv.Sniffer().sniff(file_content[:2000])
-            reader = csv.DictReader(decoded_file, delimiter=dialect.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=dialect.delimiter)
         else:
-            reader = csv.DictReader(decoded_file, delimiter=delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=delimiter)
 
         csv_import = models.CsvImport.objects.create(file=file, delimiter=delimiter)
 
