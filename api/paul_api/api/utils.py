@@ -63,15 +63,21 @@ def import_csv(reader, table, csv_import=None):
     
     table_fields = {x.name: x for x in table.fields.all()}
     field_choices = {x.name: x.choices for x in table.fields.all()}
-    i = 0
     unique_fields = {field_map.table_column.name:field_map.original_name for field, field_map in csv_field_mapping.items() if field_map.unique==True}
 
     # Current batches of objects to be saved into the database
     create_batch = []
     update_batch = []
+    
+    # Flag for checking if we are trying to process the first row of the reader input
+    first_row = True
 
     for row in reader:
-        i += 1
+        # Skip the first reader input row because it is used as the table header
+        if first_row:
+            first_row = False
+            continue
+        
         entry_dict = {}
         error_in_row = False
         errors_in_row = {}
