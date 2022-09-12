@@ -29,6 +29,7 @@ ENV RUN_DEV_SERVER=no
 ENV RUN_COLLECT_STATIC=no
 ENV RUN_CREATE_SUPER_USER=yes
 ENV DEBIAN_FRONTEND=noninteractive
+ENV IS_CONTAINERIZED=True
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     nginx xz-utils
