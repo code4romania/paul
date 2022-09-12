@@ -69,15 +69,7 @@ def import_csv(reader, table, csv_import=None):
     create_batch = []
     update_batch = []
     
-    # Flag for checking if we are trying to process the first row of the reader input
-    first_row = True
-
     for row in reader:
-        # Skip the first reader input row because it is used as the table header
-        if first_row:
-            first_row = False
-            continue
-        
         entry_dict = {}
         error_in_row = False
         errors_in_row = {}
