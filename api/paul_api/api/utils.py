@@ -160,7 +160,7 @@ def import_csv(reader, table, csv_import=None):
             if len(update_batch) >= BATCH_SIZE:
                 print("Saving update batch")
                 models.Entry.objects.bulk_update(update_batch, ["data"])
-                create_batch = []
+                update_batch = []
 
         except Exception as e:
             # print(e)
@@ -171,12 +171,10 @@ def import_csv(reader, table, csv_import=None):
     if len(create_batch):
         print("Saving what is left in the create batch")
         models.Entry.objects.bulk_create(create_batch)
-        create_batch = []
 
     if len(update_batch):
         print("Saving what is left in the update batch")
         models.Entry.objects.bulk_update(update_batch, ["data"])
-        create_batch = []
 
     # print("errors: {} import_count_created: {} import_count_updated: {}".format(errors_count, import_count_created, import_count_updated))
     return errors, errors_count, import_count_created, import_count_updated
