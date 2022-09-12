@@ -34,6 +34,9 @@ build-stage:                      ## builds the container with the staging flag
 superuser:                        ## creates a superuser for the API
 	docker-compose exec api ./manage.py createsuperuser
 
+adminshell:                        ## opens the django-admin shell
+	docker-compose exec paul ./paul_api/manage.py shell
+
 init-db: superuser                ## sets up the database and fixtures
 	docker-compose exec api ./manage.py loaddata statistics
 	docker-compose exec api ./manage.py loaddata pages
