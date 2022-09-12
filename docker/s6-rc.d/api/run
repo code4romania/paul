@@ -9,4 +9,4 @@ gunicorn paul_api.wsgi \
     --log-level info \
     --worker-class gevent \
     --workers $WORKERS \
-    --timeout 60
+    --timeout 30
