@@ -111,11 +111,17 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                 filters = validated_data.pop('filters')
                 if filters:
                     models.Table.objects.filter(pk=instance.pk).update(**{'filters': filters})
+            
             if validated_data.get('default_fields'):
                 default_fields = validated_data.pop('default_fields')
                 if default_fields:
                     for field in default_fields:
                         instance.default_fields.add(field)
+
+            # Toggle the 'active' field
+            if 'active' in validated_data:
+                models.Table.objects.filter(pk=instance.pk).update(active=validated_data['active'])
+
             instance.refresh_from_db()
         else:
             instance.name = validated_data.get("name")
