@@ -102,7 +102,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class TaskCreateSerializer(serializers.ModelSerializer):
     last_edit_user = serializers.HiddenField(
         default=serializers.CurrentUserDefault())
-    last_edit_date = serializers.HiddenField(default=timezone.now())
+    last_edit_date = serializers.HiddenField(default=timezone.now)
     periodic_task = TaskScheduleSerializer(required=False)
 
     class Meta:

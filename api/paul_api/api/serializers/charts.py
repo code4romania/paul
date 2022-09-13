@@ -75,7 +75,7 @@ class CreateSerializer(serializers.ModelSerializer):
     last_edit_user = serializers.HiddenField(
         default=serializers.CurrentUserDefault())
     last_edit_date = serializers.HiddenField(
-        default=timezone.now())
+        default=timezone.now)
 
     class Meta:
         model = models.Chart

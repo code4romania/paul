@@ -43,7 +43,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
     database = serializers.PrimaryKeyRelatedField(queryset=models.Database.objects.all())
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_edit_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    last_edit_date = serializers.HiddenField(default=timezone.now())
+    last_edit_date = serializers.HiddenField(default=timezone.now)
     active = serializers.BooleanField(default=True)
     fields = TableColumnSerializer(many=True, required=False)
     id = serializers.IntegerField(required=False)
