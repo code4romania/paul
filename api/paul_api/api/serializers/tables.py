@@ -7,7 +7,6 @@ from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 
 from api.serializers.users import OwnerSerializer, UserSerializer
 from api import models, utils
-from pprint import pprint
 
 
 class TableColumnSerializer(serializers.ModelSerializer):
@@ -43,7 +42,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
     database = serializers.PrimaryKeyRelatedField(queryset=models.Database.objects.all())
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_edit_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    last_edit_date = serializers.HiddenField(default=timezone.now())
+    last_edit_date = serializers.HiddenField(default=timezone.now)
     active = serializers.BooleanField(default=True)
     fields = TableColumnSerializer(many=True, required=False)
     id = serializers.IntegerField(required=False)
@@ -111,11 +110,17 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                 filters = validated_data.pop('filters')
                 if filters:
                     models.Table.objects.filter(pk=instance.pk).update(**{'filters': filters})
+            
             if validated_data.get('default_fields'):
                 default_fields = validated_data.pop('default_fields')
                 if default_fields:
                     for field in default_fields:
                         instance.default_fields.add(field)
+
+            # Toggle the 'active' field
+            if 'active' in validated_data:
+                models.Table.objects.filter(pk=instance.pk).update(active=validated_data['active'])
+
             instance.refresh_from_db()
         else:
             instance.name = validated_data.get("name")

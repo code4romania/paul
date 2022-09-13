@@ -168,7 +168,7 @@ class FilterJoinTableCreateSerializer(serializers.ModelSerializer):
 class FilterCreateSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_edit_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    last_edit_date = serializers.HiddenField(default=timezone.now())
+    last_edit_date = serializers.HiddenField(default=timezone.now)
     primary_table = FilterJoinTableCreateSerializer()
     join_tables = FilterJoinTableCreateSerializer(many=True, required=False, allow_null=True)
 

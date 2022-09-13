@@ -1,10 +1,8 @@
 from django.db.models import (
     Count, Sum, Min, Max, Avg,
-    DateTimeField, CharField, FloatField, IntegerField, Q)
+    DateTimeField, CharField, FloatField, Q)
 from django.db.models.functions import Trunc, Cast
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
-from django.urls import reverse
-from django.utils import timezone
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -16,11 +14,11 @@ import inflection
 # from api.views import FilterViewSet
 from . import models
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import requests
 import re
 from pprint import pprint
+
 
 DB_FUNCTIONS = {
     "Count": Count,
@@ -29,6 +27,8 @@ DB_FUNCTIONS = {
     "Max": Max,
     "Avg": Avg,
 }
+
+BATCH_SIZE = 200
 
 
 def send_email(template, context, subject, to):
@@ -52,16 +52,21 @@ def import_csv(reader, table, csv_import=None):
     import_count_created = 0
     import_count_updated = 0
     errors = []
+    
     if csv_import:
         csv_field_mapping = {x.original_name: x for x in csv_import.csv_field_mapping.exclude(table_column=None)}
     else:
         csv_field_mapping = {x.original_name: x for x in table.csv_field_mapping.all()}
+    
     table_fields = {x.name: x for x in table.fields.all()}
     field_choices = {x.name: x.choices for x in table.fields.all()}
-    i = 0
     unique_fields = {field_map.table_column.name:field_map.original_name for field, field_map in csv_field_mapping.items() if field_map.unique==True}
+
+    # Current batches of objects to be saved into the database
+    create_batch = []
+    update_batch = []
+    
     for row in reader:
-        i += 1
         entry_dict = {}
         error_in_row = False
         errors_in_row = {}
@@ -107,9 +112,12 @@ def import_csv(reader, table, csv_import=None):
                     error_in_row = True
                     errors_in_row[key] = e.__class__.__name__
                     # errors_in_row[key] = str(e)
+
             if not error_in_row:
                 entry = None
                 if unique_fields:
+                    #TODO: Figure out a way to group unique items into batches
+
                     # print('check unique')
                     data = {}
                     for field in unique_fields:
@@ -127,20 +135,41 @@ def import_csv(reader, table, csv_import=None):
                             errors_in_row[unique_fields[field]] = 'Acest camp trebuie sa fie unic în tabel'
                         errors.append({"row": row, "errors": errors_in_row})
                         errors_count += 1
+                    if entry:
+                        entry.data = entry_dict
+                        entry.save()
+                        print("SAVED UNIQUE ENTRY")
                 else:
-                    entry = models.Entry.objects.create(table=table)
+                    # Non unique fields
+                    create_batch.append(models.Entry(table=table, data=entry_dict))
                     import_count_created += 1
-
-                if entry:
-                    entry.data = entry_dict
-                    entry.save()
             else:
                 errors.append({"row": row, "errors": errors_in_row})
                 errors_count += 1
 
+            if len(create_batch) >= BATCH_SIZE:
+                print("Saving create batch")
+                models.Entry.objects.bulk_create(create_batch)
+                create_batch = []
+
+            if len(update_batch) >= BATCH_SIZE:
+                print("Saving update batch")
+                models.Entry.objects.bulk_update(update_batch, ["data"])
+                update_batch = []
+
         except Exception as e:
             # print(e)
             errors_count += 1
+
+    # Save any remaining item from the batch
+
+    if len(create_batch):
+        print("Saving what is left in the create batch")
+        models.Entry.objects.bulk_create(create_batch)
+
+    if len(update_batch):
+        print("Saving what is left in the update batch")
+        models.Entry.objects.bulk_update(update_batch, ["data"])
 
     # print("errors: {} import_count_created: {} import_count_updated: {}".format(errors_count, import_count_created, import_count_updated))
     return errors, errors_count, import_count_created, import_count_updated

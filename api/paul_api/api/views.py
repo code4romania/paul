@@ -24,11 +24,7 @@ from rest_framework import filters as drf_filters
 from django_filters import rest_framework as filters
 from rest_framework_tricks.filters import OrderingFilter
 
-
-
 import csv
-import json
-from io import StringIO
 import os
 from datetime import datetime
 
@@ -36,7 +32,6 @@ from api import serializers, models
 from . import permissions as api_permissions
 from .permissions import BaseModelPermissions
 from . import utils
-from pprint import pprint
 
 
 class EntriesPagination(PageNumberPagination):
@@ -110,7 +105,7 @@ class UserView(APIView):
         Return a list of all users.
         """
         user = request.user
-        profile = user.userprofile
+        profile, _ = models.Userprofile.objects.get_or_create(user=user)
         profile_cards = [card.card for card in profile.dashboard_cards.all()]
         admin_group = Group.objects.get(name='admin')
 
@@ -235,9 +230,9 @@ class TableViewSet(viewsets.ModelViewSet):
         if not csv_import.delimiter:
             csv_import.file.seek(0)
             dialect = csv.Sniffer().sniff(file_content[:2000])
-            reader = csv.DictReader(decoded_file, delimiter=dialect.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=dialect.delimiter)
         else:
-            reader = csv.DictReader(decoded_file, delimiter=csv_import.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
         errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table)
         csv_import.errors = errors
@@ -293,9 +288,9 @@ class TableViewSet(viewsets.ModelViewSet):
         if not csv_import.delimiter:
             csv_import.file.seek(0)
             dialect = csv.Sniffer().sniff(file_content[:2000])
-            reader = csv.DictReader(decoded_file, delimiter=dialect.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=dialect.delimiter)
         else:
-            reader = csv.DictReader(decoded_file, delimiter=csv_import.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
 
         errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table, csv_import)
@@ -1140,9 +1135,9 @@ class CsvImportViewSet(viewsets.ModelViewSet):
         if not delimiter:
             file.seek(0)
             dialect = csv.Sniffer().sniff(file_content[:2000])
-            reader = csv.DictReader(decoded_file, delimiter=dialect.delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=dialect.delimiter)
         else:
-            reader = csv.DictReader(decoded_file, delimiter=delimiter)
+            reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=delimiter)
 
         csv_import = models.CsvImport.objects.create(file=file, delimiter=delimiter)
 
