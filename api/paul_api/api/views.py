@@ -110,7 +110,7 @@ class UserView(APIView):
         Return a list of all users.
         """
         user = request.user
-        profile = user.userprofile
+        profile, _ = models.Userprofile.objects.get_or_create(user=user)
         profile_cards = [card.card for card in profile.dashboard_cards.all()]
         admin_group = Group.objects.get(name='admin')
 
