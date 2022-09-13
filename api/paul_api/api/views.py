@@ -24,11 +24,7 @@ from rest_framework import filters as drf_filters
 from django_filters import rest_framework as filters
 from rest_framework_tricks.filters import OrderingFilter
 
-
-
 import csv
-import json
-from io import StringIO
 import os
 from datetime import datetime
 
@@ -36,7 +32,6 @@ from api import serializers, models
 from . import permissions as api_permissions
 from .permissions import BaseModelPermissions
 from . import utils
-from pprint import pprint
 
 
 class EntriesPagination(PageNumberPagination):

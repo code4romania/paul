@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.exceptions import ValidationError
 from django.contrib.auth.models import Group
 from django.dispatch import receiver
 from djoser.signals import user_activated

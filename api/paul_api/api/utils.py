@@ -1,10 +1,8 @@
 from django.db.models import (
     Count, Sum, Min, Max, Avg,
-    DateTimeField, CharField, FloatField, IntegerField, Q)
+    DateTimeField, CharField, FloatField, Q)
 from django.db.models.functions import Trunc, Cast
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
-from django.urls import reverse
-from django.utils import timezone
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -16,9 +14,8 @@ import inflection
 # from api.views import FilterViewSet
 from . import models
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import requests
 import re
 from pprint import pprint
 
