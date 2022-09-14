@@ -18,6 +18,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import re
 from pprint import pprint
+from django.utils.translation import ugettext_lazy as _
 
 
 DB_FUNCTIONS = {
@@ -105,7 +106,7 @@ def import_csv(reader, table, csv_import=None):
                         print(csv_field_mapping)
                         if table_fields[field_name].required or csv_field_mapping[key].required:
                             error_in_row = True
-                            errors_in_row[key] = "Acest câmp este obligatoriu"
+                            errors_in_row[key] = _("This field is required")
                         entry_dict[field_name] = None
                 except Exception as e:
                     # print(e)
@@ -132,7 +133,7 @@ def import_csv(reader, table, csv_import=None):
                     except:
                         error_in_row = True
                         for field in unique_fields:
-                            errors_in_row[unique_fields[field]] = 'Acest camp trebuie sa fie unic în tabel'
+                            errors_in_row[unique_fields[field]] = _("This field must be unique in table")
                         errors.append({"row": row, "errors": errors_in_row})
                         errors_count += 1
                     if entry:
