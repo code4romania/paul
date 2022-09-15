@@ -1,3 +1,4 @@
+from django.db import connection, reset_queries
 from django.db.models import (
     Count, Sum, Min, Max, Avg,
     DateTimeField, CharField, FloatField, Q)
@@ -29,8 +30,11 @@ DB_FUNCTIONS = {
     "Avg": Avg,
 }
 
-BATCH_SIZE = 200
-ORIGINAL_IMPORT_METHOD = False
+# How many new entries to save into the database in one go
+DB_BATCH_SIZE = 100
+
+# Revert the unique field CSV import to the original behaviour
+USE_ORIGINAL_IMPORT_METHOD = False
 
 
 def send_email(template, context, subject, to):
@@ -49,7 +53,20 @@ def snake_case(text):
     return re.sub('_+', '_', value)
 
 
+def get_database_values(table, field, batch_values):
+    """
+    Returns a list of values for a specified field of a table
+    """
+    return list(
+        models.Entry.objects.filter(table=table).filter(
+            **{"data__{}__in".format(field): batch_values}
+        ).distinct().values_list('data__{}'.format(field), flat=True))
+
+
 def import_csv(reader, table, csv_import=None):
+    # Flush the DB queries list (in order to reset the counter for debug)
+    # reset_queries()
+
     errors_count = 0
     import_count_created = 0
     import_count_updated = 0
@@ -64,9 +81,11 @@ def import_csv(reader, table, csv_import=None):
     field_choices = {x.name: x.choices for x in table.fields.all()}
     unique_fields = {field_map.table_column.name:field_map.original_name for field, field_map in csv_field_mapping.items() if field_map.unique==True}
 
-    # Current batches of objects to be saved into the database
-    create_batch = []
-    update_batch = []
+    # New entries to be saved in bulk to the database
+    current_batch = []
+
+    # This will contain a set of unique field values per unique field name
+    batch_unique_values = {}
     
     for row in reader:
         entry_dict = {}
@@ -117,10 +136,12 @@ def import_csv(reader, table, csv_import=None):
 
             if not error_in_row:
                 entry = None
-                if unique_fields and ORIGINAL_IMPORT_METHOD:
-                    # Keep the original import method for unique fields around
-                    # Maybe we'll need it for testing
-                    print("\nORIGINAL IMPORT METHOD FOR UNIQUE FIELDS")
+                if unique_fields and USE_ORIGINAL_IMPORT_METHOD:
+                    # Keep the original method of importing unique fields
+                    # This method sets a COMPOUND CONSTRAINT with all the unique fields
+                    # If it finds a duplicate, it updates the data with the new record
+                    
+                    # print("\nORIGINAL IMPORT METHOD FOR UNIQUE FIELDS")
                     data = {}
                     for field in unique_fields:
                         data[field] = entry_dict[field]
@@ -147,66 +168,75 @@ def import_csv(reader, table, csv_import=None):
                         entry.save()
                 
                 elif unique_fields:
-                    #TODO: The new import system for unique fields
-                    print("\nNEW IMPORT METHOD FOR UNIQUE FIELDS")
-
+                    # The new method for importing unique fields
+                    # It checks each unique field for uniqueness, first in the current batch, later in database
+                    # If it finds a duplicate, it ignores the new data and keeps the old one
+                    
+                    # print("\nNEW IMPORT METHOD FOR UNIQUE FIELDS")
                     data = {}
                     for field in unique_fields:
                         data[field] = entry_dict[field]
+                        # Extend the set of unique values for the current field for this batch
+                        if field not in batch_unique_values:
+                            batch_unique_values[field]= set()
+                        batch_unique_values[field].add(entry_dict[field])
 
-                    print("UNIQUE FIELDS = ", data)
-                    try:
-                        entry, created = models.Entry.objects.get_or_create(table=table, data__contains=data)
-                        print("EXISTING DATA = ", entry.data)
-                        if created:
-                            import_count_created += 1
-                            print(" TO CREATE")
-                        else:
-                            import_count_updated += 1
-                            print(" TO UPDATE")
-                    except:
-                        error_in_row = True
-                        for field in unique_fields:
-                            errors_in_row[unique_fields[field]] = _("This field must be unique in table")
-                        errors.append({"row": row, "errors": errors_in_row})
-                        errors_count += 1
-                    if entry:
-                        entry.data = entry_dict
-                        print("  NEW DATA = ", entry.data)
-                        entry.save()
+                    # check if this row has unique fields alreay in the current batch
+                    duplicate = False
+                    for field in unique_fields:
+                        field_value = entry_dict[field]
+                        for another_entry in current_batch:
+                            if another_entry.data[field] == field_value:
+                                duplicate = True
+                                break
+                        if duplicate:
+                            break
+                    else:  
+                        # The for-loop didn't "break" because it didn't find any duplicate
+                        current_batch.append(models.Entry(table=table, data=entry_dict))
 
                 else:
                     # Non unique fields
-                    print("\nIMPORT FOR NON UNIQUE FIELDS")
-                    create_batch.append(models.Entry(table=table, data=entry_dict))
-                    import_count_created += 1
+                    # print("\nIMPORT FOR NON UNIQUE FIELDS")
+                    current_batch.append(models.Entry(table=table, data=entry_dict))
+                    
             else:
                 errors.append({"row": row, "errors": errors_in_row})
                 errors_count += 1
-
-            if len(create_batch) >= BATCH_SIZE:
-                print("Saving the create batch")
-                models.Entry.objects.bulk_create(create_batch)
-                create_batch = []
-
-            if len(update_batch) >= BATCH_SIZE:
-                print("Saving the update batch")
-                models.Entry.objects.bulk_update(update_batch, ["data"])
-                update_batch = []
+            
+            if len(current_batch) >= DB_BATCH_SIZE:
+                if unique_fields:
+                    # Remove from the batch all entries which have field values already in database
+                    # Previously we only removed duplicates from inside the batch
+                    for field in unique_fields:
+                        db_values = get_database_values(table, field, batch_unique_values[field])
+                        # Remove database duplicates from the current batch
+                        current_batch = [entry for entry in current_batch if entry.data[field] not in db_values]
+                        del db_values
+                # Save the batch to database
+                import_count_created += len(models.Entry.objects.bulk_create(current_batch))
+                current_batch = []
+                batch_unique_values = {}
 
         except Exception as e:
             # print(e)
             errors_count += 1
 
-    # Save any remaining item from the batch
+    # Save any remaining items from this final batch
+    if len(current_batch):
+        if unique_fields:
+            # Remove from the batch all entries which have field values already in database
+            # Previously we only removed duplicates from inside the batch
+            for field in unique_fields:
+                db_values = get_database_values(table, field, batch_unique_values[field])
+                # Remove database duplicates from the current batch
+                current_batch = [entry for entry in current_batch if entry.data[field] not in db_values]
+                del db_values
+        # Save the batch to database
+        import_count_created += len(models.Entry.objects.bulk_create(current_batch))
 
-    if len(create_batch):
-        print("Saving what is left in the create batch")
-        models.Entry.objects.bulk_create(create_batch)
-
-    if len(update_batch):
-        print("Saving what is left in the update batch")
-        models.Entry.objects.bulk_update(update_batch, ["data"])
+    # Print number of DB queries (for debug)
+    # print("TOTAL QUERIES = ", len(connection.queries)) 
 
     # print("errors: {} import_count_created: {} import_count_updated: {}".format(errors_count, import_count_created, import_count_updated))
     return errors, errors_count, import_count_created, import_count_updated
