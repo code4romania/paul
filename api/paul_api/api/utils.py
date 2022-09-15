@@ -146,16 +146,12 @@ def import_csv(reader, table, csv_import=None):
                     for field in unique_fields:
                         data[field] = entry_dict[field]
 
-                    print("UNIQUE FIELDS = ", data)
                     try:
                         entry, created = models.Entry.objects.get_or_create(table=table, data__contains=data)
-                        print("EXISTING DATA = ", entry.data)
                         if created:
                             import_count_created += 1
-                            print(" TO CREATE")
                         else:
                             import_count_updated += 1
-                            print(" TO UPDATE")
                     except:
                         error_in_row = True
                         for field in unique_fields:
@@ -164,7 +160,6 @@ def import_csv(reader, table, csv_import=None):
                         errors_count += 1
                     if entry:
                         entry.data = entry_dict
-                        print("  NEW DATA = ", entry.data)
                         entry.save()
                 
                 elif unique_fields:
