@@ -30,6 +30,7 @@ DB_FUNCTIONS = {
 }
 
 BATCH_SIZE = 200
+ORIGINAL_IMPORT_METHOD = False
 
 
 def send_email(template, context, subject, to):
@@ -116,20 +117,24 @@ def import_csv(reader, table, csv_import=None):
 
             if not error_in_row:
                 entry = None
-                if unique_fields:
-                    #TODO: Figure out a way to group unique items into batches
-
-                    # print('check unique')
+                if unique_fields and ORIGINAL_IMPORT_METHOD:
+                    # Keep the original import method for unique fields around
+                    # Maybe we'll need it for testing
+                    print("\nORIGINAL IMPORT METHOD FOR UNIQUE FIELDS")
                     data = {}
                     for field in unique_fields:
                         data[field] = entry_dict[field]
-                    # print(data)
+
+                    print("UNIQUE FIELDS = ", data)
                     try:
                         entry, created = models.Entry.objects.get_or_create(table=table, data__contains=data)
+                        print("EXISTING DATA = ", entry.data)
                         if created:
                             import_count_created += 1
+                            print(" TO CREATE")
                         else:
                             import_count_updated += 1
+                            print(" TO UPDATE")
                     except:
                         error_in_row = True
                         for field in unique_fields:
@@ -138,10 +143,41 @@ def import_csv(reader, table, csv_import=None):
                         errors_count += 1
                     if entry:
                         entry.data = entry_dict
+                        print("  NEW DATA = ", entry.data)
                         entry.save()
-                        print("SAVED UNIQUE ENTRY")
+                
+                elif unique_fields:
+                    #TODO: The new import system for unique fields
+                    print("\nNEW IMPORT METHOD FOR UNIQUE FIELDS")
+
+                    data = {}
+                    for field in unique_fields:
+                        data[field] = entry_dict[field]
+
+                    print("UNIQUE FIELDS = ", data)
+                    try:
+                        entry, created = models.Entry.objects.get_or_create(table=table, data__contains=data)
+                        print("EXISTING DATA = ", entry.data)
+                        if created:
+                            import_count_created += 1
+                            print(" TO CREATE")
+                        else:
+                            import_count_updated += 1
+                            print(" TO UPDATE")
+                    except:
+                        error_in_row = True
+                        for field in unique_fields:
+                            errors_in_row[unique_fields[field]] = _("This field must be unique in table")
+                        errors.append({"row": row, "errors": errors_in_row})
+                        errors_count += 1
+                    if entry:
+                        entry.data = entry_dict
+                        print("  NEW DATA = ", entry.data)
+                        entry.save()
+
                 else:
                     # Non unique fields
+                    print("\nIMPORT FOR NON UNIQUE FIELDS")
                     create_batch.append(models.Entry(table=table, data=entry_dict))
                     import_count_created += 1
             else:
@@ -149,12 +185,12 @@ def import_csv(reader, table, csv_import=None):
                 errors_count += 1
 
             if len(create_batch) >= BATCH_SIZE:
-                print("Saving create batch")
+                print("Saving the create batch")
                 models.Entry.objects.bulk_create(create_batch)
                 create_batch = []
 
             if len(update_batch) >= BATCH_SIZE:
-                print("Saving update batch")
+                print("Saving the update batch")
                 models.Entry.objects.bulk_update(update_batch, ["data"])
                 update_batch = []
 
