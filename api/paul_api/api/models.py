@@ -1,18 +1,18 @@
+import os
+import re
+import uuid
+
 from django.conf import settings
-from django.db import models
-from django.utils.text import slugify
-from django.utils import timezone
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.contrib.postgres.fields import ArrayField
 from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.auth.models import Group
+from django.db import models
 from django.dispatch import receiver
+from django.utils import timezone
+from django.utils.text import slugify
 from djoser.signals import user_activated
-from api import utils
 
-import uuid
-import re
-import os
+from api import utils
 
 
 @receiver(user_activated)

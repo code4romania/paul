@@ -1,25 +1,22 @@
-# from django.db import connection, reset_queries
-from django.db.models import (
-    Count, Sum, Min, Max, Avg,
-    DateTimeField, CharField, FloatField, Q)
-from django.db.models.functions import Trunc, Cast
-from django.contrib.postgres.fields.jsonb import KeyTextTransform
-
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
-
+import re
 from collections import OrderedDict
+from datetime import datetime
+from pprint import pprint
+
 import inflection
+from dateutil.relativedelta import relativedelta
+from django.conf import settings
+from django.contrib.postgres.fields.jsonb import KeyTextTransform
+from django.core.mail import EmailMultiAlternatives
+# from django.db import connection, reset_queries
+from django.db.models import (Avg, CharField, Count, DateTimeField, FloatField,
+                              Max, Min, Q, Sum)
+from django.db.models.functions import Cast, Trunc
+from django.template.loader import get_template
+from django.utils.translation import ugettext_lazy as _
 
 # from api.views import FilterViewSet
 from . import models
-
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-import re
-from pprint import pprint
-from django.utils.translation import ugettext_lazy as _
 
 
 DB_FUNCTIONS = {
