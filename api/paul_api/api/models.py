@@ -154,7 +154,7 @@ class Table(models.Model):
         "Database", on_delete=models.CASCADE, related_name="tables")
     active = models.BooleanField(default=False)
 
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=timezone.now)
     default_fields = models.ManyToManyField(
         'TableColumn', blank=True, related_name='default_field')
 
@@ -277,7 +277,7 @@ class CsvImport(models.Model):
     import_count_created = models.IntegerField(default=0)
     import_count_updated = models.IntegerField(default=0)
     import_count_skipped = models.IntegerField(default=0)
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=timezone.now)
 
     class Meta:
         pass
@@ -313,7 +313,7 @@ class Entry(models.Model):
     table = models.ForeignKey(
         "Table", on_delete=models.CASCADE, related_name="entries")
     data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=timezone.now)
 
     class Meta:
         verbose_name_plural = "Entries"
@@ -364,7 +364,7 @@ class Filter(models.Model):
         FilterJoinTable, related_name="filter_join_table")
     filters = models.JSONField(
         encoder=DjangoJSONEncoder, null=True, blank=True)
-    creation_date = models.DateTimeField(auto_now_add=True, null=True)
+    creation_date = models.DateTimeField(auto_now_add=timezone.now, null=True)
     default_fields = models.ManyToManyField(
         TableColumn, related_name="filter_default_field", blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -424,7 +424,7 @@ class Chart(models.Model):
     filters = models.JSONField(
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
-    creation_date = models.DateTimeField(auto_now_add=True, null=True)
+    creation_date = models.DateTimeField(auto_now_add=timezone.now, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     last_edit_date = models.DateTimeField(null=True, blank=True)
     last_edit_user = models.ForeignKey(
@@ -461,7 +461,7 @@ class Card(models.Model):
     filters = models.JSONField(
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
-    creation_date = models.DateTimeField(auto_now_add=True, null=True)
+    creation_date = models.DateTimeField(auto_now_add=timezone.now, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     last_edit_date = models.DateTimeField(null=True, blank=True)
     last_edit_user = models.ForeignKey(
@@ -486,7 +486,7 @@ class PluginTaskResult(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=20, default='In progress')
 
-    date_start = models.DateTimeField(auto_now_add=True)
+    date_start = models.DateTimeField(auto_now_add=timezone.now)
     date_end = models.DateTimeField(null=True, blank=True)
     duration = models.DurationField(null=True, blank=True)
     user = models.ForeignKey(
