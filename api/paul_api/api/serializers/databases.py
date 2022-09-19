@@ -1,8 +1,8 @@
-from rest_framework import serializers
 from guardian.core import ObjectPermissionChecker
-from guardian.shortcuts import get_objects_for_user
-from api.serializers.users import OwnerSerializer
+from rest_framework import serializers
+
 from api import models
+from api.serializers.users import OwnerSerializer
 
 
 class DatabaseTableListDataSerializer(serializers.ModelSerializer):

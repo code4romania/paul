@@ -1,10 +1,9 @@
-from django.utils import timezone
 from django.urls import reverse
-
+from django.utils import timezone
 from rest_framework import serializers
 
-from api.serializers.users import OwnerSerializer
 from api import models
+from api.serializers.users import OwnerSerializer
 
 
 class ListDataSerializer(serializers.ModelSerializer):

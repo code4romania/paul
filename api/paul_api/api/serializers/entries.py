@@ -1,10 +1,11 @@
-from rest_framework import serializers
-from api import models
-from django.urls import reverse
 from datetime import datetime
-from dateutil.parser import isoparse
 
-from pprint import pprint
+from dateutil.parser import isoparse
+from django.urls import reverse
+from rest_framework import serializers
+
+from api import models
+
 
 datatypes = {
     "int": "int",
