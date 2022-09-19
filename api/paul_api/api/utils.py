@@ -1,4 +1,4 @@
-from django.db import connection, reset_queries
+# from django.db import connection, reset_queries
 from django.db.models import (
     Count, Sum, Min, Max, Avg,
     DateTimeField, CharField, FloatField, Q)

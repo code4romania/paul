@@ -1,24 +1,18 @@
-from django.db.models import (
-    Q, Count, Sum, Min, Max, Avg, StdDev,
-    DateTimeField, DateField, CharField, FloatField, IntegerField)
-from django.db.models.functions import Trunc, Cast
+from django.db.models import Q
 from django.contrib.auth.models import User, Group
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.postgres.fields.jsonb import KeyTextTransform
 
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from guardian.shortcuts import get_objects_for_user
-from guardian.core import ObjectPermissionChecker
 
 from rest_framework import filters as drf_filters
 from django_filters import rest_framework as filters
