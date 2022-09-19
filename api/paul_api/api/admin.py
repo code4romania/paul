@@ -204,7 +204,7 @@ class FilterAdmin(admin.ModelAdmin):
 
 @admin.register(models.CsvImport)
 class CsvImportAdmin(admin.ModelAdmin):
-    list_display = ("table", "file", "import_count_created", "import_count_updated", "errors_count", "errors")
+    list_display = ("table", "file", "import_count_created", "import_count_updated", "import_count_skipped", "errors_count", "errors")
     list_filter = ()
     search_fields = ("table__name",)
     inlines = (CsvFieldMapInline,)

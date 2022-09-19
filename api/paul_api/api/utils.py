@@ -70,6 +70,7 @@ def import_csv(reader, table, csv_import=None):
     errors_count = 0
     import_count_created = 0
     import_count_updated = 0
+    import_count_skipped = 0
     errors = []
     
     if csv_import:
@@ -183,6 +184,7 @@ def import_csv(reader, table, csv_import=None):
                         for another_entry in current_batch:
                             if another_entry.data[field] == field_value:
                                 duplicate = True
+                                import_count_skipped += 1
                                 break
                         if duplicate:
                             break
@@ -200,6 +202,7 @@ def import_csv(reader, table, csv_import=None):
                 errors_count += 1
             
             if len(current_batch) >= DB_BATCH_SIZE:
+                initial_batch_count = len(current_batch)
                 if unique_fields:
                     # Remove from the batch all entries which have field values already in database
                     # Previously we only removed duplicates from inside the batch
@@ -210,6 +213,7 @@ def import_csv(reader, table, csv_import=None):
                         del db_values
                 # Save the batch to database
                 import_count_created += len(models.Entry.objects.bulk_create(current_batch))
+                import_count_skipped += initial_batch_count - len(current_batch)
                 current_batch = []
                 batch_unique_values = {}
 
@@ -219,6 +223,7 @@ def import_csv(reader, table, csv_import=None):
 
     # Save any remaining items from this final batch
     if len(current_batch):
+        initial_batch_count = len(current_batch)
         if unique_fields:
             # Remove from the batch all entries which have field values already in database
             # Previously we only removed duplicates from inside the batch
@@ -229,12 +234,13 @@ def import_csv(reader, table, csv_import=None):
                 del db_values
         # Save the batch to database
         import_count_created += len(models.Entry.objects.bulk_create(current_batch))
+        import_count_skipped += initial_batch_count - len(current_batch)
 
     # Print number of DB queries (for debug)
     # print("TOTAL QUERIES = ", len(connection.queries)) 
 
     # print("errors: {} import_count_created: {} import_count_updated: {}".format(errors_count, import_count_created, import_count_updated))
-    return errors, errors_count, import_count_created, import_count_updated
+    return errors, errors_count, import_count_created, import_count_updated, import_count_skipped
 
 
 def get_chart_data(request, chart, table, preview=False):

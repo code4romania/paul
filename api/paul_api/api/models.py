@@ -273,9 +273,10 @@ class CsvImport(models.Model):
     )
 
     errors = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
-    errors_count = models.IntegerField(default=0)
+    errors_count = models.IntegerField(default=0, blank=False, null=False)
     import_count_created = models.IntegerField(default=0)
     import_count_updated = models.IntegerField(default=0)
+    import_count_skipped = models.IntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

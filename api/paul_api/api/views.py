@@ -234,17 +234,19 @@ class TableViewSet(viewsets.ModelViewSet):
         else:
             reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
-        errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table)
+        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(reader, table)
         csv_import.errors = errors
         csv_import.errors_count = errors_count
         csv_import.import_count_created = import_count_created
         csv_import.import_count_updated = import_count_updated
+        csv_import.import_count_skipped = import_count_skipped
         csv_import.table = table
         csv_import.save()
         response = {
             "errors_count": errors_count,
             "import_count_created": import_count_created,
             "import_count_updated": import_count_updated,
+            "import_count_skipped": import_count_skipped,
             "errors": errors,
             "id": table.id,
         }
@@ -293,18 +295,20 @@ class TableViewSet(viewsets.ModelViewSet):
             reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
 
-        errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table, csv_import)
+        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(reader, table, csv_import)
 
         csv_import.errors = errors
         csv_import.errors_count = errors_count
         csv_import.import_count_created = import_count_created
         csv_import.import_count_updated = import_count_updated
+        csv_import.import_count_skipped = import_count_skipped
         csv_import.table = table
         csv_import.save()
         response = {
             "errors_count": errors_count,
             "import_count_created": import_count_created,
             "import_count_updated": import_count_updated,
+            "import_count_skipped": import_count_skipped,
             "errors": errors,
             "id": table.id,
             "import_id": csv_import.pk,
