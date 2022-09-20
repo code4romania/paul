@@ -30,9 +30,6 @@ DB_FUNCTIONS = {
 # How many new entries to save into the database in one go
 DB_BATCH_SIZE = 100
 
-# Revert the unique field CSV import to the original behaviour
-USE_ORIGINAL_IMPORT_METHOD = False
-
 
 def send_email(template, context, subject, to):
     html = get_template(template)
@@ -134,7 +131,7 @@ def import_csv(reader, table, csv_import=None):
 
             if not error_in_row:
                 entry = None
-                if unique_fields and USE_ORIGINAL_IMPORT_METHOD:
+                if unique_fields and settings.USE_COMPOUND_CONSTRAINT:
                     # Keep the original method of importing unique fields
                     # This method sets a COMPOUND CONSTRAINT with all the unique fields
                     # If it finds a duplicate, it updates the data with the new record

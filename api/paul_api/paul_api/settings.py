@@ -290,6 +290,10 @@ CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
+# How to handle the unique fields of a table
+# Compound constraint is the original method which we don't use anymore (for now)
+USE_COMPOUND_CONSTRAINT = False
+
 SILKY_AUTHENTICATION = True  # User must login
 SILKY_AUTHORISATION = True  # User must have permissions
 

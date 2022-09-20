@@ -13,6 +13,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from rest_framework_tricks.filters import OrderingFilter
@@ -1037,7 +1038,7 @@ class EntryViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         try:
             self.perform_update(serializer)
-        except Exception as e:
+        except ValidationError as e:
             return Response({"detail": e.detail[0]}, status=status.HTTP_409_CONFLICT)
         return Response(serializer.data)
 
@@ -1053,7 +1054,7 @@ class EntryViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=False)
         try:
             self.perform_create(serializer)
-        except Exception as e:
+        except ValidationError as e:
             return Response({"detail": e.detail[0]}, status=status.HTTP_409_CONFLICT)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
