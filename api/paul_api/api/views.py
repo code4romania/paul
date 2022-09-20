@@ -335,7 +335,12 @@ class TableViewSet(viewsets.ModelViewSet):
         with open("/tmp/{}".format(file_name), "rb") as csv_export_file:
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove("/tmp/{}".format(file_name))
+        
+        try:
+            os.remove("/tmp/{}".format(file_name))
+        except OSError:
+            pass
+
         return response
 
     # @permission_classes([api_permissions.IsAuthenticatedOrGetToken])
@@ -373,7 +378,12 @@ class TableViewSet(viewsets.ModelViewSet):
         with open(file_path, "rb") as export_file:
             response = HttpResponse(export_file.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove(file_path)
+        
+        try:
+            os.remove(file_path)
+        except OSError:
+            pass
+
         return response
 
     @action(
@@ -997,7 +1007,11 @@ class FilterViewSet(viewsets.ModelViewSet):
             # response = HttpResponse(FileWrapper(csv_export_file), content_type='application/vnd.ms-excel')
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove("/tmp/{}".format(file_name))
+        try:
+            os.remove("/tmp/{}".format(file_name))
+        except OSError:
+            pass
+
         return response
 
 
@@ -1139,7 +1153,12 @@ class CsvImportViewSet(viewsets.ModelViewSet):
             # response = HttpResponse(FileWrapper(csv_export_file), content_type='application/vnd.ms-excel')
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove("/tmp/{}".format(file_name))
+        
+        try:
+            os.remove("/tmp/{}".format(file_name))
+        except OSError:
+            pass
+        
         return response
 
     def create(self, request):
