@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
+from openpyxl import Workbook
 from rest_framework import filters as drf_filters
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
@@ -335,6 +336,44 @@ class TableViewSet(viewsets.ModelViewSet):
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
         os.remove("/tmp/{}".format(file_name))
+        return response
+
+    # @permission_classes([api_permissions.IsAuthenticatedOrGetToken])
+    @action(
+        detail=True,
+        methods=["get"],
+        name="XLSX Export",
+        url_path="xlsx-export",
+    )
+    def xlsx_export(self, request, pk):
+        table = models.Table.objects.get(pk=pk)
+        table_fields = {x.name: x for x in table.fields.all()}
+
+        filter_dict = utils.request_get_to_filter(request.GET, table_fields, Q(), False)
+
+        file_name = "{}__{}.xlsx".format(table.name, datetime.now().strftime("%d.%m.%Y"))
+        file_path = "/tmp/{}".format(file_name)
+        wb = Workbook()
+        sheet = wb.active
+        sheet.title = table.name
+
+        field_names = table.fields.values_list("name", flat=True)
+        for i, field_name in enumerate(field_names, start=1):
+            sheet.cell(row=1, column=i).value = field_name
+
+        row_num = 2
+        for entry in table.entries.filter(filter_dict):
+            for i, field_name in enumerate(field_names, start=1):
+                if entry.data.get(field_name) is not None:
+                    sheet.cell(row=row_num, column=i).value = entry.data.get(field_name)
+            row_num += 1
+
+        wb.save(filename=file_path)
+
+        with open(file_path, "rb") as export_file:
+            response = HttpResponse(export_file.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
+        os.remove(file_path)
         return response
 
     @action(
