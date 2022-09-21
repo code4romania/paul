@@ -1,37 +1,29 @@
-from django.db.models import (
-    Q, Count, Sum, Min, Max, Avg, StdDev,
-    DateTimeField, DateField, CharField, FloatField, IntegerField)
-from django.db.models.functions import Trunc, Cast
-from django.contrib.auth.models import User, Group
-from django.http import HttpResponse
-from django.core.paginator import Paginator
-from django.core.serializers.json import DjangoJSONEncoder
-from django.contrib.postgres.fields.jsonb import KeyTextTransform
-
-from rest_framework import viewsets
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.decorators import action, permission_classes
-from rest_framework.response import Response
-from rest_framework import permissions
-from rest_framework_guardian.filters import ObjectPermissionsFilter
-
-from guardian.shortcuts import get_objects_for_user
-from guardian.core import ObjectPermissionChecker
-
-from rest_framework import filters as drf_filters
-from django_filters import rest_framework as filters
-from rest_framework_tricks.filters import OrderingFilter
-
 import csv
 import os
 from datetime import datetime
 
-from api import serializers, models
+from django.contrib.auth.models import Group, User
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponse
+from django_filters import rest_framework as filters
+from guardian.shortcuts import get_objects_for_user
+from openpyxl import Workbook
+from rest_framework import filters as drf_filters
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+from rest_framework.views import APIView
+from rest_framework_guardian.filters import ObjectPermissionsFilter
+from rest_framework_tricks.filters import OrderingFilter
+
+from api import models, serializers
+
 from . import permissions as api_permissions
-from .permissions import BaseModelPermissions
 from . import utils
+from .permissions import BaseModelPermissions
 
 
 class EntriesPagination(PageNumberPagination):
@@ -234,17 +226,19 @@ class TableViewSet(viewsets.ModelViewSet):
         else:
             reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
-        errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table)
+        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(reader, table)
         csv_import.errors = errors
         csv_import.errors_count = errors_count
         csv_import.import_count_created = import_count_created
         csv_import.import_count_updated = import_count_updated
+        csv_import.import_count_skipped = import_count_skipped
         csv_import.table = table
         csv_import.save()
         response = {
             "errors_count": errors_count,
             "import_count_created": import_count_created,
             "import_count_updated": import_count_updated,
+            "import_count_skipped": import_count_skipped,
             "errors": errors,
             "id": table.id,
         }
@@ -293,18 +287,20 @@ class TableViewSet(viewsets.ModelViewSet):
             reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
 
-        errors, errors_count, import_count_created, import_count_updated = utils.import_csv(reader, table, csv_import)
+        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(reader, table, csv_import)
 
         csv_import.errors = errors
         csv_import.errors_count = errors_count
         csv_import.import_count_created = import_count_created
         csv_import.import_count_updated = import_count_updated
+        csv_import.import_count_skipped = import_count_skipped
         csv_import.table = table
         csv_import.save()
         response = {
             "errors_count": errors_count,
             "import_count_created": import_count_created,
             "import_count_updated": import_count_updated,
+            "import_count_skipped": import_count_skipped,
             "errors": errors,
             "id": table.id,
             "import_id": csv_import.pk,
@@ -339,7 +335,55 @@ class TableViewSet(viewsets.ModelViewSet):
         with open("/tmp/{}".format(file_name), "rb") as csv_export_file:
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove("/tmp/{}".format(file_name))
+        
+        try:
+            os.remove("/tmp/{}".format(file_name))
+        except OSError:
+            pass
+
+        return response
+
+    # @permission_classes([api_permissions.IsAuthenticatedOrGetToken])
+    @action(
+        detail=True,
+        methods=["get"],
+        name="XLSX Export",
+        url_path="xlsx-export",
+    )
+    def xlsx_export(self, request, pk):
+        table = models.Table.objects.get(pk=pk)
+        table_fields = {x.name: x for x in table.fields.all()}
+
+        filter_dict = utils.request_get_to_filter(request.GET, table_fields, Q(), False)
+
+        file_name = "{}__{}.xlsx".format(table.name, datetime.now().strftime("%d.%m.%Y"))
+        file_path = "/tmp/{}".format(file_name)
+        wb = Workbook()
+        sheet = wb.active
+        sheet.title = table.name
+
+        field_names = table.fields.values_list("name", flat=True)
+        for i, field_name in enumerate(field_names, start=1):
+            sheet.cell(row=1, column=i).value = field_name
+
+        row_num = 2
+        for entry in table.entries.filter(filter_dict):
+            for i, field_name in enumerate(field_names, start=1):
+                if entry.data.get(field_name) is not None:
+                    sheet.cell(row=row_num, column=i).value = entry.data.get(field_name)
+            row_num += 1
+
+        wb.save(filename=file_path)
+
+        with open(file_path, "rb") as export_file:
+            response = HttpResponse(export_file.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
+        
+        try:
+            os.remove(file_path)
+        except OSError:
+            pass
+
         return response
 
     @action(
@@ -963,7 +1007,11 @@ class FilterViewSet(viewsets.ModelViewSet):
             # response = HttpResponse(FileWrapper(csv_export_file), content_type='application/vnd.ms-excel')
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove("/tmp/{}".format(file_name))
+        try:
+            os.remove("/tmp/{}".format(file_name))
+        except OSError:
+            pass
+
         return response
 
 
@@ -1043,7 +1091,7 @@ class EntryViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         try:
             self.perform_update(serializer)
-        except Exception as e:
+        except ValidationError as e:
             return Response({"detail": e.detail[0]}, status=status.HTTP_409_CONFLICT)
         return Response(serializer.data)
 
@@ -1059,7 +1107,7 @@ class EntryViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=False)
         try:
             self.perform_create(serializer)
-        except Exception as e:
+        except ValidationError as e:
             return Response({"detail": e.detail[0]}, status=status.HTTP_409_CONFLICT)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -1105,7 +1153,12 @@ class CsvImportViewSet(viewsets.ModelViewSet):
             # response = HttpResponse(FileWrapper(csv_export_file), content_type='application/vnd.ms-excel')
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        os.remove("/tmp/{}".format(file_name))
+        
+        try:
+            os.remove("/tmp/{}".format(file_name))
+        except OSError:
+            pass
+        
         return response
 
     def create(self, request):

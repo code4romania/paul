@@ -1,25 +1,12 @@
 from copy import deepcopy
+from datetime import datetime
 
-from django.forms import (
-    BooleanField,
-    CharField,
-    ChoiceField,
-    DateTimeField,
-    FloatField,
-    IntegerField,
-    ModelForm,
-)
+from django.forms import (BooleanField, CharField, ChoiceField, DateTimeField,
+                          FloatField, IntegerField, ModelForm)
 from django.utils.translation import ugettext_lazy as _
 
-from .validators import (
-    validate_text,
-    validate_float,
-    validate_int,
-    validate_date,
-    validate_bool,
-    validate_enum,
-)
-from datetime import datetime
+from .validators import (validate_bool, validate_date, validate_enum,
+                         validate_float, validate_int, validate_text)
 
 
 class BaseDynamicEntityForm(ModelForm):

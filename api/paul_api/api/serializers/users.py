@@ -1,15 +1,12 @@
-from django.contrib.auth.models import User, Group
-from django.utils import timezone
-from django.urls import reverse
-from django.db.models import ImageField
-from rest_framework.response import Response
-from rest_framework import serializers
-
-from api import models, utils
 from pprint import pprint
 
-from guardian.shortcuts import assign_perm, remove_perm
+from django.contrib.auth.models import Group, User
 from guardian.core import ObjectPermissionChecker
+from guardian.shortcuts import assign_perm, remove_perm
+from rest_framework import serializers
+from rest_framework.response import Response
+
+from api import models
 
 
 class UserCreateSerializer(serializers.ModelSerializer):

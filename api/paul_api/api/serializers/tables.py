@@ -1,12 +1,11 @@
-from django.utils import timezone
-from django.urls import reverse
 from django.contrib.auth.models import Group
+from django.urls import reverse
+from django.utils import timezone
 from rest_framework import serializers
-
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 
-from api.serializers.users import OwnerSerializer, UserSerializer
 from api import models, utils
+from api.serializers.users import OwnerSerializer, UserSerializer
 
 
 class TableColumnSerializer(serializers.ModelSerializer):

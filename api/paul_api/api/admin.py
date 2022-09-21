@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from django.contrib.admin.utils import flatten_fieldsets
-from api import models, forms
-from pprint import pprint
+
+from api import forms, models
 
 
 class UserprofileAdmin(admin.TabularInline):
@@ -204,7 +203,7 @@ class FilterAdmin(admin.ModelAdmin):
 
 @admin.register(models.CsvImport)
 class CsvImportAdmin(admin.ModelAdmin):
-    list_display = ("table", "file", "import_count_created", "import_count_updated", "errors_count", "errors")
+    list_display = ("table", "file", "import_count_created", "import_count_updated", "import_count_skipped", "errors_count", "errors")
     list_filter = ()
     search_fields = ("table__name",)
     inlines = (CsvFieldMapInline,)
