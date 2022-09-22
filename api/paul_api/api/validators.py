@@ -68,7 +68,7 @@ def validate_object(value):
     django model instance.
     """
     if not isinstance(value, models.Model):
-        raise ValidationError(_("Must be a django model object instance"))
+        raise ValidationError(_("Must be a Django model object instance"))
 
     if not value.pk:
         raise ValidationError(_("Model has not been saved yet"))

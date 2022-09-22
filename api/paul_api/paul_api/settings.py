@@ -218,7 +218,6 @@ LANGUAGES = [
     ("en", _("English")),
 ]
 
-MODELTRANSLATION_DEFAULT_LANGUAGE = "en"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/

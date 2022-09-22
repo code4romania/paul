@@ -1,6 +1,7 @@
 from pprint import pprint
 
 from django.contrib.auth.models import Group, User
+from django.utils.translation import ugettext_lazy as _
 from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework import serializers
@@ -73,11 +74,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             user_perms = checker.get_perms(table)
 
             if "change_table" in user_perms:
-                table_perm = "Editare"
+                table_perm = _("Edit")
             elif "view_table" in user_perms:
-                table_perm = "Vizualizare"
+                table_perm = _("View")
             else:
-                table_perm = "Fără drepturi"
+                table_perm = _("No permissions")
             tables.append({"name": table.name, "id": table.id, "permissions": table_perm})
         return tables
 
@@ -110,11 +111,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
             user_perms = checker.get_perms(table)
             pprint(user_perms)
             if "change_table" in user_perms:
-                table_perm = "Editare"
+                table_perm = _("Edit")
             elif "view_table" in user_perms:
-                table_perm = "Vizualizare"
+                table_perm = _("View")
             else:
-                table_perm = "Fără drepturi"
+                table_perm = _("No permissions")
             tables.append({"name": table.name, "id": table.id, "permissions": table_perm})
         return tables
 
