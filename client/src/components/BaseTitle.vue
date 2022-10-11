@@ -5,7 +5,7 @@
         Înapoi
       </b-button>
     </div>
-    <p class="title">{{ title }}</p>
+    <h1 class="title">{{ title }}</h1>
   </header>
 </template>
 
@@ -25,6 +25,11 @@ export default {
     goBack() {
       if (!this.backTo) this.$router.go(-1)
       else this.$router.push({ name: this.backTo })
+    }
+  },
+  metaInfo() {
+    return {
+      title: this.title
     }
   }
 }

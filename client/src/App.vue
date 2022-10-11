@@ -5,4 +5,10 @@
   </div>
 </template>
 
-<style lang="scss"></style>
+<script>
+export default {
+  metaInfo: {
+    titleTemplate: (title) => (title !== '' ? `${title} - ` : '') + 'Paul',
+  },
+}
+</script>
