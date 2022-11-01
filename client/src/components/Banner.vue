@@ -1,5 +1,5 @@
 <template>
-  <div style="background: white; font-size: 12px; padding: 6px 0; color: black">
+  <div class="banner">
     <div class="container is-fluid">
       <div>
         <Logo
@@ -42,3 +42,18 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .banner {
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+    background-color: #FFF; 
+    font-size: 12px; 
+    padding: 6px 0; 
+    color: #000;
+    z-index: 40;
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+  }
+</style>
