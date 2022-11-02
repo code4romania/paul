@@ -46,7 +46,7 @@ class EntriesPagination(PageNumberPagination):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.order_by('id').all()
     serializer_class = serializers.users.UserListSerializer
     pagination_class = EntriesPagination
 
@@ -125,7 +125,7 @@ class UserView(APIView):
 
 
 class DatabaseViewSet(viewsets.ModelViewSet):
-    queryset = models.Database.objects.all()
+    queryset = models.Database.objects.order_by('id').all()
     serializer_class = serializers.databases.DatabaseSerializer
 
 
@@ -545,7 +545,7 @@ class TableViewSet(viewsets.ModelViewSet):
 
 
 class FilterViewSet(viewsets.ModelViewSet):
-    queryset = models.Filter.objects.all()
+    queryset = models.Filter.objects.order_by('id').all()
     pagination_class = EntriesPagination
     filter_backends = (OrderingFilter,)
 
@@ -1019,7 +1019,7 @@ class EntryViewSet(viewsets.ModelViewSet):
     search_fields = ["data__nume"]
 
     def get_queryset(self):
-        return models.Entry.objects.filter(table=self.kwargs["table_pk"])
+        return models.Entry.objects.order_by('id').filter(table=self.kwargs["table_pk"])
 
     def list(self, request, table_pk):
         table = models.Table.objects.get(pk=table_pk)
@@ -1111,7 +1111,7 @@ class EntryViewSet(viewsets.ModelViewSet):
 
 
 class CsvImportViewSet(viewsets.ModelViewSet):
-    queryset = models.CsvImport.objects.all()
+    queryset = models.CsvImport.objects.order_by('id').all()
     # permission_classes = (BaseModelPermissions,)
 
     def get_serializer_class(self):
@@ -1237,7 +1237,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
 
 
 class ChartViewSet(viewsets.ModelViewSet):
-    queryset = models.Chart.objects.all()
+    queryset = models.Chart.objects.order_by('id').all()
     pagination_class = EntriesPagination
 
     filter_backends = (OrderingFilter,)
@@ -1324,7 +1324,7 @@ class ChartViewSet(viewsets.ModelViewSet):
 
 
 class CardViewSet(viewsets.ModelViewSet):
-    queryset = models.Card.objects.all()
+    queryset = models.Card.objects.order_by('id').all()
     pagination_class = EntriesPagination
     filter_backends = (OrderingFilter,)
 
