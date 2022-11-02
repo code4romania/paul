@@ -190,8 +190,6 @@ class FilterAdmin(admin.ModelAdmin):
         return ", ".join(obj.primary_table_fields.values_list("name", flat=True))
 
     def get_join_tables(self, obj):
-        # print(obj.join_tables)
-        # return ', '.join([x for x in obj.join_tables])
         tables = {}
 
         for table in obj.join_tables.all():

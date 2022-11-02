@@ -94,25 +94,16 @@ class BaseDynamicEntityForm(ModelForm):
         """
         Saves this ``form``'s cleaned_data into model instance
         """
-        print("SAVE inainte errors")
         if self.errors:
             raise ValueError(
                 _("The %s could not be saved because the data didn't validate." % self.instance._meta.object_name)
             )
 
         # Create entity instance, don't save yet.
-        print("SAVE")
-        print("SAVE")
         instance = super(BaseDynamicEntityForm, self).save(commit=False)
-        print("SAVE")
-        print("SAVE")
-        print("SAVE")
-        print("SAVE")
         # Assign attributes.
         for attribute in instance.table.fields.all():
             value = self.cleaned_data.get(attribute.name)
-            print(attribute.name, value)
-
             instance.data[attribute.name] = value
 
         # Save entity and its attributes.

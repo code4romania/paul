@@ -506,7 +506,6 @@ class TableViewSet(viewsets.ModelViewSet):
 
         
         for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
-            # print("Writing page:", i)
             data = paginator.get_page(i)
             page = data.object_list
 
@@ -917,7 +916,6 @@ class FilterViewSet(viewsets.ModelViewSet):
                 )
                 writer.writeheader()
                 for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
-                    # print("Writing page:", i)
                     data = paginator.get_page(i)
                     page = data.object_list
 
@@ -970,7 +968,6 @@ class FilterViewSet(viewsets.ModelViewSet):
                 )
                 writer.writeheader()
                 for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
-                    # print("Writing page:", i)
                     data = paginator.get_page(i)
                     page = data.object_list
 

@@ -44,7 +44,6 @@ class EntryDataSerializer(serializers.ModelSerializer):
         super(EntryDataSerializer, self).__init__(*args, **kwargs)
 
         entry = args[0]
-        # print(kwargs)
         if fields is not None:
             for field_name in fields:
                 MappedField = DATATYPE_SERIALIZERS[table_fields[field_name].field_type]

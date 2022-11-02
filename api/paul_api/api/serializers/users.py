@@ -1,4 +1,3 @@
-from pprint import pprint
 
 from django.contrib.auth.models import Group, User
 from guardian.core import ObjectPermissionChecker
@@ -108,7 +107,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
         for table in models.Table.objects.all():
             user_perms = checker.get_perms(table)
-            pprint(user_perms)
             if "change_table" in user_perms:
                 table_perm = "Editare"
             elif "view_table" in user_perms:
