@@ -133,7 +133,7 @@ class UserListDataSerializer(serializers.ModelSerializer):
         fields = [
             "username",
             "email",
-            "language"
+            "language",
             "avatar",
             "first_name",
             "last_name",
