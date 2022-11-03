@@ -1,5 +1,7 @@
 
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import Group, User
+from django.conf import settings
 from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework import serializers
@@ -22,6 +24,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         models.Userprofile.objects.create(user=new_user)
         user_group, _ = Group.objects.get_or_create(name="user")
         new_user.groups.add(user_group)
+        
+        # Send the initial password reset
+        form = PasswordResetForm({'email': new_email})
+        request = self.context.get("request")
+        form.save(
+            request=request,
+            use_https=request.is_secure(),
+            from_email=settings.NO_REPLY_EMAIL,
+            email_template_name='mail/new_user_password.html')
+
         return new_user
 
 
