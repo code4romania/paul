@@ -83,6 +83,9 @@ class Userprofile(models.Model):
 
     token = models.UUIDField(default=uuid.uuid4)
     avatar = models.ImageField(upload_to="avatars", null=True, blank=True)
+    language = models.CharField(
+        max_length=10, default="", blank=True, null=False,
+        help_text="Preferred language")
 
     def full_name(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)

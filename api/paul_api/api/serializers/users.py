@@ -28,7 +28,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", "avatar", "first_name", "last_name", "tables_permissions"]
+            "email", "language", "avatar", "first_name", "last_name", "tables_permissions"]
 
     def partial_update(self, request, *args, **kwargs):
         return Response(1)
@@ -89,7 +89,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "url", "id", "username", "email", "is_active",
-            "avatar", "first_name", "last_name",
+            "language", "avatar", "first_name", "last_name",
             "tables_permissions"]
 
     def get_avatar(self, obj):
@@ -125,6 +125,7 @@ class UserListDataSerializer(serializers.ModelSerializer):
         fields = [
             "username",
             "email",
+            "language",
             "avatar",
             "first_name",
             "last_name",
@@ -166,6 +167,7 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "email",
+            "language",
             "avatar",
             "first_name",
             "last_name",

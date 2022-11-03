@@ -7,7 +7,7 @@ from api import forms, models
 
 class UserprofileAdmin(admin.TabularInline):
     model = models.Userprofile
-    fields = ("avatar", "token", "dashboard_filters")
+    fields = ("avatar", "language", "token", "dashboard_filters")
     readonly_field = ("token",)
     can_delete = False
     can_add = False
