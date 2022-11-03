@@ -24,6 +24,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     tables_permissions = serializers.SerializerMethodField()
     avatar = serializers.ImageField(source="userprofile.avatar", allow_null=True, required=False)
+    language = serializers.CharField(source="userprofile.language")
 
     class Meta:
         model = User
@@ -56,6 +57,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                 userprofile_data = validated_data.pop("userprofile")
                 profile = models.Userprofile.objects.get(user=instance)
                 profile.avatar = userprofile_data['avatar']
+                profile.language = userprofile_data['language']
                 profile.save()
             User.objects.filter(pk=instance.pk).update(**validated_data)
 
@@ -84,6 +86,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class UserDetailSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
     tables_permissions = serializers.SerializerMethodField()
+    language = serializers.CharField(source="userprofile.language")
 
     class Meta:
         model = User
@@ -119,13 +122,14 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class UserListDataSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+    language = serializers.CharField(source="userprofile.language")
 
     class Meta:
         model = User
         fields = [
             "username",
             "email",
-            "language",
+            "language"
             "avatar",
             "first_name",
             "last_name",
@@ -159,6 +163,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+    language = serializers.CharField(source="userprofile.language")
 
     class Meta:
         model = User

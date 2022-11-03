@@ -46,7 +46,7 @@ class EntriesPagination(PageNumberPagination):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.order_by('id').all()
+    queryset = User.objects.order_by('pk').all()
     serializer_class = serializers.users.UserListSerializer
     pagination_class = EntriesPagination
 
@@ -61,11 +61,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        ordering = self.request.GET.get('__order', 'id')
+        ordering = self.request.GET.get('__order', 'pk')
 
         if 'admin' in user.groups.values_list('name', flat=True):
-            return User.objects.all().order_by(ordering)
-        return User.objects.filter(pk=user.pk)
+            return User.objects.order_by(ordering).all()
+        return User.objects.filter(pk=user.pk).order_by('pk')
 
     @action(
         detail=True,
