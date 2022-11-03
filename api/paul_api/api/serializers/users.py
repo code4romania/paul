@@ -11,11 +11,15 @@ from api import models
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email"]
+        fields = ["email"]
 
     def create(self, validated_data):
-        new_user = User.objects.create(**validated_data)
-        userprofile = models.Userprofile.objects.create(user=new_user)
+        # Create a new user with the same username as the email
+        new_email = validated_data["email"].lower().strip()
+        new_user = User.objects.create(
+            email=new_email, 
+            username=new_email)
+        models.Userprofile.objects.create(user=new_user)
         user_group, _ = Group.objects.get_or_create(name="user")
         new_user.groups.add(user_group)
         return new_user
