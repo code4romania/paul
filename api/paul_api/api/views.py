@@ -97,16 +97,16 @@ class UserView(APIView):
         Return a list of all users.
         """
         user = request.user
-        profile, _ = models.Userprofile.objects.get_or_create(user=user)
-        profile_cards = [card.card for card in profile.dashboard_cards.all()]
+        userprofile, _ = models.Userprofile.objects.get_or_create(user=user)
+        profile_cards = [card.card for card in userprofile.dashboard_cards.all()]
         admin_group = Group.objects.get(name='admin')
 
         cards_serializer = serializers.cards.ListSerializer(
             profile_cards, many=True, context={'request': request})
         charts_serializer = serializers.charts.ListSerializer(
-            user.userprofile.dashboard_charts.all(), many=True, context={'request': request})
+            userprofile.dashboard_charts.all(), many=True, context={'request': request})
         filters_serializer = serializers.filters.FilterListSerializer(
-            user.userprofile.dashboard_filters.all(), many=True, context={'request': request})
+            userprofile.dashboard_filters.all(), many=True, context={'request': request})
 
         dashboard = {
             "cards": cards_serializer.data,
@@ -119,7 +119,7 @@ class UserView(APIView):
             "id": user.id,
             "dashboard": dashboard,
             "is_admin": admin_group in user.groups.all(),
-            "avatar": request.build_absolute_uri(profile.avatar.url) if profile.avatar else None
+            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None
         }
         return Response(response)
 
