@@ -28,11 +28,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
         # Send the initial password reset
         form = PasswordResetForm({'email': new_email})
         request = self.context.get("request")
-        form.save(
-            request=request,
-            use_https=request.is_secure(),
-            from_email=settings.NO_REPLY_EMAIL,
-            email_template_name='mail/new_user_password.html')
+        if form.is_valid():
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                from_email=settings.NO_REPLY_EMAIL,
+                email_template_name='mail/new_user_password.html')
 
         return new_user
 
