@@ -30,7 +30,7 @@ def user_activated_callback(sender, **kwargs):
 
     for admin in admins:
         utils.send_email(
-            template="mail/new_user.html",
+            template="email/new_user.html",
             context={"admin": admin, "user": user, "base_path": base_path},
             subject="[PAUL] New user registered",
             to=admin.email)
