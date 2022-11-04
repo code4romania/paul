@@ -27,7 +27,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 _("An user with the %s email address already exists" % new_email))
 
         models.Userprofile.objects.create(user=new_user)
-        user_group, _ = Group.objects.get_or_create(name="user")
+        user_group, created = Group.objects.get_or_create(name="user")
         new_user.groups.add(user_group)
         
         # Send the initial password reset
