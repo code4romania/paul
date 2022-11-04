@@ -1,4 +1,6 @@
 from django.contrib.auth.models import Group, User
+from django.db import IntegrityError
+from django.utils.translation import ugettext_lazy as _
 from djoser.conf import settings as djsettings
 from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign_perm, remove_perm
@@ -16,9 +18,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Create a new user with the same username as the email
         new_email = validated_data["email"].lower().strip()
-        new_user = User.objects.create(
-            email=new_email, 
-            username=new_email)
+        try:
+            new_user = User.objects.create(
+                email=new_email, 
+                username=new_email)
+        except IntegrityError:
+            raise serializers.ValidationError(
+                _("An user with the %s email address already exists" % new_email))
+
         models.Userprofile.objects.create(user=new_user)
         user_group, _ = Group.objects.get_or_create(name="user")
         new_user.groups.add(user_group)
