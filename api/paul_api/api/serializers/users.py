@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group, User
-from django.conf import settings
+from djoser.conf import settings as djsettings
 from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework import serializers
@@ -25,7 +25,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         
         # Send the initial password reset
         request = self.context.get("request")
-        settings.EMAIL.password_reset(request, {"user": new_user, "initial": True}).send(new_email)
+        djsettings.EMAIL.password_reset(request, {"user": new_user, "initial": True}).send(new_email)
 
         return new_user
 
