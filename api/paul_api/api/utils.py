@@ -376,12 +376,12 @@ def prepare_chart_data(chart, chart_data, timeline=True):
             data['datasets'] = []
             labels = []
             labels_dict = {}
-            for serie, group in data_dict.items():
-                data['labels'].append(serie)
+            for s, group in data_dict.items():
+                data['labels'].append(s)
                 for group_name in group:
                     if group_name not in labels:
                         labels.append(group_name)
-            for serie, group in data_dict.items():
+            for s, group in data_dict.items():
                 for label in labels:
                     labels_dict.setdefault(label, [])
                     labels_dict[label].append(group.get(label, 0))
