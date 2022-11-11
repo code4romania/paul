@@ -40,7 +40,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         
         # Send the initial password reset
         request = self.context.get("request")
-        djsettings.EMAIL.password_reset(request, {"user": new_user, "initial": True}).send([new_email])
+        djsettings.EMAIL.password_reset(
+            request, {"user": new_user, "initial": True}).send([validated_data["email"]])
 
         return new_user
 
