@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-30 15:36+0300\n"
+"POT-Creation-Date: 2022-09-21 14:36+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,56 +19,158 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
 "2:1));\n"
 
-#: api/forms.py:116
-#, python-format
-msgid "The %s could not be saved because the data didn't validate."
+#: paul_api/api/forms.py:101
+msgid ""
+"The %(object_name)s could not be saved because the data didn't validate."
 msgstr "%s nu a putut fi salvat deoarece datele nu au fost validate."
 
-#: api/validators.py:25
+#: paul_api/api/models.py:36
+msgid "[PAUL] New user registered"
+msgstr "[PAUL] Utilizator nou înregistrat"
+
+#: paul_api/api/serializers/entries.py:74
+#, python-format
+msgid "Unknown fields: %(field_names)s"
+msgstr "Câmpuri necunoscute: %(field_names)s"
+
+#: paul_api/api/serializers/entries.py:85
+msgid "Integer is not valid"
+msgstr "Număr întreg invalid"
+
+#: paul_api/api/serializers/entries.py:90
+msgid "Float is not valid"
+msgstr "Număr cu zecimale invalid"
+
+#: paul_api/api/serializers/entries.py:97
+msgid "Invalid date format"
+msgstr "Format dată invalid"
+
+#: paul_api/api/serializers/entries.py:101
+#, python-format
+msgid "%(field_value)s is not a valid choice (%(valid_choices)s)"
+msgstr "%(field_value)s nu este o opțiune validă (%(valid_choices)s)"
+
+#: paul_api/api/serializers/entries.py:132
+#, python-format
+msgid "The %(unique_field_names)s fields must be unique together"
+msgstr "Câmpurile %(unique_field_names)s trebuie să fie unice împreună"
+
+#: paul_api/api/serializers/entries.py:136
+#: paul_api/api/serializers/entries.py:151
+#, python-format
+msgid "The %(unique_field_name)s field must be unique in table"
+msgstr "Câmpul %(unique_field_name)s trebuie să fie unic în tabel"
+
+#: paul_api/api/serializers/entries.py:147
+#, python-format
+msgid "The %(unique_field_names)s fields must be unique in table"
+msgstr "Câmpurile %(unique_field_names)s trebuie să fie unice în tabel"
+
+#: paul_api/api/serializers/entries.py:160
+#, python-format
+msgid "The %(field_name)s field is required"
+msgstr "Câmpul %(field_name)s este obligatoriu"
+
+#: paul_api/api/serializers/entries.py:166
+#, python-format
+msgid "The %(field_name)s field value must be one of: %(field_choices)s"
+msgstr "Valoarea câmpului %(field_name)s trebuie să fie una dintre: %(field_choices)s"
+
+#: paul_api/api/serializers/tables.py:68
+msgid "This table name is already being used."
+msgstr "Acest nume de tabel este deja utilizat."
+
+#: paul_api/api/serializers/tables.py:85
+msgid "Changing field type is not permited on a table with entries"
+msgstr "Modificarea tipului de coloană nu este permisă pentru un tabel cu intrări"
+
+#: paul_api/api/serializers/users.py:77 paul_api/api/serializers/users.py:114
+msgid "Edit"
+msgstr "Editare"
+
+#: paul_api/api/serializers/users.py:79 paul_api/api/serializers/users.py:116
+msgid "View"
+msgstr "Vizualizare"
+
+#: paul_api/api/serializers/users.py:81 paul_api/api/serializers/users.py:118
+msgid "No permissions"
+msgstr "Fără permisiuni"
+
+#: paul_api/api/templates/mail/new_user.html:2
+#, python-format
+msgid "Hello %(admin.first_name)s,"
+msgstr "Salut %(admin.first_name)s,"
+
+#: paul_api/api/templates/mail/new_user.html:6
+#, python-format
+msgid ""
+"A new user just registered on %(url)s. To activate this account click <a\n"
+"    href=\"%(base_path)s/app/users/%(user.pk)s\">here</a>."
+msgstr ""
+"Un nou utilizator s-a înregistrat la %(url)s. Pentru a activa acest cont clic <a\n"
+"    href=\"%(base_path)s/app/users/%(user.pk)s\">aici</a>."
+
+#: paul_api/api/templates/mail/new_user.html:11
+msgid "Have a nice day!"
+msgstr "O zi bună!"
+
+#: paul_api/api/utils.py:124
+msgid "This field is required"
+msgstr "Acest câmp este obligatoriu"
+
+#: paul_api/api/utils.py:153
+msgid "This field must be unique in table"
+msgstr "Acest câmp trebuie să fie unic în tabel"
+
+#: paul_api/api/validators.py:25
 msgid "Must be str or unicode"
-msgstr ""
+msgstr "Trebuie să fie str sau unicode"
 
-#: api/validators.py:35
+#: paul_api/api/validators.py:35
 msgid "Must be a float"
-msgstr ""
+msgstr "Trebuie să fie număr cu zecimale"
 
-#: api/validators.py:45
+#: paul_api/api/validators.py:45
 msgid "Must be an integer"
-msgstr ""
+msgstr "Trebuie să fie număr întreg"
 
-#: api/validators.py:54
+#: paul_api/api/validators.py:54
 msgid "Must be a date or datetime"
-msgstr ""
+msgstr "Trebuie să fie dată sau datetime"
 
-#: api/validators.py:62
+#: paul_api/api/validators.py:62
 msgid "Must be a boolean"
-msgstr ""
+msgstr "Trebuie să fie boolean"
 
-#: api/validators.py:71
-msgid "Must be a django model object instance"
-msgstr ""
+#: paul_api/api/validators.py:71
+msgid "Must be a Django model object instance"
+msgstr "Trebuie să fie o instanță de model Django"
 
-#: api/validators.py:74
+#: paul_api/api/validators.py:74
 msgid "Model has not been saved yet"
-msgstr ""
+msgstr "Modelul nu a fost încă salvat"
 
-#: paul_api/settings.py:176
+#: paul_api/paul_api/settings.py:217
 msgid "Romanian"
 msgstr "Română"
 
-#: paul_api/settings.py:177
+#: paul_api/paul_api/settings.py:218
 msgid "English"
 msgstr "Engleză"
 
-#: plugin_mailchimp/models.py:28 plugin_mailchimp/models.py:29
-#: plugin_woocommerce/models.py:28 plugin_woocommerce/models.py:29
+#: paul_api/plugin_mailchimp/models.py:28
+#: paul_api/plugin_mailchimp/models.py:29
+#: paul_api/plugin_woocommerce/models.py:28
+#: paul_api/plugin_woocommerce/models.py:29
 msgid "Settings"
 msgstr "Setări"
 
-#: plugin_mailchimp/models.py:63 plugin_woocommerce/models.py:49
+#: paul_api/plugin_mailchimp/models.py:63
+#: paul_api/plugin_woocommerce/models.py:49
 msgid "Task"
 msgstr "Sarcină"
 
-#: plugin_mailchimp/models.py:64 plugin_woocommerce/models.py:50
+#: paul_api/plugin_mailchimp/models.py:64
+#: paul_api/plugin_woocommerce/models.py:50
 msgid "Tasks"
 msgstr "Sarcini"

@@ -10,6 +10,11 @@ if [ "${RUN_MIGRATION}" = "yes" ]; then
     python3 manage.py migrate --run-syncdb
 fi
 
+if [ "${RUN_COMPILE_MESSAGES}" = "yes" ]; then
+    echo "Compiling translation messages"
+    python3 manage.py compilemessages
+fi
+
 if [ "${RUN_COLLECT_STATIC}" = "yes" ]; then
     echo "Collect static"
     mkdir -p /var/www/paul_api/static

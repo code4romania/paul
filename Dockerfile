@@ -26,13 +26,14 @@ ENV PYTHONUNBUFFERED=1
 ENV RUN_FEED=no
 ENV RUN_MIGRATION=yes
 ENV RUN_DEV_SERVER=no
+ENV RUN_COMPILE_MESSAGES=yes
 ENV RUN_COLLECT_STATIC=no
 ENV RUN_CREATE_SUPER_USER=yes
 ENV DEBIAN_FRONTEND=noninteractive
 ENV IS_CONTAINERIZED=True
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-    nginx xz-utils
+    nginx xz-utils gettext
 
 ARG S6_OVERLAY_VERSION=3.1.2.1
 ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME 0

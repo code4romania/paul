@@ -114,11 +114,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             user_perms = checker.get_perms(table)
 
             if "change_table" in user_perms:
-                table_perm = "Editare"
+                table_perm = _("Edit")
             elif "view_table" in user_perms:
-                table_perm = "Vizualizare"
+                table_perm = _("View")
             else:
-                table_perm = "Fără drepturi"
+                table_perm = _("No permissions")
             tables.append({"name": table.name, "id": table.id, "permissions": table_perm})
         return tables
 
@@ -151,11 +151,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
         for table in models.Table.objects.all():
             user_perms = checker.get_perms(table)
             if "change_table" in user_perms:
-                table_perm = "Editare"
+                table_perm = _("Edit")
             elif "view_table" in user_perms:
-                table_perm = "Vizualizare"
+                table_perm = _("View")
             else:
-                table_perm = "Fără drepturi"
+                table_perm = _("No permissions")
             tables.append({"name": table.name, "id": table.id, "permissions": table_perm})
         return tables
 

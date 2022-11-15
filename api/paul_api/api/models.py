@@ -10,6 +10,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.translation import ugettext_lazy as _
 from djoser.signals import user_activated
 
 from api import utils
@@ -32,7 +33,7 @@ def user_activated_callback(sender, **kwargs):
         utils.send_email(
             template="email/new_user.html",
             context={"admin": admin, "user": user, "base_path": base_path},
-            subject="[PAUL] New user registered",
+            subject=_("[PAUL] New user registered"),
             to=admin.email)
 
 

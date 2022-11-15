@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 
@@ -64,7 +65,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
             serializers.UniqueTogetherValidator(
                 queryset=model.objects.all(),
                 fields=('name', 'database'),
-                message="Această denumire de tabel este folosită deja."
+                message=_("This table name is already being used.")
             )
         ]
 
@@ -81,7 +82,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                                     {
                                         "fields-{}".format(
                                             field["id"]
-                                        ): "Changing field type is not permited on a table with entries"
+                                        ): _("Changing field type is not permited on a table with entries")
                                     }
                                 )
         return data

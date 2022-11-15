@@ -4,6 +4,7 @@ from dateutil.parser import isoparse
 from django.conf import settings
 from django.utils import timezone
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from api.models import Entry
@@ -68,7 +69,9 @@ class EntrySerializer(serializers.ModelSerializer):
         unknown = set(self.initial_data) - set(self.fields) - set(table_fields.keys())
 
         if unknown:
-            errors["non_field_errors"] = "Unknown field(s): {}".format(", ".join(unknown))
+            errors["non_field_errors"] = _(
+                "Unknown fields: %(field_names)s"
+            ) % {"field_names" : ", ".join(unknown)}
 
         for field_name, field_value in self.initial_data.items():
             if field_name in table_fields.keys():
@@ -78,23 +81,24 @@ class EntrySerializer(serializers.ModelSerializer):
                     try:
                         int(field_value)
                     except:
-                        errors[field_name] = "Integer is not valid"
+                        errors[field_name] = _("Integer is not valid")
                 elif field.field_type == "float":
                     try:
                         float(field_value)
                     except:
-                        errors[field_name] = "Float is not valid"
+                        errors[field_name] = _("Float is not valid")
                 elif field.field_type == "date":
                     try:
                         # datetime.strptime(field_value, "%Y-%m-%dT%H:%M:%S%z")
                         isoparse(field_value)
                     except Exception as e:
                         print(e)
-                        errors[field_name] = "Invalid date format"
+                        errors[field_name] = _("Invalid date format")
                 elif field.field_type == "enum":
                     if field_value not in field.choices:
-                        errors[field_name] = "{} is not a valid choice({})".format(
-                            field_value, ",".join(field.choices))
+                        errors[field_name] = _(
+                            "%(field_value)s is not a valid choice (%(valid_choices)s)"
+                        ) % {"field_value": field_value, "valid_choices": ",".join(field.choices)}
 
         if errors:
             raise serializers.ValidationError(errors)
@@ -123,9 +127,13 @@ class EntrySerializer(serializers.ModelSerializer):
                     data_query[field] = data.get(field, None)
             if Entry.objects.filter(table=table, data__contains=data_query).exclude(pk=entry_pk).exists():
                 if len(unique_fields) > 1:
-                    msg = f"Câmpurile {', '.join(unique_fields)} trebuie sa fie unice împreuna"
+                    msg = _(
+                        "The %(unique_field_names)s fields must be unique together"
+                    ) % {"unique_field_names": ', '.join(unique_fields)}
                 else:
-                    msg = f"Câmpul {unique_fields[0]} trebuie sa fie unic în tabel"
+                    msg = _(
+                        "The %(unique_field_name)s field must be unique in table"
+                    ) % {"unique_field_name": unique_fields[0]}
                 raise serializers.ValidationError(msg)
         elif unique_fields:
             duplicates = []
@@ -134,21 +142,28 @@ class EntrySerializer(serializers.ModelSerializer):
                     duplicates.append(field)
             if duplicates:
                 if len(duplicates) > 1:
-                    msg = f"Câmpurile {', '.join(duplicates)} trebuie sa fie unice in tabel"
+                    msg = _(
+                        "The %(unique_field_names)s fields must be unique in table"
+                    ) % {"unique_field_names": ', '.join(duplicates)}
                 else:
-                    msg = f"Câmpul {duplicates[0]} trebuie sa fie unic în tabel"
+                    msg = _(
+                        "The %(unique_field_name)s field must be unique in table"
+                    ) % {"unique_field_name": duplicates[0]}
                 raise serializers.ValidationError(msg)                
 
         for field, field_obj in fields.items():
             value = data.get(field, None)
             if field_obj.required:
                 if not value or value == "":
-                    raise serializers.ValidationError("Câmpul {} este obligatoriu".format(field))
+                    raise serializers.ValidationError(
+                        _("The %(field_name)s field is required") % {"field_name": field}
+                    )
             if field_obj.field_type == "enum":
                 if value and value not in field_obj.choices:
                     raise serializers.ValidationError(
-                        "Valorea câmpului {} trebuie sa fie una din : {}".format(
-                            field, ", ".join(field_obj.choices))
+                        _(
+                            "The %(field_name)s field value must be one of: %(field_choices)s"
+                        ) % {"field_names": field, "field_choices": ", ".join(field_obj.choices)}
                     )
             elif value and field_obj.field_type == "float":
                 data[field] = float(data[field])
