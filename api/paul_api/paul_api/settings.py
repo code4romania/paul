@@ -34,6 +34,7 @@ env = environ.Env(
     AWS_STORAGE_BUCKET_NAME=(str, ""),
     AWS_SUBDOMAIN=(str, "s3.amazonaws.com"),
     AWS_S3_REGION_NAME=(str, ""),
+    AWS_DEFAULT_ACL=(str, "public-read"),
     # azure settings
     USE_AZURE=(bool, False),
     AZURE_ACCOUNT_NAME=(str, ""),
@@ -245,7 +246,7 @@ if USE_S3:
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 
-    AWS_DEFAULT_ACL = None
+    AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL")
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{env("AWS_SUBDOMAIN")}'
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
