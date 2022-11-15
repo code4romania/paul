@@ -7,14 +7,12 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.core.mail import EmailMultiAlternatives
-# from django.db import connection, reset_queries
 from django.db.models import (Avg, CharField, Count, DateTimeField, FloatField,
                               Max, Min, Q, Sum)
 from django.db.models.functions import Cast, Trunc
 from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 
-# from api.views import FilterViewSet
 from . import models
 
 

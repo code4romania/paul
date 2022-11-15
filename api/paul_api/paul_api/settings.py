@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
-import logging
 import os
 import sys
 from pathlib import Path
@@ -312,7 +311,7 @@ DJOSER = {
     "SEND_CONFIRMATION_EMAIL": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
     "PERMISSIONS": {
-        "user_create": ["api.permissions.NoPermission"],
+        "user_create": ["api.permissions.NoPermission"],  # Basically disable user creation through Djoser
     }
 }
 
