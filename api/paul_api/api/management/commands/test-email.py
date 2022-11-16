@@ -1,18 +1,8 @@
-import random
-from faker import Faker
-
-from django.conf import settings
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from django.core.serializers.json import DjangoJSONEncoder
-from django.utils import timezone
-from django.utils.timezone import get_current_timezone, make_aware
+from django.utils.translation import ugettext_lazy as _
 
-from api import models, utils
-from django.utils.text import slugify
-from datetime import datetime, timedelta
-import json
-
+from api import utils
 
 
 class Command(BaseCommand):
