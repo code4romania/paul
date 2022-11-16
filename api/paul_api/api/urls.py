@@ -1,4 +1,5 @@
 from django.urls import include, path
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
 from rest_framework.authtoken import views as token_views
 from rest_framework.schemas import get_schema_view
@@ -26,8 +27,8 @@ urlpatterns = [
     path(
         "openapi",
         get_schema_view(
-            title="Paul OpenSchema",
-            description="API for Paul",
+            title=_("Paul OpenSchema"),
+            description=_("API for Paul"),
             version="0.0.1",
             url="http://dev.api.paul.ro:8000/"
             # urlconf='api.urls'

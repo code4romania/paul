@@ -21,7 +21,7 @@ def user_activated_callback(sender, **kwargs):
     user = kwargs['user']
     Userprofile.objects.get_or_create(user=user)
     request = kwargs['request']
-    user_group, _ = Group.objects.get_or_create(name="user")
+    user_group, created = Group.objects.get_or_create(name="user")
     user.groups.add(user_group)
     user.is_active = False
     user.save()
@@ -38,55 +38,59 @@ def user_activated_callback(sender, **kwargs):
 
 
 datatypes = (
-    ("text", "text"),
-    ("int", "int"),
-    ("float", "float"),
-    ("date", "date"),
-    # ("bool", "bool"),
-    # ("object", "object"),
-    ("enum", "enum"),
+    ("text", _("text")),
+    ("int", _("int")),
+    ("float", _("float")),
+    ("date", _("date")),
+    # ("bool", _("bool")),
+    # ("object", _("object")),
+    ("enum", _("enum")),
 )
 
 chart_functions = (
-    ("Count", "Count"),
-    ("Sum", "Sum"),
-    ("Min", "Min"),
-    ("Max", "Max"),
-    ("Avg", "Average"),
-    ('StdDev', "Standard Deviation"))
+    ("Count", _("Count")),
+    ("Sum", _("Sum")),
+    ("Min", _("Min")),
+    ("Max", _("Max")),
+    ("Avg", _("Average")),
+    ('StdDev', _("Standard Deviation")),
+)
 
 chart_types = (
-    ("Line", "Line"),
-    ("Bar", "Bar"),
-    ("Pie", "Pie"),
-    ("Doughnut", "Doughnut"))
+    ("Line", _("Line")),
+    ("Bar", _("Bar")),
+    ("Pie", _("Pie")),
+    ("Doughnut", _("Doughnut")),
+)
 
 chart_timeline_periods = (
-    ("minute", "Minute"),
-    ("hour", "Hour"),
-    ("day", "Day"),
-    ("week", "Week"),
-    ("month", "Month"),
-    ("year", "Year"))
+    ("minute", _("Minute")),
+    ("hour", _("Hour")),
+    ("day", _("Day")),
+    ("week", _("Week")),
+    ("month", _("Month")),
+    ("year", _("Year")),
+)
 
 
 class Userprofile(models.Model):
     """
     Description: Model Description
     """
-
     user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name="userprofile")
+        User, on_delete=models.CASCADE, related_name="userprofile",
+        verbose_name=_("user"))
 
-    dashboard_filters = models.ManyToManyField("Filter", blank=True)
-    dashboard_charts = models.ManyToManyField("Chart", blank=True)
-    cards = models.ManyToManyField("Card", through='UserCard', blank=True)
+    dashboard_filters = models.ManyToManyField(_("filter"), blank=True)
+    dashboard_charts = models.ManyToManyField(_("chart"), blank=True)
+    cards = models.ManyToManyField(_("card"), through='UserCard', blank=True)
 
-    token = models.UUIDField(default=uuid.uuid4)
-    avatar = models.ImageField(upload_to="avatars", null=True, blank=True)
+    token = models.UUIDField(_("token"), default=uuid.uuid4)
+    avatar = models.ImageField(_("avatar"), upload_to="avatars", null=True, blank=True)
     language = models.CharField(
+        _("language"),
         max_length=10, default="", blank=True, null=False,
-        help_text="Preferred language")
+        help_text=_("Preferred language"))
 
     def full_name(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
@@ -99,17 +103,18 @@ class UserCard(models.Model):
     """
     Description: Model Description
     """
-    profile = models.ForeignKey(Userprofile, on_delete=models.CASCADE, related_name="dashboard_cards")
-    card = models.ForeignKey('Card', on_delete=models.CASCADE)
+    profile = models.ForeignKey(
+        Userprofile, on_delete=models.CASCADE, related_name="dashboard_cards", verbose_name=_("profile"))
+    card = models.ForeignKey(_("card"), on_delete=models.CASCADE)
     order = models.IntegerField(
-        verbose_name='Order',
-        help_text='What order to display this card within the profile dashboard.',
+        _("order"),
+        help_text=_("What order to display this card within the profile dashboard."),
         default=1
     )
 
     class Meta:
-        verbose_name = "Profile Card"
-        verbose_name_plural = "Profile cards"
+        verbose_name = _("profile card")
+        verbose_name_plural = _("profile cards")
         ordering = ['order',]
 
     def __str__(self):
@@ -118,13 +123,13 @@ class UserCard(models.Model):
             self.card,
             self.order)
 
+
 class Database(models.Model):
     """
     Description: Model Description
     """
-
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=50, null=True, blank=True)
+    name = models.CharField(_("name"), max_length=100)
+    slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
 
     class Meta:
         pass
@@ -151,31 +156,34 @@ class Table(models.Model):
     """
     Description: Model Description
     """
-
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=50, null=True, blank=True)
+    name = models.CharField(_("name"), max_length=100)
+    slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
     database = models.ForeignKey(
-        "Database", on_delete=models.CASCADE, related_name="tables")
-    active = models.BooleanField(default=False)
+        _("database"), on_delete=models.CASCADE, related_name="tables")
+    active = models.BooleanField(_("active"), default=False)
 
-    date_created = models.DateTimeField(auto_now_add=timezone.now)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=timezone.now)
     default_fields = models.ManyToManyField(
-        'TableColumn', blank=True, related_name='default_field')
+        'TableColumn', blank=True, related_name='default_field',
+        verbose_name=_("default fields"))
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    last_edit_date = models.DateTimeField(null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("owner"))
+    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="last_table_edits",
+        verbose_name=_("last edit user")
     )
 
     filters = models.JSONField(
+        verbose_name=_("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
     class Meta:
+        # TODO: wtf?
         permissions = (
             ("view", "View"),
             ("change", "View"),

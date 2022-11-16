@@ -69,9 +69,7 @@ class EntrySerializer(serializers.ModelSerializer):
         unknown = set(self.initial_data) - set(self.fields) - set(table_fields.keys())
 
         if unknown:
-            errors["non_field_errors"] = _(
-                "Unknown fields: %(field_names)s"
-            ) % {"field_names" : ", ".join(unknown)}
+            errors["non_field_errors"] = _("Unknown fields: {field_names}").format(field_names=", ".join(unknown))
 
         for field_name, field_value in self.initial_data.items():
             if field_name in table_fields.keys():
@@ -97,8 +95,8 @@ class EntrySerializer(serializers.ModelSerializer):
                 elif field.field_type == "enum":
                     if field_value not in field.choices:
                         errors[field_name] = _(
-                            "%(field_value)s is not a valid choice (%(valid_choices)s)"
-                        ) % {"field_value": field_value, "valid_choices": ",".join(field.choices)}
+                            "{field_value} is not a valid choice ({valid_choices})"
+                        ).format(field_value=field_value, valid_choices=",".join(field.choices))
 
         if errors:
             raise serializers.ValidationError(errors)
@@ -128,12 +126,12 @@ class EntrySerializer(serializers.ModelSerializer):
             if Entry.objects.filter(table=table, data__contains=data_query).exclude(pk=entry_pk).exists():
                 if len(unique_fields) > 1:
                     msg = _(
-                        "The %(unique_field_names)s fields must be unique together"
-                    ) % {"unique_field_names": ', '.join(unique_fields)}
+                        "The {unique_field_names} fields must be unique together"
+                    ).format(unique_field_names=', '.join(unique_fields))
                 else:
                     msg = _(
-                        "The %(unique_field_name)s field must be unique in table"
-                    ) % {"unique_field_name": unique_fields[0]}
+                        "The {unique_field_name} field must be unique in table"
+                    ).format(unique_field_name=unique_fields[0])
                 raise serializers.ValidationError(msg)
         elif unique_fields:
             duplicates = []
@@ -143,12 +141,12 @@ class EntrySerializer(serializers.ModelSerializer):
             if duplicates:
                 if len(duplicates) > 1:
                     msg = _(
-                        "The %(unique_field_names)s fields must be unique in table"
-                    ) % {"unique_field_names": ', '.join(duplicates)}
+                        "The {unique_field_names} fields must be unique in table"
+                    ).format(unique_field_names=', '.join(duplicates))
                 else:
                     msg = _(
-                        "The %(unique_field_name)s field must be unique in table"
-                    ) % {"unique_field_name": duplicates[0]}
+                        "The {unique_field_name} field must be unique in table"
+                    ).format(unique_field_name=duplicates[0])
                 raise serializers.ValidationError(msg)                
 
         for field, field_obj in fields.items():
@@ -156,14 +154,14 @@ class EntrySerializer(serializers.ModelSerializer):
             if field_obj.required:
                 if not value or value == "":
                     raise serializers.ValidationError(
-                        _("The %(field_name)s field is required") % {"field_name": field}
+                        _("The {field_name} field is required").format(field_name=field)
                     )
             if field_obj.field_type == "enum":
                 if value and value not in field_obj.choices:
                     raise serializers.ValidationError(
                         _(
-                            "The %(field_name)s field value must be one of: %(field_choices)s"
-                        ) % {"field_names": field, "field_choices": ", ".join(field_obj.choices)}
+                            "The {field_name} field value must be one of: {field_choices}"
+                        ).format(field_names=field, field_choices=", ".join(field_obj.choices))
                     )
             elif value and field_obj.field_type == "float":
                 data[field] = float(data[field])

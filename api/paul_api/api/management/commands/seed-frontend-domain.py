@@ -11,4 +11,4 @@ class Command(BaseCommand):
         site.domain = settings.FRONTEND_DOMAIN
         site.name = settings.FRONTEND_DOMAIN
         site.save()
-        print(f"New frontend domain: {settings.FRONTEND_DOMAIN}")
+        print(_("New frontend domain: {domain}").format(domain=settings.FRONTEND_DOMAIN))

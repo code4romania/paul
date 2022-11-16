@@ -38,7 +38,7 @@ class CsvFieldMapInline(admin.TabularInline):
         "original_name", "display_name", "field_type", "field_format", "table_column")
     can_delete = True
     can_add = False
-    verbose_name_plural = "Csv File Fields Map"
+    verbose_name_plural = _("CSV File Fields Map")
     extra = 0
 
 
@@ -56,7 +56,7 @@ class TableColumnInline(admin.TabularInline):
     )
     can_delete = True
     can_add = False
-    verbose_name_plural = "Columns"
+    verbose_name_plural = _("Columns")
     extra = 0
 
 
@@ -165,7 +165,7 @@ class FilterJoinTableAdmin(admin.ModelAdmin):
 
     # can_delete = False
     # can_add = False
-    verbose_name_plural = "Join Tables"
+    verbose_name_plural = _("Join Tables")
     # extra = 0
 
     def table_fields(self, obj):

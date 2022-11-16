@@ -32,7 +32,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 username=username)
         except IntegrityError:
             raise serializers.ValidationError(
-                _("An account with the %s username already exists" % username))
+                _("An account with the {username} username already exists").format(username=username))
 
         models.Userprofile.objects.create(user=new_user)
         user_group, created = Group.objects.get_or_create(name="user")
@@ -99,7 +99,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             
             if duplicate_username:
                 raise serializers.ValidationError(
-                    _("An account with the %s username already exists" % username))
+                    _("An account with the {username} username already exists").format(username=username))
 
         instance.refresh_from_db()
 

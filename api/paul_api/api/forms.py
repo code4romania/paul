@@ -97,8 +97,8 @@ class BaseDynamicEntityForm(ModelForm):
         if self.errors:
             raise ValueError(
                 _(
-                    "The %(object_name)s could not be saved because the data didn't validate."
-                ) % {"object_name": self.instance._meta.object_name}
+                    "The {object_name} could not be saved because the data did not validate."
+                ).format(object_name=self.instance._meta.object_name)
             )
 
         # Create entity instance, don't save yet.

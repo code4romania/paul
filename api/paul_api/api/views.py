@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group, User
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils.translation import ugettext_lazy as _
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
 from openpyxl import Workbook
@@ -70,7 +71,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="Toggle user activation",
+        name=_("Toggle user activation"),
         url_path="toggle-activation"
     )
     def toggle_activation(self, request, pk):
@@ -247,7 +248,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        name="CSV manual import view",
+        name=_("CSV manual import view"),
         url_path="csv-manual-import",
     )
     def csv_manual_import(self, request, pk):
@@ -311,7 +312,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="CSV Export",
+        name=_("CSV Export"),
         url_path="csv-export",
     )
     def csv_export(self, request, pk):
@@ -347,7 +348,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="XLSX Export",
+        name=_("XLSX Export"),
         url_path="xlsx-export",
     )
     def xlsx_export(self, request, pk):
@@ -389,7 +390,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=["post"],
-        name="Create from FilterView",
+        name=_("Create from FilterView"),
         url_path="from-filter",
     )
     def create_from_filter(self, request):
@@ -1128,7 +1129,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="Csv errors Export",
+        name=_("CSV Errors Export"),
         url_path="export-errors",
     )
     def export_errors(self, request, pk):
