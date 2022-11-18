@@ -106,7 +106,7 @@ class UserCard(models.Model):
     """
     profile = models.ForeignKey(
         Userprofile, on_delete=models.CASCADE, related_name="dashboard_cards", verbose_name=_("profile"))
-    card = models.ForeignKey(_("card"), on_delete=models.CASCADE)
+    card = models.ForeignKey("Card", on_delete=models.CASCADE, verbose_name=_("card"))
     order = models.IntegerField(
         _("order"),
         help_text=_("What order to display this card within the profile dashboard."),
@@ -161,7 +161,7 @@ class Table(models.Model):
     name = models.CharField(_("name"), max_length=100)
     slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
     database = models.ForeignKey(
-        _("database"), on_delete=models.CASCADE, related_name="tables")
+        "Database", on_delete=models.CASCADE, related_name="tables", verbose_name=_("database"))
     active = models.BooleanField(_("active"), default=False)
 
     date_created = models.DateTimeField(_("date created"), auto_now_add=timezone.now)
