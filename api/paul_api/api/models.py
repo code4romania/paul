@@ -222,8 +222,7 @@ class TableColumn(models.Model):
     field_type = models.CharField(_("field type"), max_length=20, choices=datatypes)
     help_text = models.CharField(_("help text"), max_length=255, null=True, blank=True)
     choices = ArrayField(
-        _("choices"),
-        models.CharField(max_length=100), null=True, blank=True)
+        models.CharField(max_length=100), null=True, blank=True, verbose_name=_("choices"))
     required = models.BooleanField(_("required"), default=False)
     unique = models.BooleanField(_("unique"), default=False)
 
