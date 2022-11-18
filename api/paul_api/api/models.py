@@ -81,9 +81,9 @@ class Userprofile(models.Model):
         User, on_delete=models.CASCADE, related_name="userprofile",
         verbose_name=_("user"))
 
-    dashboard_filters = models.ManyToManyField(_("filter"), blank=True)
-    dashboard_charts = models.ManyToManyField(_("chart"), blank=True)
-    cards = models.ManyToManyField(_("card"), through='UserCard', blank=True)
+    dashboard_filters = models.ManyToManyField("Filter", blank=True, verbose_name=_("dashboard filters"))
+    dashboard_charts = models.ManyToManyField("Chart", blank=True, verbose_name=_("dasbhoard charts"))
+    cards = models.ManyToManyField("Card", through='UserCard', blank=True, verbose_name=_("cards"))
 
     token = models.UUIDField(_("token"), default=uuid.uuid4)
     avatar = models.ImageField(_("avatar"), upload_to="avatars", null=True, blank=True)
