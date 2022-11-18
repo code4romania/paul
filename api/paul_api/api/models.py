@@ -75,7 +75,7 @@ chart_timeline_periods = (
 
 class Userprofile(models.Model):
     """
-    Description: Model Description
+    Description: An user profile for storing extra user account options
     """
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name="userprofile",
@@ -96,7 +96,8 @@ class Userprofile(models.Model):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
     class Meta:
-        pass
+        verbose_name = _("user profile")
+        verbose_name_plural = _("user profiles")
 
 
 class UserCard(models.Model):
@@ -132,7 +133,8 @@ class Database(models.Model):
     slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
 
     class Meta:
-        pass
+        verbose_name = _("database")
+        verbose_name_plural = _("databases")
 
     def __str__(self):
         return self.name
@@ -190,6 +192,8 @@ class Table(models.Model):
             ("delete", "View"),
         )
         unique_together = ["name", "database"]
+        verbose_name = _("table")
+        verbose_name_plural = _("tables")
 
     def __str__(self):
         return self.name
@@ -210,20 +214,24 @@ class TableColumn(models.Model):
     """
 
     table = models.ForeignKey(
-        "Table", on_delete=models.CASCADE, related_name="fields")
-    name = models.CharField(max_length=50, null=True, blank=True)
-    display_name = models.CharField(max_length=50, null=True, blank=True)
-    slug = models.SlugField(max_length=50, null=True, blank=True)
-    field_type = models.CharField(max_length=20, choices=datatypes)
-    help_text = models.CharField(max_length=255, null=True, blank=True)
+        "Table", on_delete=models.CASCADE, related_name="fields",
+        verbose_name=_("table"))
+    name = models.CharField(_("name"), max_length=50, null=True, blank=True)
+    display_name = models.CharField(_("display name"), max_length=50, null=True, blank=True)
+    slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
+    field_type = models.CharField(_("field type"), max_length=20, choices=datatypes)
+    help_text = models.CharField(_("help text"), max_length=255, null=True, blank=True)
     choices = ArrayField(
+        _("choices"),
         models.CharField(max_length=100), null=True, blank=True)
-    required = models.BooleanField(default=False)
-    unique = models.BooleanField(default=False)
+    required = models.BooleanField(_("required"), default=False)
+    unique = models.BooleanField(_("unique"), default=False)
 
     class Meta:
         unique_together = ["table", "name"]
         ordering = ['table', 'pk']
+        verbose_name = _("table column")
+        verbose_name_plural = _("table columns")
 
     def __str__(self):
         return "[{}] {} ({})".format(self.table, self.name, self.field_type)
@@ -245,6 +253,7 @@ class CsvFieldMap(models.Model):
         related_name="csv_field_mapping",
         null=True,
         blank=True,
+        verbose_name=_("table"),
     )
     csv_import = models.ForeignKey(
         "CsvImport",
@@ -252,20 +261,24 @@ class CsvFieldMap(models.Model):
         related_name="csv_field_mapping",
         null=True,
         blank=True,
+        verbose_name=_("CSV import"),
     )
-    original_name = models.CharField(max_length=100)
-    display_name = models.CharField(max_length=100, null=True, blank=True)
+    original_name = models.CharField(_("original name"), max_length=100)
+    display_name = models.CharField(_("display name"), max_length=100, null=True, blank=True)
     field_type = models.CharField(
+        _("field type"),
         max_length=20, choices=datatypes, default=datatypes[0][0],
         null=True, blank=True)
-    field_format = models.CharField(max_length=20, null=True, blank=True)
-    required = models.BooleanField(default=False)
-    unique = models.BooleanField(default=False)
+    field_format = models.CharField(_("field format"), max_length=20, null=True, blank=True)
+    required = models.BooleanField(_("required"), default=False)
+    unique = models.BooleanField(_("unique"), default=False)
     table_column = models.ForeignKey(
-        'TableColumn', null=True, blank=True, on_delete=models.CASCADE)
+        'TableColumn', null=True, blank=True, on_delete=models.CASCADE,
+        verbose_name=_("table column"))
 
     class Meta:
-        pass
+        verbose_name = _("CSV field map")
+        verbose_name_plural = _("CSV field maps")
 
 
 class CsvImport(models.Model):
@@ -273,8 +286,9 @@ class CsvImport(models.Model):
     Description: Model Description
     """
 
-    file = models.FileField(upload_to="csvs/")
+    file = models.FileField(_("file"), upload_to="csvs/")
     delimiter = models.CharField(
+        _("delimiter"),
         max_length=2, default=";", null=True, blank=True)
     table = models.ForeignKey(
         "Table",
@@ -282,17 +296,19 @@ class CsvImport(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        verbose_name=_("table"),
     )
 
-    errors = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
-    errors_count = models.IntegerField(default=0, blank=False, null=False)
-    import_count_created = models.IntegerField(default=0)
-    import_count_updated = models.IntegerField(default=0)
-    import_count_skipped = models.IntegerField(default=0)
-    date_created = models.DateTimeField(auto_now_add=timezone.now)
+    errors = models.JSONField(_("errors"), encoder=DjangoJSONEncoder, null=True, blank=True)
+    errors_count = models.IntegerField(_("errors count"), default=0, blank=False, null=False)
+    import_count_created = models.IntegerField(_("import count created"), default=0)
+    import_count_updated = models.IntegerField(_("import count updated"), default=0)
+    import_count_skipped = models.IntegerField(_("import count skipped"), default=0)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=timezone.now)
 
     class Meta:
-        pass
+        verbose_name = _("CSV import")
+        verbose_name_plural = _("CSV imports")
 
     @staticmethod
     def delete_file(instance):
@@ -323,12 +339,14 @@ class Entry(models.Model):
     """
 
     table = models.ForeignKey(
-        "Table", on_delete=models.CASCADE, related_name="entries")
-    data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True)
-    date_created = models.DateTimeField(auto_now_add=timezone.now)
+        "Table", on_delete=models.CASCADE, related_name="entries",
+        verbose_name=_("table"))
+    data = models.JSONField(_("data"), encoder=DjangoJSONEncoder, null=True, blank=True)
+    date_created = models.DateTimeField(_("date created"), auto_now_add=timezone.now)
 
     class Meta:
-        verbose_name_plural = "Entries"
+        verbose_name = _("rentry")
+        verbose_name_plural = _("entries")
 
     def __str__(self):
         return self.table.name
@@ -346,11 +364,11 @@ class FilterJoinTable(models.Model):
     # filter = models.ForeignKey(
     #     "Filter", on_delete=models.CASCADE, related_name="filter_join_tables"
     # )
-    table = models.ForeignKey(Table, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE, verbose_name=_("table"))
     fields = models.ManyToManyField(
-        TableColumn, related_name="filter_join_table_fields")
+        TableColumn, related_name="filter_join_table_fields", verbose_name=_("fields"))
     join_field = models.ForeignKey(
-        TableColumn, on_delete=models.CASCADE, null=True, blank=True)
+        TableColumn, on_delete=models.CASCADE, null=True, blank=True, verbose_name=_("join field"))
 
     class Meta:
         pass
@@ -368,25 +386,30 @@ class Filter(models.Model):
     Description: Model Description
     """
 
-    name = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=50, null=True, blank=True)
+    name = models.CharField(_("name"), max_length=50, unique=True)
+    slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
     primary_table = models.ForeignKey(
-        FilterJoinTable, null=True, on_delete=models.CASCADE)
+        FilterJoinTable, null=True, on_delete=models.CASCADE,
+        verbose_name="primary table")
     join_tables = models.ManyToManyField(
-        FilterJoinTable, related_name="filter_join_table")
+        FilterJoinTable, related_name="filter_join_table", verbose_name=_("join tables"))
     filters = models.JSONField(
+        _("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
-    creation_date = models.DateTimeField(auto_now_add=timezone.now, null=True)
+    creation_date = models.DateTimeField(_("creation date"), auto_now_add=timezone.now, null=True)
     default_fields = models.ManyToManyField(
-        TableColumn, related_name="filter_default_field", blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    last_edit_date = models.DateTimeField(null=True, blank=True)
+        TableColumn, related_name="filter_default_field", blank=True,
+        verbose_name=_("default fields"))
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True,
+        verbose_name=_("owner"))
+    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="last_filter_edits",
+        verbose_name=_("last edit user"),
     )
 
     class Meta:
@@ -406,45 +429,54 @@ class Chart(models.Model):
     Description: Model for representing a table chart
     """
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(_("name"), max_length=100, unique=True)
     chart_type = models.CharField(
+        _("chart type"),
         max_length=20, default=chart_types[0][0], choices=chart_types)
-    table = models.ForeignKey(Table, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE, verbose_name=_("table"))
     timeline_field = models.ForeignKey(
         TableColumn, null=True, blank=True, on_delete=models.SET_NULL,
-        related_name="charts_timeline_fields"
+        related_name="charts_timeline_fields",
+        verbose_name=_("timeline field"),
     )
     timeline_period = models.CharField(
+        _("timeline period"),
         max_length=20, null=True, blank=True,
         choices=chart_timeline_periods, default=chart_timeline_periods[0][0])
-    timeline_include_nulls = models.BooleanField(default=False)
+    timeline_include_nulls = models.BooleanField(_("timeline include nulls"), default=False)
     x_axis_field = models.ForeignKey(
         TableColumn, null=True, blank=True,
-        on_delete=models.SET_NULL, related_name="charts_x_axis_fields"
+        on_delete=models.SET_NULL, related_name="charts_x_axis_fields",
+        verbose_name=_("x axis field"),
     )
     x_axis_field_2 = models.ForeignKey(
         TableColumn, null=True, blank=True,
-        on_delete=models.SET_NULL, related_name="charts_x_axis_fields_group"
+        on_delete=models.SET_NULL, related_name="charts_x_axis_fields_group",
+        verbose_name=_("x axis field 2"),
     )
     y_axis_field = models.ForeignKey(
         TableColumn, null=True, blank=True,
-        on_delete=models.SET_NULL, related_name="charts_y_axis_fields"
+        on_delete=models.SET_NULL, related_name="charts_y_axis_fields",
+        verbose_name=_("y axis field"),
     )
     y_axis_function = models.CharField(
+        _("y axis function"),
         max_length=10, default=chart_functions[0][0], choices=chart_functions)
 
     filters = models.JSONField(
+        _("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
-    creation_date = models.DateTimeField(auto_now_add=timezone.now, null=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    last_edit_date = models.DateTimeField(null=True, blank=True)
+    creation_date = models.DateTimeField(_("creation date"), auto_now_add=timezone.now, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name=_("owner"))
+    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="last_chart_edits",
+        verbose_name=_("last edit user"),
     )
 
     def __str__(self):
@@ -459,29 +491,33 @@ class Card(models.Model):
     Description: Model for representing a table chart
     """
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(_("name"), max_length=100, unique=True)
 
-    table = models.ForeignKey(Table, on_delete=models.CASCADE)
+    table = models.ForeignKey(Table, on_delete=models.CASCADE, verbose_name=_("table"),)
     data_column_function = models.CharField(
+        _("data column function"),
         max_length=10, default=chart_functions[0][0], choices=chart_functions)
 
     data_column = models.ForeignKey(
         TableColumn, null=True, blank=True, on_delete=models.SET_NULL,
-        related_name="cards_column_fields"
+        related_name="cards_column_fields",
+        verbose_name=_("data column"),
     )
 
     filters = models.JSONField(
+        _("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
-    creation_date = models.DateTimeField(auto_now_add=timezone.now, null=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    last_edit_date = models.DateTimeField(null=True, blank=True)
+    creation_date = models.DateTimeField(_("creation date"), auto_now_add=timezone.now, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name=_("owner"))
+    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         related_name="last_card_edits",
+        verbose_name=_("last edit user"),
     )
 
     def __str__(self):
@@ -495,17 +531,19 @@ class PluginTaskResult(models.Model):
     """
     Description: Model Description
     """
-    name = models.CharField(max_length=255, null=True, blank=True)
-    status = models.CharField(max_length=20, default='In progress')
+    name = models.CharField(_("name"), max_length=255, null=True, blank=True)
+    status = models.CharField(_("status"), max_length=20, default='In progress')
 
-    date_start = models.DateTimeField(auto_now_add=timezone.now)
-    date_end = models.DateTimeField(null=True, blank=True)
-    duration = models.DurationField(null=True, blank=True)
+    date_start = models.DateTimeField(_("date start"), auto_now_add=timezone.now)
+    date_end = models.DateTimeField(_("date end"), null=True, blank=True)
+    duration = models.DurationField(_("duration"), null=True, blank=True)
     user = models.ForeignKey(
         User, null=True, on_delete=models.SET_NULL,
-        related_name="%(app_label)s_%(class)s_tasks")
-    success = models.BooleanField(default=False)
+        related_name="%(app_label)s_%(class)s_tasks",
+        verbose_name=_("user"))
+    success = models.BooleanField(_("success"), default=False)
     stats = models.JSONField(
+        _("stats"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
     class Meta:
