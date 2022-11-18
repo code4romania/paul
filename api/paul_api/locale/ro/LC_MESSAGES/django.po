@@ -25,28 +25,26 @@ msgstr ""
 
 #: paul_api/api/admin.py:59
 msgid "Columns"
-msgstr ""
+msgstr "Coloane"
 
 #: paul_api/api/admin.py:168
 msgid "Join Tables"
 msgstr ""
 
 #: paul_api/api/forms.py:100
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "The %(object_name)s could not be saved because the data didn't validate."
+#, python-brace-format
 msgid "The {object_name} could not be saved because the data did not validate."
-msgstr "%s nu a putut fi salvat deoarece datele nu au fost validate."
+msgstr "{object_name} nu a putut fi salvat deoarece datele nu au fost validate."
 
 #: paul_api/api/management/commands/seed-frontend-domain.py:14
 #, python-brace-format
 msgid "New frontend domain: {domain}"
-msgstr ""
+msgstr "Nou domeniu: {domain}"
 
 #: paul_api/api/middlewares.py:24
 #, python-brace-format
 msgid "Page render: {sqltime:.2f} sec for {num} queries"
-msgstr ""
+msgstr "Generare pagină: {sqltime:.2f} secunde pentru {num} interogări"
 
 #: paul_api/api/models.py:36
 msgid "[PAUL] New user registered"
@@ -54,47 +52,47 @@ msgstr "[PAUL] Utilizator nou înregistrat"
 
 #: paul_api/api/models.py:41
 msgid "text"
-msgstr ""
+msgstr "text"
 
 #: paul_api/api/models.py:42
 msgid "int"
-msgstr ""
+msgstr "număr întreg"
 
 #: paul_api/api/models.py:43
 msgid "float"
-msgstr ""
+msgstr "număr cu zecimale"
 
 #: paul_api/api/models.py:44
 msgid "date"
-msgstr ""
+msgstr "dată"
 
 #: paul_api/api/models.py:47
 msgid "enum"
-msgstr ""
+msgstr "enumerare"
 
 #: paul_api/api/models.py:51
 msgid "Count"
-msgstr ""
+msgstr "Numără"
 
 #: paul_api/api/models.py:52
 msgid "Sum"
-msgstr ""
+msgstr "Sumă"
 
 #: paul_api/api/models.py:53
 msgid "Min"
-msgstr ""
+msgstr "Minim"
 
 #: paul_api/api/models.py:54
 msgid "Max"
-msgstr ""
+msgstr "Maxim"
 
 #: paul_api/api/models.py:55
 msgid "Average"
-msgstr ""
+msgstr "Medie"
 
 #: paul_api/api/models.py:56
 msgid "Standard Deviation"
-msgstr ""
+msgstr "Deviație standard"
 
 #: paul_api/api/models.py:60
 msgid "Line"
@@ -114,39 +112,39 @@ msgstr ""
 
 #: paul_api/api/models.py:67
 msgid "Minute"
-msgstr ""
+msgstr "Minut"
 
 #: paul_api/api/models.py:68
 msgid "Hour"
-msgstr ""
+msgstr "Oră"
 
 #: paul_api/api/models.py:69
 msgid "Day"
-msgstr ""
+msgstr "Zi"
 
 #: paul_api/api/models.py:70
 msgid "Week"
-msgstr ""
+msgstr "Săptămână"
 
 #: paul_api/api/models.py:71
 msgid "Month"
-msgstr ""
+msgstr "Lună"
 
 #: paul_api/api/models.py:72
 msgid "Year"
-msgstr ""
+msgstr "An"
 
 #: paul_api/api/models.py:82 paul_api/api/models.py:542
 msgid "user"
-msgstr ""
+msgstr "utilizator"
 
 #: paul_api/api/models.py:84
 msgid "dashboard filters"
-msgstr ""
+msgstr "filtre panou"
 
 #: paul_api/api/models.py:85
 msgid "dasbhoard charts"
-msgstr ""
+msgstr "grafuri panou"
 
 #: paul_api/api/models.py:86
 msgid "cards"
@@ -158,27 +156,27 @@ msgstr ""
 
 #: paul_api/api/models.py:89
 msgid "avatar"
-msgstr ""
+msgstr "avatar"
 
 #: paul_api/api/models.py:91
 msgid "language"
-msgstr ""
+msgstr "limbă"
 
 #: paul_api/api/models.py:93
 msgid "Preferred language"
-msgstr ""
+msgstr "Limbă preferată"
 
 #: paul_api/api/models.py:99
 msgid "user profile"
-msgstr ""
+msgstr "profil utilizator"
 
 #: paul_api/api/models.py:100
 msgid "user profiles"
-msgstr ""
+msgstr "profiluri utilizatori"
 
 #: paul_api/api/models.py:108
 msgid "profile"
-msgstr ""
+msgstr "profil"
 
 #: paul_api/api/models.py:109
 msgid "card"
@@ -186,7 +184,7 @@ msgstr ""
 
 #: paul_api/api/models.py:111
 msgid "order"
-msgstr ""
+msgstr "ordine"
 
 #: paul_api/api/models.py:112
 msgid "What order to display this card within the profile dashboard."
@@ -205,7 +203,7 @@ msgstr ""
 #: paul_api/api/models.py:431 paul_api/api/models.py:493
 #: paul_api/api/models.py:533
 msgid "name"
-msgstr ""
+msgstr "nume"
 
 #: paul_api/api/models.py:133 paul_api/api/models.py:162
 #: paul_api/api/models.py:221 paul_api/api/models.py:389
@@ -214,238 +212,237 @@ msgstr ""
 
 #: paul_api/api/models.py:136 paul_api/api/models.py:164
 msgid "database"
-msgstr ""
+msgstr "bază de date"
 
 #: paul_api/api/models.py:137
 msgid "databases"
-msgstr ""
+msgstr "baze de date"
 
 #: paul_api/api/models.py:165
 msgid "active"
-msgstr ""
+msgstr "activ"
 
 #: paul_api/api/models.py:167 paul_api/api/models.py:306
 #: paul_api/api/models.py:344
 msgid "date created"
-msgstr ""
+msgstr "dată creare"
 
 #: paul_api/api/models.py:170 paul_api/api/models.py:401
 msgid "default fields"
-msgstr ""
+msgstr "câmpuri implicite"
 
 #: paul_api/api/models.py:172 paul_api/api/models.py:403
 #: paul_api/api/models.py:470 paul_api/api/models.py:511
 msgid "owner"
-msgstr ""
+msgstr "proprietar"
 
 #: paul_api/api/models.py:173 paul_api/api/models.py:404
 #: paul_api/api/models.py:471 paul_api/api/models.py:512
 msgid "last edit date"
-msgstr ""
+msgstr "dată ultima editare"
 
 #: paul_api/api/models.py:180 paul_api/api/models.py:411
 #: paul_api/api/models.py:478 paul_api/api/models.py:519
 msgid "last edit user"
-msgstr ""
+msgstr "utilizator ultima editare"
 
 #: paul_api/api/models.py:184 paul_api/api/models.py:396
 #: paul_api/api/models.py:466 paul_api/api/models.py:507
 msgid "filters"
-msgstr ""
+msgstr "filtre"
 
 #: paul_api/api/models.py:195 paul_api/api/models.py:218
 #: paul_api/api/models.py:255 paul_api/api/models.py:298
 #: paul_api/api/models.py:342 paul_api/api/models.py:366
 #: paul_api/api/models.py:435 paul_api/api/models.py:495
 msgid "table"
-msgstr ""
+msgstr "tabel"
 
 #: paul_api/api/models.py:196
 msgid "tables"
-msgstr ""
+msgstr "tabele"
 
 #: paul_api/api/models.py:220 paul_api/api/models.py:266
 msgid "display name"
-msgstr ""
+msgstr "nume afișare"
 
 #: paul_api/api/models.py:222 paul_api/api/models.py:268
 msgid "field type"
-msgstr ""
+msgstr "tip câmp"
 
 #: paul_api/api/models.py:223
 msgid "help text"
-msgstr ""
+msgstr "text ajutor"
 
 #: paul_api/api/models.py:225
 msgid "choices"
-msgstr ""
+msgstr "variante"
 
 #: paul_api/api/models.py:226 paul_api/api/models.py:272
 msgid "required"
-msgstr ""
+msgstr "necesar"
 
 #: paul_api/api/models.py:227 paul_api/api/models.py:273
 msgid "unique"
-msgstr ""
+msgstr "unic"
 
 #: paul_api/api/models.py:232 paul_api/api/models.py:276
 msgid "table column"
-msgstr ""
+msgstr "coloana tabel"
 
 #: paul_api/api/models.py:233
 msgid "table columns"
-msgstr ""
+msgstr "coloane tabel"
 
 #: paul_api/api/models.py:263 paul_api/api/models.py:309
 msgid "CSV import"
-msgstr ""
+msgstr "import CSV"
 
 #: paul_api/api/models.py:265
 msgid "original name"
-msgstr ""
+msgstr "nume original"
 
 #: paul_api/api/models.py:271
 msgid "field format"
-msgstr ""
+msgstr "format câmp"
 
 #: paul_api/api/models.py:279
 msgid "CSV field map"
-msgstr ""
+msgstr "Hartă câmpuri CSV"
 
 #: paul_api/api/models.py:280
 msgid "CSV field maps"
-msgstr ""
+msgstr "Hărți câmpuri CSV"
 
 #: paul_api/api/models.py:288
 msgid "file"
-msgstr ""
+msgstr "fișier"
 
 #: paul_api/api/models.py:290
 msgid "delimiter"
-msgstr ""
+msgstr "delimitator"
 
 #: paul_api/api/models.py:301
 msgid "errors"
-msgstr ""
+msgstr "erori"
 
 #: paul_api/api/models.py:302
 msgid "errors count"
-msgstr ""
+msgstr "număr erori"
 
 #: paul_api/api/models.py:303
 msgid "import count created"
-msgstr ""
+msgstr "număr creări la import"
 
 #: paul_api/api/models.py:304
 msgid "import count updated"
-msgstr ""
+msgstr "număr actualizări la import"
 
 #: paul_api/api/models.py:305
 msgid "import count skipped"
-msgstr ""
+msgstr "număr sărite la import"
 
 #: paul_api/api/models.py:310
 msgid "CSV imports"
-msgstr ""
+msgstr "Importuri CSV"
 
 #: paul_api/api/models.py:343
 msgid "data"
-msgstr ""
+msgstr "date"
 
 #: paul_api/api/models.py:347
 msgid "entry"
-msgstr ""
+msgstr "intrare"
 
 #: paul_api/api/models.py:348
 msgid "entries"
-msgstr ""
+msgstr "intrări"
 
 #: paul_api/api/models.py:368
 msgid "fields"
-msgstr ""
+msgstr "câmpuri"
 
 #: paul_api/api/models.py:370
 msgid "join field"
-msgstr ""
+msgstr "câmp join"
 
 #: paul_api/api/models.py:394
 msgid "join tables"
-msgstr ""
+msgstr "tabele join"
 
 #: paul_api/api/models.py:398 paul_api/api/models.py:469
 #: paul_api/api/models.py:510
 msgid "creation date"
-msgstr ""
+msgstr "dată creare"
 
 #: paul_api/api/models.py:433
 msgid "chart type"
-msgstr ""
+msgstr "tip diagramă"
 
 #: paul_api/api/models.py:439
 msgid "timeline field"
-msgstr ""
+msgstr "câmp cronologie"
 
 #: paul_api/api/models.py:442
 msgid "timeline period"
-msgstr ""
+msgstr "perioadă cronologie"
 
 #: paul_api/api/models.py:445
 msgid "timeline include nulls"
-msgstr ""
+msgstr "cronologia include nul"
 
 #: paul_api/api/models.py:449
 msgid "x axis field"
-msgstr ""
+msgstr "câmp axa x"
 
 #: paul_api/api/models.py:454
 msgid "x axis field 2"
-msgstr ""
+msgstr "al doilea câmp axa x"
 
 #: paul_api/api/models.py:459
 msgid "y axis field"
-msgstr ""
+msgstr "câmp axa y"
 
 #: paul_api/api/models.py:462
 msgid "y axis function"
-msgstr ""
+msgstr "funcție axa y"
 
 #: paul_api/api/models.py:497
 msgid "data column function"
-msgstr ""
+msgstr "funcție coloană date"
 
 #: paul_api/api/models.py:503
 msgid "data column"
-msgstr ""
+msgstr "coloană date"
 
 #: paul_api/api/models.py:534
 msgid "status"
-msgstr ""
+msgstr "stare"
 
 #: paul_api/api/models.py:536
 msgid "date start"
-msgstr ""
+msgstr "dată început"
 
 #: paul_api/api/models.py:537
 msgid "date end"
-msgstr ""
+msgstr "dată sfârșit"
 
 #: paul_api/api/models.py:538
 msgid "duration"
-msgstr ""
+msgstr "durată"
 
 #: paul_api/api/models.py:543
 msgid "success"
-msgstr ""
+msgstr "succes"
 
 #: paul_api/api/models.py:545
 msgid "stats"
-msgstr ""
+msgstr "statistici"
 
 #: paul_api/api/serializers/entries.py:72
-#, fuzzy, python-brace-format
-#| msgid "Unknown fields: %(field_names)s"
+#, python-brace-format
 msgid "Unknown fields: {field_names}"
-msgstr "Câmpuri necunoscute: %(field_names)s"
+msgstr "Câmpuri necunoscute: {field_names}"
 
 #: paul_api/api/serializers/entries.py:82
 msgid "Integer is not valid"
@@ -460,42 +457,36 @@ msgid "Invalid date format"
 msgstr "Format dată invalid"
 
 #: paul_api/api/serializers/entries.py:98
-#, fuzzy, python-brace-format
-#| msgid "%(field_value)s is not a valid choice (%(valid_choices)s)"
+#, python-brace-format
 msgid "{field_value} is not a valid choice ({valid_choices})"
-msgstr "%(field_value)s nu este o opțiune validă (%(valid_choices)s)"
+msgstr "{field_value} nu este o alegere validă ({valid_choices})"
 
 #: paul_api/api/serializers/entries.py:129
-#, fuzzy, python-brace-format
-#| msgid "The %(unique_field_names)s fields must be unique together"
+#, python-brace-format
 msgid "The {unique_field_names} fields must be unique together"
-msgstr "Câmpurile %(unique_field_names)s trebuie să fie unice împreună"
+msgstr "Câmpurile {unique_field_names} trebuie să fie unice împreună"
 
 #: paul_api/api/serializers/entries.py:133
 #: paul_api/api/serializers/entries.py:148
-#, fuzzy, python-brace-format
-#| msgid "The %(unique_field_name)s field must be unique in table"
+#, python-brace-format
 msgid "The {unique_field_name} field must be unique in table"
-msgstr "Câmpul %(unique_field_name)s trebuie să fie unic în tabel"
+msgstr "Câmpul {unique_field_name} trebuie să fie unic în tabel"
 
 #: paul_api/api/serializers/entries.py:144
-#, fuzzy, python-brace-format
-#| msgid "The %(unique_field_names)s fields must be unique in table"
+#, python-brace-format
 msgid "The {unique_field_names} fields must be unique in table"
-msgstr "Câmpurile %(unique_field_names)s trebuie să fie unice în tabel"
+msgstr "Câmpurile {unique_field_names} trebuie să fie unice în tabel"
 
 #: paul_api/api/serializers/entries.py:157
-#, fuzzy, python-brace-format
-#| msgid "The %(field_name)s field is required"
+#, python-brace-format
 msgid "The {field_name} field is required"
-msgstr "Câmpul %(field_name)s este obligatoriu"
+msgstr "Câmpul {field_name} este obligatoriu"
 
 #: paul_api/api/serializers/entries.py:163
-#, fuzzy, python-brace-format
-#| msgid "The %(field_name)s field value must be one of: %(field_choices)s"
+#, python-brace-format
 msgid "The {field_name} field value must be one of: {field_choices}"
 msgstr ""
-"Valoarea câmpului %(field_name)s trebuie să fie una dintre: %(field_choices)s"
+"Valoarea câmpului {field_name} trebuie să fie una dintre: {field_choices}"
 
 #: paul_api/api/serializers/tables.py:68
 msgid "This table name is already being used."
@@ -509,7 +500,7 @@ msgstr ""
 #: paul_api/api/serializers/users.py:35 paul_api/api/serializers/users.py:102
 #, python-brace-format
 msgid "An account with the {username} username already exists"
-msgstr ""
+msgstr "Un cont cu numele de utilizator {username} există deja"
 
 #: paul_api/api/serializers/users.py:117 paul_api/api/serializers/users.py:154
 msgid "Edit"
@@ -545,12 +536,12 @@ msgstr "O zi bună!"
 #: paul_api/api/templates/email/password_reset.html:5
 #, python-format
 msgid "Set your password on %(site_name)s"
-msgstr ""
+msgstr "Setează-ți parola la %(site_name)s"
 
 #: paul_api/api/templates/email/password_reset.html:5
 #, python-format
 msgid "Password reset on %(site_name)s"
-msgstr ""
+msgstr "Parolă resetată la %(site_name)s"
 
 #: paul_api/api/templates/email/password_reset.html:11
 #: paul_api/api/templates/email/password_reset.html:26
@@ -559,6 +550,8 @@ msgid ""
 "You're receiving this email because you have a new user account at "
 "%(site_name)s."
 msgstr ""
+"Primiți acest email deoarece aveți un nou cont de utilizator la "
+"%(site_name)s."
 
 #: paul_api/api/templates/email/password_reset.html:13
 #: paul_api/api/templates/email/password_reset.html:28
@@ -567,30 +560,32 @@ msgid ""
 "You're receiving this email because you requested a password reset for your "
 "user account at %(site_name)s."
 msgstr ""
+"Primiți acest email deoarece ați solicitat resetarea parolei pentru contul "
+"de utilizator la "%(site_name)s."
 
 #: paul_api/api/templates/email/password_reset.html:16
 #: paul_api/api/templates/email/password_reset.html:31
 msgid "Please go to the following page and choose a new password:"
-msgstr ""
+msgstr "Mergeți la următoarea pagină și alegeți o nouă parolă"
 
 #: paul_api/api/templates/email/password_reset.html:18
 #: paul_api/api/templates/email/password_reset.html:33
 msgid "Your username, in case you've forgotten:"
-msgstr ""
+msgstr "Numele de utilizator, în caz că l-ați uitat:"
 
 #: paul_api/api/templates/email/password_reset.html:20
 #: paul_api/api/templates/email/password_reset.html:35
 #, python-format
 msgid "The %(site_name)s team"
-msgstr ""
+msgstr "Echipa %(site_name)s"
 
 #: paul_api/api/urls.py:30
 msgid "Paul OpenSchema"
-msgstr ""
+msgstr "OpenSchema Paul"
 
 #: paul_api/api/urls.py:31
 msgid "API for Paul"
-msgstr ""
+msgstr "API pentru Paul"
 
 #: paul_api/api/utils.py:119
 msgid "This field is required"
@@ -630,7 +625,7 @@ msgstr "Modelul nu a fost încă salvat"
 
 #: paul_api/api/views.py:74
 msgid "Toggle user activation"
-msgstr ""
+msgstr "Comută activare utilizator"
 
 #: paul_api/api/views.py:251
 msgid "CSV manual import view"
@@ -638,11 +633,11 @@ msgstr ""
 
 #: paul_api/api/views.py:315
 msgid "CSV Export"
-msgstr ""
+msgstr "Exportă CSV"
 
 #: paul_api/api/views.py:351
 msgid "XLSX Export"
-msgstr ""
+msgstr "Exportă XLSX"
 
 #: paul_api/api/views.py:393
 msgid "Create from FilterView"
