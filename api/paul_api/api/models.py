@@ -344,7 +344,7 @@ class Entry(models.Model):
     date_created = models.DateTimeField(_("date created"), auto_now_add=timezone.now)
 
     class Meta:
-        verbose_name = _("rentry")
+        verbose_name = _("entry")
         verbose_name_plural = _("entries")
 
     def __str__(self):
