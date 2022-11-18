@@ -561,7 +561,7 @@ msgid ""
 "user account at %(site_name)s."
 msgstr ""
 "Primiți acest email deoarece ați solicitat resetarea parolei pentru contul "
-"de utilizator la "%(site_name)s."
+"de utilizator la %(site_name)s."
 
 #: paul_api/api/templates/email/password_reset.html:16
 #: paul_api/api/templates/email/password_reset.html:31
