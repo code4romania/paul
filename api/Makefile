@@ -73,14 +73,17 @@ black:                            ## run the Black formatter on the Python code
 	black --line-length 120 --target-version py39 --exclude migrations ./paul_api
 
 ## [TEST]
-test:                             ## run all tests
-	docker-compose run --rm paul "pytest"
+test:
+	docker-compose run --rm paul ./paul_api/manage.py test
 
-test-pdb:                         ## run tests and enter debugger on failed assert or error
-	docker-compose run --rm paul "pytest --pdb"
-
-test-lf:                          ## rerun tests that failed last time
-	docker-compose run --rm paul "pytest --lf"
+#test:                             ## run all tests
+#	docker-compose run --rm paul "pytest"
+#
+#test-pdb:                         ## run tests and enter debugger on failed assert or error
+#	docker-compose run --rm paul "pytest --pdb"
+#
+#test-lf:                          ## rerun tests that failed last time
+#	docker-compose run --rm paul "pytest --lf"
 
 ## [CLEAN]
 clean: clean-docker clean-py      ## remove all build, test, coverage and Python artifacts
