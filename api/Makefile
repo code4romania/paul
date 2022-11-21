@@ -74,7 +74,7 @@ black:                            ## run the Black formatter on the Python code
 
 ## [TEST]
 test:
-	docker-compose run --rm paul ./paul_api/manage.py test
+	docker-compose run --rm --entrypoint="./paul_api/manage.py test ./paul_api/api/" paul
 
 #test:                             ## run all tests
 #	docker-compose run --rm paul "pytest"
