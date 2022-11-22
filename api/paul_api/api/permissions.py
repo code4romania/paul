@@ -33,3 +33,11 @@ class IsAuthenticatedOrGetToken(permissions.BasePermission):
             return True
 
         return False
+
+
+class NoPermission(permissions.BasePermission):
+    """
+    Deny everybody
+    """
+    def has_permission(self, request, view):
+        return False

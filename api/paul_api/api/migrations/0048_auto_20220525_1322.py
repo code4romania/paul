@@ -6,9 +6,14 @@ from api.models import Userprofile
 
 
 def forwards_func(apps, schema_editor):
+    # Do nothing! 
+    # Creating a profile here would break when future migrations change
+    # the user profile fields.
+    
+    pass
 
-    for user in User.objects.all():
-        Userprofile.objects.get_or_create(user=user)
+    # for user in User.objects.all():
+    #     Userprofile.objects.get_or_create(user=user)
 
 
 class Migration(migrations.Migration):

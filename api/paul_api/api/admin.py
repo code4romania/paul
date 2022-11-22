@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from api import forms, models
 
 
 class UserprofileAdmin(admin.TabularInline):
     model = models.Userprofile
-    fields = ("avatar", "token", "dashboard_filters")
+    fields = ("avatar", "language", "token", "dashboard_filters")
     readonly_field = ("token",)
     can_delete = False
     can_add = False
@@ -37,7 +38,7 @@ class CsvFieldMapInline(admin.TabularInline):
         "original_name", "display_name", "field_type", "field_format", "table_column")
     can_delete = True
     can_add = False
-    verbose_name_plural = "Csv File Fields Map"
+    verbose_name_plural = _("CSV File Fields Map")
     extra = 0
 
 
@@ -55,7 +56,7 @@ class TableColumnInline(admin.TabularInline):
     )
     can_delete = True
     can_add = False
-    verbose_name_plural = "Columns"
+    verbose_name_plural = _("Columns")
     extra = 0
 
 
@@ -164,7 +165,7 @@ class FilterJoinTableAdmin(admin.ModelAdmin):
 
     # can_delete = False
     # can_add = False
-    verbose_name_plural = "Join Tables"
+    verbose_name_plural = _("Join Tables")
     # extra = 0
 
     def table_fields(self, obj):
@@ -190,8 +191,6 @@ class FilterAdmin(admin.ModelAdmin):
         return ", ".join(obj.primary_table_fields.values_list("name", flat=True))
 
     def get_join_tables(self, obj):
-        # print(obj.join_tables)
-        # return ', '.join([x for x in obj.join_tables])
         tables = {}
 
         for table in obj.join_tables.all():

@@ -11,14 +11,15 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
 import environ
-from django.utils.translation import gettext_lazy as _
-
 import sentry_sdk
+from django.utils.translation import gettext_lazy as _
 from sentry_sdk.integrations.django import DjangoIntegration
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -219,7 +220,6 @@ LANGUAGES = [
     ("en", _("English")),
 ]
 
-MODELTRANSLATION_DEFAULT_LANGUAGE = "en"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
@@ -309,6 +309,9 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "account/reset-password/{uid}/{token}",
     "SEND_CONFIRMATION_EMAIL": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+    "PERMISSIONS": {
+        "user_create": ["api.permissions.NoPermission"],  # Basically disable user creation through Djoser
+    }
 }
 
 DEFAULT_FROM_EMAIL = env("NO_REPLY_EMAIL")
@@ -532,3 +535,29 @@ JAZZMIN_UI_TWEAKS = {
     },
 }
 LOGIN_URL='/api/admin/login/'
+
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'formatters': {
+       'verbose': {
+           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       },
+   },
+   'handlers': {
+       'console': {
+           'level': 'DEBUG',
+           'class': 'logging.StreamHandler',
+           'stream': sys.stdout,
+           'formatter': 'verbose'
+       },
+   },
+   'loggers': {
+       '': {
+           'handlers': ['console'],
+           'level': 'WARNING',
+           'propagate': True,
+       },
+   },
+}

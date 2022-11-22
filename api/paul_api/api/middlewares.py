@@ -1,4 +1,5 @@
 from django.db import connection
+from django.utils.translation import ugettext_lazy as _
 
 
 class SqlPrintMiddleware:
@@ -20,6 +21,7 @@ class SqlPrintMiddleware:
             sqltime += float(query["time"])
 
         # len(connection.queries) = total number of queries
-        print("Page render: {:.2f} sec for {} queries".format(sqltime, len(connection.queries)))
+        print(_("Page render: {sqltime:.2f} sec for {num} queries").format(
+            sqltime=sqltime, num=len(connection.queries)))
 
         return response

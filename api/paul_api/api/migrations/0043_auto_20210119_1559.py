@@ -8,15 +8,15 @@ def forwards_func(apps, schema_editor):
     Table = apps.get_model("api", "Table")
     for table in Table.objects.all():
         date_fields = []
-        print('---', table)
+        # print('---', table)
 
         for field in table.fields.filter(field_type="date"):
-            print(field.name)
+            # print(field.name)
             date_fields.append(field.name)
         i = 0
         for entry in table.entries.all():
             i += 1
-            print(i, table)
+            # print(i, table)
             for field in date_fields:
                 try:
                     entry.data[field] = entry.data[field][:10]

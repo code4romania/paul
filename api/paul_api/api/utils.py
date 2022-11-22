@@ -1,21 +1,18 @@
 import re
 from collections import OrderedDict
 from datetime import datetime
-from pprint import pprint
 
 import inflection
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.postgres.fields.jsonb import KeyTextTransform
 from django.core.mail import EmailMultiAlternatives
-# from django.db import connection, reset_queries
 from django.db.models import (Avg, CharField, Count, DateTimeField, FloatField,
                               Max, Min, Q, Sum)
 from django.db.models.functions import Cast, Trunc
 from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 
-# from api.views import FilterViewSet
 from . import models
 
 
@@ -117,14 +114,11 @@ def import_csv(reader, table, csv_import=None):
                         else:
                             entry_dict[field_name] = row[key]
                     else:
-                        print(table_fields)
-                        print(csv_field_mapping)
                         if table_fields[field_name].required or csv_field_mapping[key].required:
                             error_in_row = True
                             errors_in_row[key] = _("This field is required")
                         entry_dict[field_name] = None
                 except Exception as e:
-                    # print(e)
                     error_in_row = True
                     errors_in_row[key] = e.__class__.__name__
                     # errors_in_row[key] = str(e)
@@ -136,7 +130,6 @@ def import_csv(reader, table, csv_import=None):
                     # This method sets a COMPOUND CONSTRAINT with all the unique fields
                     # If it finds a duplicate, it updates the data with the new record
                     
-                    # print("\nORIGINAL IMPORT METHOD FOR UNIQUE FIELDS")
                     data = {}
                     for field in unique_fields:
                         data[field] = entry_dict[field]
@@ -162,7 +155,6 @@ def import_csv(reader, table, csv_import=None):
                     # It checks each unique field for uniqueness, first in the current batch, later in database
                     # If it finds a duplicate, it ignores the new data and keeps the old one
                     
-                    # print("\nNEW IMPORT METHOD FOR UNIQUE FIELDS")
                     data = {}
                     for field in unique_fields:
                         data[field] = entry_dict[field]
@@ -188,7 +180,6 @@ def import_csv(reader, table, csv_import=None):
 
                 else:
                     # Non unique fields
-                    # print("\nIMPORT FOR NON UNIQUE FIELDS")
                     current_batch.append(models.Entry(table=table, data=entry_dict))
                     
             else:
@@ -212,7 +203,6 @@ def import_csv(reader, table, csv_import=None):
                 batch_unique_values = {}
 
         except Exception as e:
-            # print(e)
             errors_count += 1
 
     # Save any remaining items from this final batch
@@ -384,12 +374,12 @@ def prepare_chart_data(chart, chart_data, timeline=True):
             data['datasets'] = []
             labels = []
             labels_dict = {}
-            for serie, group in data_dict.items():
-                data['labels'].append(serie)
+            for s, group in data_dict.items():
+                data['labels'].append(s)
                 for group_name in group:
                     if group_name not in labels:
                         labels.append(group_name)
-            for serie, group in data_dict.items():
+            for s, group in data_dict.items():
                 for label in labels:
                     labels_dict.setdefault(label, [])
                     labels_dict[label].append(group.get(label, 0))
@@ -505,7 +495,6 @@ def prepare_chart_data(chart, chart_data, timeline=True):
 
 
 def request_get_to_filter(request, table_fields, filter_dict=Q(), is_filter=False):
-    # print(request)
     for key in request:
         if is_filter:
             table = key.split("__")[0]
@@ -558,7 +547,6 @@ def request_get_to_filter(request, table_fields, filter_dict=Q(), is_filter=Fals
                                 relative_increment = 0 if relative_type == 'current' else 1
                                 relative_increment_dict[relative_period] = relative_increment
                                 date_start = today + relativedelta(**relative_increment_dict)
-                                pprint(relative_increment_dict)
                             else:
                                 relative_increment_dict[relative_period] = 1
                                 date_start = today - relativedelta(**relative_increment_dict)
@@ -585,7 +573,6 @@ def request_get_to_filter(request, table_fields, filter_dict=Q(), is_filter=Fals
                                 **{"data__{}".format(key): value})
                             # filter_dict_table = {'data__data_nasterii__gte': '1987-06-25'}
                             # print(key, value[:10])
-                            # print('===')
 
                     else:
                         filter_dict_table = filter_dict_table & Q(
@@ -595,7 +582,6 @@ def request_get_to_filter(request, table_fields, filter_dict=Q(), is_filter=Fals
             filter_dict[table] = filter_dict_table
         else:
             filter_dict = filter_dict_table
-    pprint(filter_dict)
     return filter_dict
 
 

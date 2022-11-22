@@ -1,15 +1,16 @@
 import random
+from datetime import datetime, timedelta
+
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand
+from django.utils.text import slugify
+from django.utils.timezone import make_aware
+from django.utils.translation import ugettext_lazy as _
+from eav.models import Attribute
 from faker import Faker
 
-from django.conf import settings
-from django.contrib.auth.models import User, Group, Permission
-from django.core.management.base import BaseCommand
-from django.utils import timezone
-from django.utils.timezone import get_current_timezone, make_aware
-from eav.models import Attribute
 from api import models
-from django.utils.text import slugify
-from datetime import datetime, timedelta
+
 
 fake = Faker()
 
@@ -31,8 +32,8 @@ def gen_slug(value):
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
-        db, _ = models.Database.objects.get_or_create(name="DOR")
-        admin, _ = User.objects.get_or_create(username="admin")
+        db, created = models.Database.objects.get_or_create(name="DOR")
+        admin, created = User.objects.get_or_create(username="admin")
         tables = {}
         tables_map = {
             "Utilizatori": {
@@ -61,7 +62,7 @@ class Command(BaseCommand):
         }
         print(models.Table.objects.all().delete())
         for table_name in tables_map.keys():
-            tables[table_name], _ = models.Table.objects.get_or_create(
+            tables[table_name], created = models.Table.objects.get_or_create(
                 database=db, name=table_name.capitalize(), owner=admin
             )
 

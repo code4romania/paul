@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group, User
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils.translation import ugettext_lazy as _
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
 from openpyxl import Workbook
@@ -46,7 +47,7 @@ class EntriesPagination(PageNumberPagination):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.order_by('pk').all()
     serializer_class = serializers.users.UserListSerializer
     pagination_class = EntriesPagination
 
@@ -61,16 +62,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        ordering = self.request.GET.get('__order', 'id')
+        ordering = self.request.GET.get('__order', 'pk')
 
         if 'admin' in user.groups.values_list('name', flat=True):
-            return User.objects.all().order_by(ordering)
-        return User.objects.filter(pk=user.pk)
+            return User.objects.order_by(ordering).all()
+        return User.objects.filter(pk=user.pk).order_by('pk')
 
     @action(
         detail=True,
         methods=["get"],
-        name="Toggle user activation",
+        name=_("Toggle user activation"),
         url_path="toggle-activation"
     )
     def toggle_activation(self, request, pk):
@@ -97,16 +98,16 @@ class UserView(APIView):
         Return a list of all users.
         """
         user = request.user
-        profile, _ = models.Userprofile.objects.get_or_create(user=user)
-        profile_cards = [card.card for card in profile.dashboard_cards.all()]
+        userprofile, _ = models.Userprofile.objects.get_or_create(user=user)
+        profile_cards = [card.card for card in userprofile.dashboard_cards.all()]
         admin_group = Group.objects.get(name='admin')
 
         cards_serializer = serializers.cards.ListSerializer(
             profile_cards, many=True, context={'request': request})
         charts_serializer = serializers.charts.ListSerializer(
-            user.userprofile.dashboard_charts.all(), many=True, context={'request': request})
+            userprofile.dashboard_charts.all(), many=True, context={'request': request})
         filters_serializer = serializers.filters.FilterListSerializer(
-            user.userprofile.dashboard_filters.all(), many=True, context={'request': request})
+            userprofile.dashboard_filters.all(), many=True, context={'request': request})
 
         dashboard = {
             "cards": cards_serializer.data,
@@ -119,13 +120,13 @@ class UserView(APIView):
             "id": user.id,
             "dashboard": dashboard,
             "is_admin": admin_group in user.groups.all(),
-            "avatar": request.build_absolute_uri(profile.avatar.url) if profile.avatar else None
+            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None
         }
         return Response(response)
 
 
 class DatabaseViewSet(viewsets.ModelViewSet):
-    queryset = models.Database.objects.all()
+    queryset = models.Database.objects.order_by('id').all()
     serializer_class = serializers.databases.DatabaseSerializer
 
 
@@ -247,7 +248,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["post"],
-        name="CSV manual import view",
+        name=_("CSV manual import view"),
         url_path="csv-manual-import",
     )
     def csv_manual_import(self, request, pk):
@@ -311,7 +312,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="CSV Export",
+        name=_("CSV Export"),
         url_path="csv-export",
     )
     def csv_export(self, request, pk):
@@ -347,7 +348,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="XLSX Export",
+        name=_("XLSX Export"),
         url_path="xlsx-export",
     )
     def xlsx_export(self, request, pk):
@@ -389,7 +390,7 @@ class TableViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=["post"],
-        name="Create from FilterView",
+        name=_("Create from FilterView"),
         url_path="from-filter",
     )
     def create_from_filter(self, request):
@@ -506,7 +507,6 @@ class TableViewSet(viewsets.ModelViewSet):
 
         
         for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
-            # print("Writing page:", i)
             data = paginator.get_page(i)
             page = data.object_list
 
@@ -546,7 +546,7 @@ class TableViewSet(viewsets.ModelViewSet):
 
 
 class FilterViewSet(viewsets.ModelViewSet):
-    queryset = models.Filter.objects.all()
+    queryset = models.Filter.objects.order_by('id').all()
     pagination_class = EntriesPagination
     filter_backends = (OrderingFilter,)
 
@@ -917,7 +917,6 @@ class FilterViewSet(viewsets.ModelViewSet):
                 )
                 writer.writeheader()
                 for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
-                    # print("Writing page:", i)
                     data = paginator.get_page(i)
                     page = data.object_list
 
@@ -970,7 +969,6 @@ class FilterViewSet(viewsets.ModelViewSet):
                 )
                 writer.writeheader()
                 for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
-                    # print("Writing page:", i)
                     data = paginator.get_page(i)
                     page = data.object_list
 
@@ -1022,7 +1020,7 @@ class EntryViewSet(viewsets.ModelViewSet):
     search_fields = ["data__nume"]
 
     def get_queryset(self):
-        return models.Entry.objects.filter(table=self.kwargs["table_pk"])
+        return models.Entry.objects.order_by('id').filter(table=self.kwargs["table_pk"])
 
     def list(self, request, table_pk):
         table = models.Table.objects.get(pk=table_pk)
@@ -1114,7 +1112,7 @@ class EntryViewSet(viewsets.ModelViewSet):
 
 
 class CsvImportViewSet(viewsets.ModelViewSet):
-    queryset = models.CsvImport.objects.all()
+    queryset = models.CsvImport.objects.order_by('id').all()
     # permission_classes = (BaseModelPermissions,)
 
     def get_serializer_class(self):
@@ -1131,7 +1129,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["get"],
-        name="Csv errors Export",
+        name=_("CSV Errors Export"),
         url_path="export-errors",
     )
     def export_errors(self, request, pk):
@@ -1240,7 +1238,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
 
 
 class ChartViewSet(viewsets.ModelViewSet):
-    queryset = models.Chart.objects.all()
+    queryset = models.Chart.objects.order_by('id').all()
     pagination_class = EntriesPagination
 
     filter_backends = (OrderingFilter,)
@@ -1327,7 +1325,7 @@ class ChartViewSet(viewsets.ModelViewSet):
 
 
 class CardViewSet(viewsets.ModelViewSet):
-    queryset = models.Card.objects.all()
+    queryset = models.Card.objects.order_by('id').all()
     pagination_class = EntriesPagination
     filter_backends = (OrderingFilter,)
 

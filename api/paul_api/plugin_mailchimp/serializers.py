@@ -15,7 +15,6 @@ from plugin_mailchimp import models
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 import json
-from pprint import pprint
 
 
 class SettingsSerializer(serializers.ModelSerializer):

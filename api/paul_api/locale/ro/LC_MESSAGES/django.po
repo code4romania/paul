@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-30 15:36+0300\n"
+"POT-Creation-Date: 2022-11-18 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,56 +19,655 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
 "2:1));\n"
 
-#: api/forms.py:116
+#: paul_api/api/admin.py:41
+msgid "CSV File Fields Map"
+msgstr ""
+
+#: paul_api/api/admin.py:59
+msgid "Columns"
+msgstr "Coloane"
+
+#: paul_api/api/admin.py:168
+msgid "Join Tables"
+msgstr ""
+
+#: paul_api/api/forms.py:100
+#, python-brace-format
+msgid "The {object_name} could not be saved because the data did not validate."
+msgstr "{object_name} nu a putut fi salvat deoarece datele nu au fost validate."
+
+#: paul_api/api/management/commands/seed-frontend-domain.py:14
+#, python-brace-format
+msgid "New frontend domain: {domain}"
+msgstr "Nou domeniu: {domain}"
+
+#: paul_api/api/middlewares.py:24
+#, python-brace-format
+msgid "Page render: {sqltime:.2f} sec for {num} queries"
+msgstr "Generare pagină: {sqltime:.2f} secunde pentru {num} interogări"
+
+#: paul_api/api/models.py:36
+msgid "[PAUL] New user registered"
+msgstr "[PAUL] Utilizator nou înregistrat"
+
+#: paul_api/api/models.py:41
+msgid "text"
+msgstr "text"
+
+#: paul_api/api/models.py:42
+msgid "int"
+msgstr "număr întreg"
+
+#: paul_api/api/models.py:43
+msgid "float"
+msgstr "număr cu zecimale"
+
+#: paul_api/api/models.py:44
+msgid "date"
+msgstr "dată"
+
+#: paul_api/api/models.py:47
+msgid "enum"
+msgstr "enumerare"
+
+#: paul_api/api/models.py:51
+msgid "Count"
+msgstr "Numără"
+
+#: paul_api/api/models.py:52
+msgid "Sum"
+msgstr "Sumă"
+
+#: paul_api/api/models.py:53
+msgid "Min"
+msgstr "Minim"
+
+#: paul_api/api/models.py:54
+msgid "Max"
+msgstr "Maxim"
+
+#: paul_api/api/models.py:55
+msgid "Average"
+msgstr "Medie"
+
+#: paul_api/api/models.py:56
+msgid "Standard Deviation"
+msgstr "Deviație standard"
+
+#: paul_api/api/models.py:60
+msgid "Line"
+msgstr ""
+
+#: paul_api/api/models.py:61
+msgid "Bar"
+msgstr ""
+
+#: paul_api/api/models.py:62
+msgid "Pie"
+msgstr ""
+
+#: paul_api/api/models.py:63
+msgid "Doughnut"
+msgstr ""
+
+#: paul_api/api/models.py:67
+msgid "Minute"
+msgstr "Minut"
+
+#: paul_api/api/models.py:68
+msgid "Hour"
+msgstr "Oră"
+
+#: paul_api/api/models.py:69
+msgid "Day"
+msgstr "Zi"
+
+#: paul_api/api/models.py:70
+msgid "Week"
+msgstr "Săptămână"
+
+#: paul_api/api/models.py:71
+msgid "Month"
+msgstr "Lună"
+
+#: paul_api/api/models.py:72
+msgid "Year"
+msgstr "An"
+
+#: paul_api/api/models.py:82 paul_api/api/models.py:542
+msgid "user"
+msgstr "utilizator"
+
+#: paul_api/api/models.py:84
+msgid "dashboard filters"
+msgstr "filtre panou"
+
+#: paul_api/api/models.py:85
+msgid "dasbhoard charts"
+msgstr "grafuri panou"
+
+#: paul_api/api/models.py:86
+msgid "cards"
+msgstr ""
+
+#: paul_api/api/models.py:88
+msgid "token"
+msgstr ""
+
+#: paul_api/api/models.py:89
+msgid "avatar"
+msgstr "avatar"
+
+#: paul_api/api/models.py:91
+msgid "language"
+msgstr "limbă"
+
+#: paul_api/api/models.py:93
+msgid "Preferred language"
+msgstr "Limbă preferată"
+
+#: paul_api/api/models.py:99
+msgid "user profile"
+msgstr "profil utilizator"
+
+#: paul_api/api/models.py:100
+msgid "user profiles"
+msgstr "profiluri utilizatori"
+
+#: paul_api/api/models.py:108
+msgid "profile"
+msgstr "profil"
+
+#: paul_api/api/models.py:109
+msgid "card"
+msgstr ""
+
+#: paul_api/api/models.py:111
+msgid "order"
+msgstr "ordine"
+
+#: paul_api/api/models.py:112
+msgid "What order to display this card within the profile dashboard."
+msgstr ""
+
+#: paul_api/api/models.py:117
+msgid "profile card"
+msgstr ""
+
+#: paul_api/api/models.py:118
+msgid "profile cards"
+msgstr ""
+
+#: paul_api/api/models.py:132 paul_api/api/models.py:161
+#: paul_api/api/models.py:219 paul_api/api/models.py:388
+#: paul_api/api/models.py:431 paul_api/api/models.py:493
+#: paul_api/api/models.py:533
+msgid "name"
+msgstr "nume"
+
+#: paul_api/api/models.py:133 paul_api/api/models.py:162
+#: paul_api/api/models.py:221 paul_api/api/models.py:389
+msgid "slug"
+msgstr ""
+
+#: paul_api/api/models.py:136 paul_api/api/models.py:164
+msgid "database"
+msgstr "bază de date"
+
+#: paul_api/api/models.py:137
+msgid "databases"
+msgstr "baze de date"
+
+#: paul_api/api/models.py:165
+msgid "active"
+msgstr "activ"
+
+#: paul_api/api/models.py:167 paul_api/api/models.py:306
+#: paul_api/api/models.py:344
+msgid "date created"
+msgstr "dată creare"
+
+#: paul_api/api/models.py:170 paul_api/api/models.py:401
+msgid "default fields"
+msgstr "câmpuri implicite"
+
+#: paul_api/api/models.py:172 paul_api/api/models.py:403
+#: paul_api/api/models.py:470 paul_api/api/models.py:511
+msgid "owner"
+msgstr "proprietar"
+
+#: paul_api/api/models.py:173 paul_api/api/models.py:404
+#: paul_api/api/models.py:471 paul_api/api/models.py:512
+msgid "last edit date"
+msgstr "dată ultima editare"
+
+#: paul_api/api/models.py:180 paul_api/api/models.py:411
+#: paul_api/api/models.py:478 paul_api/api/models.py:519
+msgid "last edit user"
+msgstr "utilizator ultima editare"
+
+#: paul_api/api/models.py:184 paul_api/api/models.py:396
+#: paul_api/api/models.py:466 paul_api/api/models.py:507
+msgid "filters"
+msgstr "filtre"
+
+#: paul_api/api/models.py:195 paul_api/api/models.py:218
+#: paul_api/api/models.py:255 paul_api/api/models.py:298
+#: paul_api/api/models.py:342 paul_api/api/models.py:366
+#: paul_api/api/models.py:435 paul_api/api/models.py:495
+msgid "table"
+msgstr "tabel"
+
+#: paul_api/api/models.py:196
+msgid "tables"
+msgstr "tabele"
+
+#: paul_api/api/models.py:220 paul_api/api/models.py:266
+msgid "display name"
+msgstr "nume afișare"
+
+#: paul_api/api/models.py:222 paul_api/api/models.py:268
+msgid "field type"
+msgstr "tip câmp"
+
+#: paul_api/api/models.py:223
+msgid "help text"
+msgstr "text ajutor"
+
+#: paul_api/api/models.py:225
+msgid "choices"
+msgstr "variante"
+
+#: paul_api/api/models.py:226 paul_api/api/models.py:272
+msgid "required"
+msgstr "necesar"
+
+#: paul_api/api/models.py:227 paul_api/api/models.py:273
+msgid "unique"
+msgstr "unic"
+
+#: paul_api/api/models.py:232 paul_api/api/models.py:276
+msgid "table column"
+msgstr "coloana tabel"
+
+#: paul_api/api/models.py:233
+msgid "table columns"
+msgstr "coloane tabel"
+
+#: paul_api/api/models.py:263 paul_api/api/models.py:309
+msgid "CSV import"
+msgstr "import CSV"
+
+#: paul_api/api/models.py:265
+msgid "original name"
+msgstr "nume original"
+
+#: paul_api/api/models.py:271
+msgid "field format"
+msgstr "format câmp"
+
+#: paul_api/api/models.py:279
+msgid "CSV field map"
+msgstr "Hartă câmpuri CSV"
+
+#: paul_api/api/models.py:280
+msgid "CSV field maps"
+msgstr "Hărți câmpuri CSV"
+
+#: paul_api/api/models.py:288
+msgid "file"
+msgstr "fișier"
+
+#: paul_api/api/models.py:290
+msgid "delimiter"
+msgstr "delimitator"
+
+#: paul_api/api/models.py:301
+msgid "errors"
+msgstr "erori"
+
+#: paul_api/api/models.py:302
+msgid "errors count"
+msgstr "număr erori"
+
+#: paul_api/api/models.py:303
+msgid "import count created"
+msgstr "număr creări la import"
+
+#: paul_api/api/models.py:304
+msgid "import count updated"
+msgstr "număr actualizări la import"
+
+#: paul_api/api/models.py:305
+msgid "import count skipped"
+msgstr "număr sărite la import"
+
+#: paul_api/api/models.py:310
+msgid "CSV imports"
+msgstr "Importuri CSV"
+
+#: paul_api/api/models.py:343
+msgid "data"
+msgstr "date"
+
+#: paul_api/api/models.py:347
+msgid "entry"
+msgstr "intrare"
+
+#: paul_api/api/models.py:348
+msgid "entries"
+msgstr "intrări"
+
+#: paul_api/api/models.py:368
+msgid "fields"
+msgstr "câmpuri"
+
+#: paul_api/api/models.py:370
+msgid "join field"
+msgstr "câmp join"
+
+#: paul_api/api/models.py:394
+msgid "join tables"
+msgstr "tabele join"
+
+#: paul_api/api/models.py:398 paul_api/api/models.py:469
+#: paul_api/api/models.py:510
+msgid "creation date"
+msgstr "dată creare"
+
+#: paul_api/api/models.py:433
+msgid "chart type"
+msgstr "tip diagramă"
+
+#: paul_api/api/models.py:439
+msgid "timeline field"
+msgstr "câmp cronologie"
+
+#: paul_api/api/models.py:442
+msgid "timeline period"
+msgstr "perioadă cronologie"
+
+#: paul_api/api/models.py:445
+msgid "timeline include nulls"
+msgstr "cronologia include nul"
+
+#: paul_api/api/models.py:449
+msgid "x axis field"
+msgstr "câmp axa x"
+
+#: paul_api/api/models.py:454
+msgid "x axis field 2"
+msgstr "al doilea câmp axa x"
+
+#: paul_api/api/models.py:459
+msgid "y axis field"
+msgstr "câmp axa y"
+
+#: paul_api/api/models.py:462
+msgid "y axis function"
+msgstr "funcție axa y"
+
+#: paul_api/api/models.py:497
+msgid "data column function"
+msgstr "funcție coloană date"
+
+#: paul_api/api/models.py:503
+msgid "data column"
+msgstr "coloană date"
+
+#: paul_api/api/models.py:534
+msgid "status"
+msgstr "stare"
+
+#: paul_api/api/models.py:536
+msgid "date start"
+msgstr "dată început"
+
+#: paul_api/api/models.py:537
+msgid "date end"
+msgstr "dată sfârșit"
+
+#: paul_api/api/models.py:538
+msgid "duration"
+msgstr "durată"
+
+#: paul_api/api/models.py:543
+msgid "success"
+msgstr "succes"
+
+#: paul_api/api/models.py:545
+msgid "stats"
+msgstr "statistici"
+
+#: paul_api/api/serializers/entries.py:72
+#, python-brace-format
+msgid "Unknown fields: {field_names}"
+msgstr "Câmpuri necunoscute: {field_names}"
+
+#: paul_api/api/serializers/entries.py:82
+msgid "Integer is not valid"
+msgstr "Număr întreg invalid"
+
+#: paul_api/api/serializers/entries.py:87
+msgid "Float is not valid"
+msgstr "Număr cu zecimale invalid"
+
+#: paul_api/api/serializers/entries.py:94
+msgid "Invalid date format"
+msgstr "Format dată invalid"
+
+#: paul_api/api/serializers/entries.py:98
+#, python-brace-format
+msgid "{field_value} is not a valid choice ({valid_choices})"
+msgstr "{field_value} nu este o alegere validă ({valid_choices})"
+
+#: paul_api/api/serializers/entries.py:129
+#, python-brace-format
+msgid "The {unique_field_names} fields must be unique together"
+msgstr "Câmpurile {unique_field_names} trebuie să fie unice împreună"
+
+#: paul_api/api/serializers/entries.py:133
+#: paul_api/api/serializers/entries.py:148
+#, python-brace-format
+msgid "The {unique_field_name} field must be unique in table"
+msgstr "Câmpul {unique_field_name} trebuie să fie unic în tabel"
+
+#: paul_api/api/serializers/entries.py:144
+#, python-brace-format
+msgid "The {unique_field_names} fields must be unique in table"
+msgstr "Câmpurile {unique_field_names} trebuie să fie unice în tabel"
+
+#: paul_api/api/serializers/entries.py:157
+#, python-brace-format
+msgid "The {field_name} field is required"
+msgstr "Câmpul {field_name} este obligatoriu"
+
+#: paul_api/api/serializers/entries.py:163
+#, python-brace-format
+msgid "The {field_name} field value must be one of: {field_choices}"
+msgstr ""
+"Valoarea câmpului {field_name} trebuie să fie una dintre: {field_choices}"
+
+#: paul_api/api/serializers/tables.py:68
+msgid "This table name is already being used."
+msgstr "Acest nume de tabel este deja utilizat."
+
+#: paul_api/api/serializers/tables.py:85
+msgid "Changing field type is not permited on a table with entries"
+msgstr ""
+"Modificarea tipului de coloană nu este permisă pentru un tabel cu intrări"
+
+#: paul_api/api/serializers/users.py:35 paul_api/api/serializers/users.py:102
+#, python-brace-format
+msgid "An account with the {username} username already exists"
+msgstr "Un cont cu numele de utilizator {username} există deja"
+
+#: paul_api/api/serializers/users.py:117 paul_api/api/serializers/users.py:154
+msgid "Edit"
+msgstr "Editare"
+
+#: paul_api/api/serializers/users.py:119 paul_api/api/serializers/users.py:156
+msgid "View"
+msgstr "Vizualizare"
+
+#: paul_api/api/serializers/users.py:121 paul_api/api/serializers/users.py:158
+msgid "No permissions"
+msgstr "Fără permisiuni"
+
+#: paul_api/api/templates/email/new_user.html:2
 #, python-format
-msgid "The %s could not be saved because the data didn't validate."
-msgstr "%s nu a putut fi salvat deoarece datele nu au fost validate."
+msgid "Hello %(admin.first_name)s,"
+msgstr "Salut %(admin.first_name)s,"
 
-#: api/validators.py:25
+#: paul_api/api/templates/email/new_user.html:6
+#, python-format
+msgid ""
+"A new user just registered on %(url)s. To activate this account click <a\n"
+"    href=\"%(base_path)s/app/users/%(user.pk)s\">here</a>."
+msgstr ""
+"Un nou utilizator s-a înregistrat la %(url)s. Pentru a activa acest cont "
+"clic <a\n"
+"    href=\"%(base_path)s/app/users/%(user.pk)s\">aici</a>."
+
+#: paul_api/api/templates/email/new_user.html:11
+msgid "Have a nice day!"
+msgstr "O zi bună!"
+
+#: paul_api/api/templates/email/password_reset.html:5
+#, python-format
+msgid "Set your password on %(site_name)s"
+msgstr "Setează-ți parola la %(site_name)s"
+
+#: paul_api/api/templates/email/password_reset.html:5
+#, python-format
+msgid "Password reset on %(site_name)s"
+msgstr "Parolă resetată la %(site_name)s"
+
+#: paul_api/api/templates/email/password_reset.html:11
+#: paul_api/api/templates/email/password_reset.html:26
+#, python-format
+msgid ""
+"You're receiving this email because you have a new user account at "
+"%(site_name)s."
+msgstr ""
+"Primiți acest email deoarece aveți un nou cont de utilizator la "
+"%(site_name)s."
+
+#: paul_api/api/templates/email/password_reset.html:13
+#: paul_api/api/templates/email/password_reset.html:28
+#, python-format
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr ""
+"Primiți acest email deoarece ați solicitat resetarea parolei pentru contul "
+"de utilizator la %(site_name)s."
+
+#: paul_api/api/templates/email/password_reset.html:16
+#: paul_api/api/templates/email/password_reset.html:31
+msgid "Please go to the following page and choose a new password:"
+msgstr "Mergeți la următoarea pagină și alegeți o nouă parolă"
+
+#: paul_api/api/templates/email/password_reset.html:18
+#: paul_api/api/templates/email/password_reset.html:33
+msgid "Your username, in case you've forgotten:"
+msgstr "Numele de utilizator, în caz că l-ați uitat:"
+
+#: paul_api/api/templates/email/password_reset.html:20
+#: paul_api/api/templates/email/password_reset.html:35
+#, python-format
+msgid "The %(site_name)s team"
+msgstr "Echipa %(site_name)s"
+
+#: paul_api/api/urls.py:30
+msgid "Paul OpenSchema"
+msgstr "OpenSchema Paul"
+
+#: paul_api/api/urls.py:31
+msgid "API for Paul"
+msgstr "API pentru Paul"
+
+#: paul_api/api/utils.py:119
+msgid "This field is required"
+msgstr "Acest câmp este obligatoriu"
+
+#: paul_api/api/utils.py:146
+msgid "This field must be unique in table"
+msgstr "Acest câmp trebuie să fie unic în tabel"
+
+#: paul_api/api/validators.py:25
 msgid "Must be str or unicode"
-msgstr ""
+msgstr "Trebuie să fie str sau unicode"
 
-#: api/validators.py:35
+#: paul_api/api/validators.py:35
 msgid "Must be a float"
-msgstr ""
+msgstr "Trebuie să fie număr cu zecimale"
 
-#: api/validators.py:45
+#: paul_api/api/validators.py:45
 msgid "Must be an integer"
-msgstr ""
+msgstr "Trebuie să fie număr întreg"
 
-#: api/validators.py:54
+#: paul_api/api/validators.py:54
 msgid "Must be a date or datetime"
-msgstr ""
+msgstr "Trebuie să fie dată sau datetime"
 
-#: api/validators.py:62
+#: paul_api/api/validators.py:62
 msgid "Must be a boolean"
-msgstr ""
+msgstr "Trebuie să fie boolean"
 
-#: api/validators.py:71
-msgid "Must be a django model object instance"
-msgstr ""
+#: paul_api/api/validators.py:71
+msgid "Must be a Django model object instance"
+msgstr "Trebuie să fie o instanță de model Django"
 
-#: api/validators.py:74
+#: paul_api/api/validators.py:74
 msgid "Model has not been saved yet"
+msgstr "Modelul nu a fost încă salvat"
+
+#: paul_api/api/views.py:74
+msgid "Toggle user activation"
+msgstr "Comută activare utilizator"
+
+#: paul_api/api/views.py:251
+msgid "CSV manual import view"
 msgstr ""
 
-#: paul_api/settings.py:176
+#: paul_api/api/views.py:315
+msgid "CSV Export"
+msgstr "Exportă CSV"
+
+#: paul_api/api/views.py:351
+msgid "XLSX Export"
+msgstr "Exportă XLSX"
+
+#: paul_api/api/views.py:393
+msgid "Create from FilterView"
+msgstr ""
+
+#: paul_api/api/views.py:1132
+msgid "CSV Errors Export"
+msgstr ""
+
+#: paul_api/paul_api/settings.py:219
 msgid "Romanian"
 msgstr "Română"
 
-#: paul_api/settings.py:177
+#: paul_api/paul_api/settings.py:220
 msgid "English"
 msgstr "Engleză"
 
-#: plugin_mailchimp/models.py:28 plugin_mailchimp/models.py:29
-#: plugin_woocommerce/models.py:28 plugin_woocommerce/models.py:29
+#: paul_api/plugin_mailchimp/models.py:28
+#: paul_api/plugin_mailchimp/models.py:29
+#: paul_api/plugin_woocommerce/models.py:28
+#: paul_api/plugin_woocommerce/models.py:29
 msgid "Settings"
 msgstr "Setări"
 
-#: plugin_mailchimp/models.py:63 plugin_woocommerce/models.py:49
+#: paul_api/plugin_mailchimp/models.py:63
+#: paul_api/plugin_woocommerce/models.py:49
 msgid "Task"
 msgstr "Sarcină"
 
-#: plugin_mailchimp/models.py:64 plugin_woocommerce/models.py:50
+#: paul_api/plugin_mailchimp/models.py:64
+#: paul_api/plugin_woocommerce/models.py:50
 msgid "Tasks"
 msgstr "Sarcini"

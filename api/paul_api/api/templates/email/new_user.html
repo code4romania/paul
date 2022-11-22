@@ -1,0 +1,11 @@
+{% load i18n %}
+{% blocktranslate %}Hello {{admin.first_name}},{% endblocktranslate %}
+
+<br><br>
+
+{% blocktranslate %}A new user just registered on {{url}}. To activate this account click <a
+    href="{{base_path}}/app/users/{{user.pk}}">here</a>.{% endblocktranslate %}
+
+<br><br>
+
+{% blocktranslate %}Have a nice day!{% endblocktranslate %}

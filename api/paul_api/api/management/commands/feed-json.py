@@ -1,17 +1,15 @@
 import random
+from datetime import datetime, timedelta
+
+from django.contrib.auth.models import Group, User
+from django.core.management.base import BaseCommand
+from django.utils.text import slugify
+from django.utils.timezone import make_aware
+from django.utils.translation import ugettext_lazy as _
 from faker import Faker
 
-from django.conf import settings
-from django.contrib.auth.models import User, Group, Permission
-from django.core.management.base import BaseCommand
-from django.core.serializers.json import DjangoJSONEncoder
-from django.utils import timezone
-from django.utils.timezone import get_current_timezone, make_aware
-
 from api import models
-from django.utils.text import slugify
-from datetime import datetime, timedelta
-import json
+
 
 fake = Faker()
 
@@ -32,9 +30,9 @@ def gen_slug(value):
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
-        db, _ = models.Database.objects.get_or_create(name="DOR")
-        admin_group, _ = Group.objects.get_or_create(name="admin")
-        admin, _ = User.objects.get_or_create(username="admin")
+        db, created = models.Database.objects.get_or_create(name="DOR")
+        admin_group, created = Group.objects.get_or_create(name="admin")
+        admin, created = User.objects.get_or_create(username="admin")
         admin.set_password("admin")
         admin.is_staff = True
         admin.is_superuser = True
@@ -76,7 +74,7 @@ class Command(BaseCommand):
         # print(models.Table.objects.all().delete())
         # print(models.Entry.objects.all().delete())
         for table_name in tables_map.keys():
-            tables[table_name], _ = models.Table.objects.get_or_create(
+            tables[table_name], created = models.Table.objects.get_or_create(
                 database=db, name=table_name.capitalize(), owner=admin
             )
 
