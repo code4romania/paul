@@ -222,6 +222,12 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "user" */ '@/views/UserProfile.vue')
       },
+        {
+            path: 'users/add',
+            name: 'user-add',
+            component: () =>
+                import(/* webpackChunkName: "user" */ '@/views/UserCreate.vue')
+        },
       {
         path: 'users/:idUser/change-password',
         name: 'change-password',

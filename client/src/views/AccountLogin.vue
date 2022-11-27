@@ -25,13 +25,6 @@
             Autentificare
           </b-button>
         </div>
-
-        <div class="field">
-          Nu ai cont?
-          <router-link :to="{ name: 'register' }"
-            >Creează un cont</router-link
-          >
-        </div>
       </ValidationObserver>
     </div>
   </div>

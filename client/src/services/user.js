@@ -9,10 +9,13 @@ const UserService = {
       username,
       password
     }).then(response => {
+        console.log()
       TokenService.saveToken(response.token)
       ApiService.setHeader()
 
       return response.access_token
+    }).catch(e=>{
+        console.log(e);
     })
   },
 
