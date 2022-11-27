@@ -25,7 +25,7 @@ const UserService = {
   },
 
   register(query) {
-    return ApiService.post('auth/users/', query)
+    return ApiService.post('users/', query)
   },
 
   resend(email) {
