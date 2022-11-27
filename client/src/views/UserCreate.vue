@@ -39,7 +39,7 @@ export default {
                     email: this.email
                 })
                 .then(() => {
-                    this.$router.replace('users')
+                    this.$router.replace('/app/users')
                 })
         },
         resend() {
