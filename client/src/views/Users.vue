@@ -11,6 +11,11 @@
           @update="getUsers"
         />
       </template>
+        <template #actions>
+            <router-link :to="{ name: 'user-add' }" class="button is-primary">
+                Adaugă utilizator
+            </router-link>
+        </template>
     </BaseCard>
   </div>
 </template>
