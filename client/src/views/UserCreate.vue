@@ -5,15 +5,7 @@
             <div class="card-container">
                 <ValidationObserver v-slot="{ passes }" tag="form" @submit.prevent>
                     <VField label="Email" rules="required">
-                        <b-input v-model="username" />
-                    </VField>
-
-                    <VField label="Parola" rules="required" name="password">
-                        <b-input v-model="password" type="password" />
-                    </VField>
-
-                    <VField label="Confirmă parola" rules="required|confirmed:password">
-                        <b-input v-model="re_password" type="password" />
+                        <b-input v-model="email" />
                     </VField>
 
                     <b-button
@@ -37,23 +29,16 @@ import { ToastService } from "@/services/buefy";
 export default {
     data() {
         return {
-            username: '',
-            email: '',
-            password: '',
-            re_password: ''
+            email: ''
         }
     },
     methods: {
         submit() {
             this.$store
                 .dispatch('registerUser', {
-                    username: this.username,
-                    email: this.username,
-                    password: this.password,
-                    re_password: this.re_password
+                    email: this.email
                 })
                 .then(() => {
-                    // console.log(response)
                     this.$router.replace('users')
                 })
         },
