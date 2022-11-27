@@ -309,9 +309,9 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "account/reset-password/{uid}/{token}",
     "SEND_CONFIRMATION_EMAIL": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
-    # "PERMISSIONS": {
-    #     # "user_create": ["api.permissions.NoPermission"],  # Basically disable user creation through Djoser
-    # }
+    "PERMISSIONS": {
+        "user_create": ["api.permissions.NoPermission"],  # Basically disable user creation through Djoser
+    }
 }
 
 DEFAULT_FROM_EMAIL = env("NO_REPLY_EMAIL")
