@@ -32,6 +32,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('api', '0046_auto_20211206_1958'),
+        ('auth', '0012_alter_user_first_name_max_length'),
     ]
 
     operations = [
