@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.conf import settings as django_settings
 from django.utils import timezone
 from api import models
 from mailchimp3 import MailChimp
@@ -357,7 +358,11 @@ def get_emails_from_filtered_view(token, filtered_view, settings):
     headers = {'Authorization': 'Token ' + token.key}
 
     while continue_request:
-        url = 'http://api:8000/api/filters/{}/entries/?page={}'.format(filtered_view.pk, page)
+        url = 'http://{}/api/filters/{}/entries/?page={}'.format(
+            django_settings.ALLOWED_HOSTS[0],
+            filtered_view.pk, 
+            page
+        )
         r = requests.get(url, headers=headers).json()
         results += r['results']
         if r['links']['next']:
