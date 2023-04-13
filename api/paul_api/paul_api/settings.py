@@ -53,6 +53,7 @@ env = environ.Env(
     EMAIL_USE_TLS=(str, ""),
     IS_CONTAINERIZED=(bool, False),
     LANGUAGE_CODE=(str, "ro"),
+    TIME_ZONE=(str, "Europe/Bucharest"),
     SECRET_KEY=(str, "secret"),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
@@ -228,7 +229,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = env("LANGUAGE_CODE")
 
-TIME_ZONE = "Europe/Bucharest"
+TIME_ZONE = env("TIME_ZONE")
 
 USE_I18N = True
 
