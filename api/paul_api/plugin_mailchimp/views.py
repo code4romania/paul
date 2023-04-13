@@ -1,3 +1,4 @@
+from django_q.tasks import async_task, result
 from rest_framework import viewsets, mixins
 from rest_framework_tricks import filters
 from rest_framework.pagination import PageNumberPagination
@@ -8,8 +9,8 @@ from rest_framework.decorators import action
 from plugin_mailchimp import (
     models,
     serializers,
-    tasks)
-
+    tasks,
+)
 from api import models as api_models
 from api.views import EntriesPagination
 
@@ -44,11 +45,12 @@ class TaskViewSet(viewsets.ModelViewSet):
         task = self.get_object()
 
         if task.task_type == 'sync':
-            # tasks.sync.apply_async(args=[None, task.id])
-            task_result_id = tasks.sync.apply_async(args=[None, task.id])
-            print(task_result_id)
+            # tasks.run_sync.apply_async(args=[None, task.id])
+            # task_result_id = tasks.run_sync(request, task.id)
+            async_task('plugin_mailchimp.tasks.run_sync', request, task.id)
         else:
-            task_result_id, _ = tasks.run_segmentation(request, task.id)
+            # task_result_id, _ = tasks.run_segmentation(request, task.id)
+            async_task('plugin_mailchimp.tasks.run_segmentation', request, task.id)
 
         # task_result = models.TaskResult.objects.get(pk=task_result_id)
         # result = serializers.TaskResultSerializer(

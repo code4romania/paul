@@ -19,5 +19,5 @@ class Command(BaseCommand):
         request.META['SERVER_NAME'] = 'dev.api.paul.ro'
         request.META['SERVER_PORT'] = '8000'
 
-        response = tasks.sync(request, 7)
+        response = tasks.run_sync(request, 7)
         pprint(response)

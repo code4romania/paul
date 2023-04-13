@@ -94,10 +94,6 @@ PLUGIN_WOOCOMMERCE_ENABLED = env.bool("PLUGIN_WOOCOMMERCE_ENABLED", False)
 # Application definition
 
 INSTALLED_APPS = [
-    "api",
-    "rest_framework",
-    "rest_framework_tricks",
-    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -105,17 +101,22 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "guardian",
-    "rest_framework.authtoken",
     "django_extensions",
     "storages",
+    "guardian",
+    "rest_framework",
+    "rest_framework_tricks",
+    "rest_framework.authtoken",
+    "jazzmin",
     "corsheaders",
     "django_filters",
-    "crispy_forms",
+    "crispy_forms",  # doesn't seem to be used
     # "silk",
     "djoser",
     "django_celery_beat",
     "django_celery_results",
+    "django_q",
+    "api",
 ]
 
 if PLUGIN_WOOCOMMERCE_ENABLED:
@@ -180,6 +181,28 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "guardian.backends.ObjectPermissionBackend",
 )
+
+
+# Django Q2
+# https://django-q2.readthedocs.io/en/master/brokers.html
+
+Q_CLUSTER = {
+    "name": "paul",
+    "workers": 2,
+    "recycle": 100,
+    "timeout": 120,  # All tasks must finish in less than 2 minutes
+    "retry": 300,  # Retry unfinished tasks after 5 minutes
+    "compress": True,
+    "save_limit": 200,
+    "queue_limit": 4,
+    "cpu_affinity": 1,
+    "label": "Django Q2",
+    "orm": "default",
+    "poll": 2,
+    "guard_cycle": 3,
+    "catch_up": False,  # https://django-q2.readthedocs.io/en/latest/schedules.html#missed-schedules
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators

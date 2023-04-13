@@ -61,7 +61,7 @@ def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, t
     return 'updated'
 
 
-def run_sync(key,
+def retrieve_lists_data(key,
              audiences_table_name,
              audiences_stats_table_name,
              audience_segments_table_name,

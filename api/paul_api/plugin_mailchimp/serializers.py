@@ -170,7 +170,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
                 'request': None
             }
             if task.task_type == 'sync':
-                task_name = 'plugin_mailchimp.tasks.sync'
+                task_name = 'plugin_mailchimp.tasks.run_sync'
             else:
                 task_name = 'plugin_mailchimp.tasks.run_segmentation'
 
@@ -200,7 +200,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
         if periodic_task:
             crontab_str = periodic_task.get('crontab', None)
             if instance.task_type == 'sync':
-                task_name = 'plugin_mailchimp.tasks.sync'
+                task_name = 'plugin_mailchimp.tasks.run_sync'
             else:
                 task_name = 'plugin_mailchimp.tasks.run_segmentation'
 
