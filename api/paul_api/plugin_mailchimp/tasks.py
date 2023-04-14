@@ -7,11 +7,11 @@ from plugin_mailchimp import utils, models, serializers
 from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
-def run_sync(request, task_id):
+def run_sync(request_user, task_id):
     print('start mailchimp sync task')
     task = models.Task.objects.get(pk=task_id)
-    if hasattr(request, 'user'):
-        user = request.user
+    if request_user:
+        user = request_user
     else:
         user, _ = User.objects.get_or_create(username='paul-sync')
     settings = models.Settings.objects.last()
@@ -61,7 +61,7 @@ def run_sync(request, task_id):
     return task_result.id, task_result.success
 
 
-def run_segmentation(request, task_id):
+def run_segmentation(request_user, task_id):
     task = models.Task.objects.get(pk=task_id)
     success = True
     stats = {
@@ -70,8 +70,8 @@ def run_segmentation(request, task_id):
         'details': []
     }
 
-    if hasattr(request, 'user'):
-        user = request.user
+    if request_user:
+        user = request_user
     else:
         user, _ = User.objects.get_or_create(username='paul-sync')
 

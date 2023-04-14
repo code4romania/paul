@@ -47,10 +47,10 @@ class TaskViewSet(viewsets.ModelViewSet):
         if task.task_type == 'sync':
             # tasks.run_sync.apply_async(args=[None, task.id])
             # task_result_id = tasks.run_sync(request, task.id)
-            async_task('plugin_mailchimp.tasks.run_sync', request, task.id)
+            async_task('plugin_mailchimp.tasks.run_sync', request.user, task.id)
         else:
             # task_result_id, _ = tasks.run_segmentation(request, task.id)
-            async_task('plugin_mailchimp.tasks.run_segmentation', request, task.id)
+            async_task('plugin_mailchimp.tasks.run_segmentation', request.user, task.id)
 
         # task_result = models.TaskResult.objects.get(pk=task_result_id)
         # result = serializers.TaskResultSerializer(
