@@ -14,7 +14,7 @@ def run_sync(request_user, task_id):
         user = request_user
     else:
         user, _ = User.objects.get_or_create(username='paul-sync')
-    settings = models.Settings.objects.last()
+    settings = models.Settings.objects.latest()
 
     task_result = models.TaskResult.objects.create(
         user=user,
@@ -76,7 +76,7 @@ def run_segmentation(request_user, task_id):
         user, _ = User.objects.get_or_create(username='paul-sync')
 
     token, _ = Token.objects.get_or_create(user=user)
-    settings = models.Settings.objects.last()
+    settings = models.Settings.objects.latest()
 
     task_result = models.TaskResult.objects.create(
         user=user,

@@ -94,7 +94,7 @@ class AudiencesView(APIView):
     """
 
     def get(self, request, format=None):
-        settings = models.Settings.objects.last()
+        settings = models.Settings.objects.latest()
         audiences = api_models.Entry.objects.filter(
             table__name=settings.audiences_table_name).values(
             'data__id', 'data__name')
