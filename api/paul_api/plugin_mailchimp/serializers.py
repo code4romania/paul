@@ -72,7 +72,8 @@ class TaskSerializer(serializers.ModelSerializer):
     last_edit_user = OwnerSerializer(read_only=True)
     segmentation_task = SegmentationTaskSerializer(required=False)
     task_results = serializers.SerializerMethodField()
-    schedule = TaskScheduleSerializer(required=False)
+    schedule = TaskScheduleSerializer(required=False, allow_null=True)
+    schedule_enabled = serializers.BooleanField(required=False, allow_null=True)
 
     class Meta:
         model = models.Task
@@ -88,6 +89,12 @@ class TaskSerializer(serializers.ModelSerializer):
             "last_edit_user",
         ]
 
+    def validate_schedule_enabled(self, value):
+        if value is None:
+            return False
+        else:
+            return bool(value)
+
     def get_task_results(self, obj):
         return self.context["request"].build_absolute_uri(
             reverse(
@@ -102,6 +109,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
     segmentation_task = SegmentationTaskSerializer(
         required=False, allow_null=True)
     schedule = TaskScheduleSerializer(required=False, allow_null=True)
+    schedule_enabled = serializers.BooleanField(required=False, allow_null=True)
 
     class Meta:
         model = models.Task
@@ -115,6 +123,12 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             "schedule_enabled",
             "schedule",
         ]
+
+    def validate_schedule_enabled(self, value):
+        if value is None:
+            return False
+        else:
+            return bool(value)
 
     def create(self, validated_data):
         task_type = validated_data['task_type']
