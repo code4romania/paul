@@ -1,19 +1,21 @@
+import functools
+import operator
+import requests
+
 from django.contrib.auth.models import User
 from django.conf import settings as django_settings
 from django.utils import timezone
-from api import models
 from mailchimp3 import MailChimp
-from pprint import pprint
 
-from api import views as api_views
-from api import models as api_models
-
+from api import models
 from . import table_fields
 
-import requests
 
+def get_or_create_table(table_name: str, *table_rulesets: str) -> models.Table:
+    
+    if not len(table_rulesets):
+        raise ValueError("No table rulesets provided")
 
-def get_or_create_table(table_type, table_name):
     db = models.Database.objects.last()
     user, _ = User.objects.get_or_create(username='paul-sync')
 
@@ -27,12 +29,15 @@ def get_or_create_table(table_type, table_name):
     table.save()
 
     if created:
-        table_fields_defs = table_fields.TABLE_MAPPING[table_type]
+        # Combine all required table definitions into a single one
+        mappings = [table_fields.TABLE_MAPPING[ruleset] for ruleset in table_rulesets]
+        table_fields_defs = functools.reduce(operator.ior, mappings, {})
+        
         for field_name, field_details in table_fields_defs.items():
             column, _ = models.TableColumn.objects.get_or_create(
                 table=table,
                 name=field_name
-                )
+            )
             column.display_name = field_details['display_name']
             column.field_type = field_details['type']
             column.save()
@@ -109,11 +114,14 @@ def retrieve_lists_data(key,
         "Could not connect to mailchimp. Check <b>KEY</b> "
         " in settings and make sure it has all permissions."]}
 
-    audiences_table = get_or_create_table('audiences', audiences_table_name)
-    audiences_stats_table = get_or_create_table('audiences_stats', audiences_stats_table_name)
-    audience_segments_table = get_or_create_table('audience_segments', audience_segments_table_name)
-    audience_members_table = get_or_create_table('audience_members', audience_members_table_name)
-    segment_members_table = get_or_create_table('segment_members', segment_members_table_name)
+    audiences_table = get_or_create_table(audiences_table_name, 'audiences')
+    audiences_stats_table = get_or_create_table(audiences_stats_table_name, 'audiences_stats')
+    audience_segments_table = get_or_create_table(audience_segments_table_name, 'audience_segments')
+    
+    # TODO: This table should be created by the user, not automatically
+    audience_members_table = get_or_create_table(audience_members_table_name, 'contact_fields', 'audience_members')
+    
+    segment_members_table = get_or_create_table(segment_members_table_name, 'segment_members')
 
     audiences_table_fields_defs = table_fields.TABLE_MAPPING['audiences']
     audiences_stats_table_fields_defs = table_fields.TABLE_MAPPING['audiences_stats']
@@ -379,7 +387,7 @@ def get_emails_from_filtered_view(token, filtered_view, settings):
         else:
             continue_request = False
 
-    audience_members_table = api_models.Table.objects.get(
+    audience_members_table = models.Table.objects.get(
         name=settings.audience_members_table_name)
 
     lists = {}

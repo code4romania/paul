@@ -1,11 +1,3 @@
-CONTACT_FIELDS = {
-    'audience_id': {
-        'display_name': 'Audience ID',
-        'type': 'text'
-    },
-
-}
-
 
 AUDIENCES_FIELDS = {
     'id': {
@@ -214,6 +206,55 @@ AUDIENCE_SEGMENTS_FIELDS = {
         'display_name': 'Options',
         'type': 'text'
     }
+}
+
+
+CONTACT_FIELDS = {
+    'first_name': {
+        'display_name': 'First Name',
+        'type': 'text'
+    },
+    'last_name': {
+        'display_name': 'Last Name',
+        'type': 'text'
+    },
+    # # This field is in AUDIENCE_MEMBERS_FIELDS
+    # 'email_address': {
+    #     'display_name': 'Email Address',
+    #     'type': 'text'
+    # },
+    'telephone': {
+        'display_name': 'Telephone',
+        'type': 'text'
+    },
+    'city': {
+        'display_name': 'City',
+        'type': 'text'
+    },
+    'birthdate': {
+        'display_name': 'Birthdate',
+        'type': 'date'
+    },
+    'project': {
+        'display_name': 'Project',
+        'type': 'text'
+    },
+    'gdpr': {
+        'display_name': 'GDPR',
+        'type': 'date'
+    },
+    # 'gdpr_permission': {
+    #     'display_name': 'GDPR Permission',
+    #     'type': 'text'
+    # },
+    'contact_added_on': {
+        'display_name': 'Added On',
+        'type': 'date'
+    },
+    'contact_source': {
+        'display_name': 'Source',
+        'type': 'text'
+    },
 }
 
 
@@ -490,6 +531,7 @@ TABLE_MAPPING = {
     'audiences': AUDIENCES_FIELDS,
     'audiences_stats': AUDIENCES_STATS_FIELDS,
     'audience_segments': AUDIENCE_SEGMENTS_FIELDS,
+    'contact_fields': CONTACT_FIELDS,
     'audience_members': AUDIENCE_MEMBERS_FIELDS,
     'segment_members': SEGMENT_MEMBERS_FIELDS,
 }
