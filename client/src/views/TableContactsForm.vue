@@ -24,33 +24,6 @@
             </div>
           </div>
           <div class="columns">
-            <!-- <div class="column is-narrow">
-              <VField label="Alege tipul de fișier" rules="required">
-                <VSelect :choices="['csv']" v-model="filetype" />
-              </VField>
-            </div> -->
-            <div class="column is-2">
-              <VField
-                label="Delimitator"
-                labelInfo="Lasă liber pentru autocompletare."
-              >
-                <b-input v-model="delimiter" />
-              </VField>
-            </div>
-            <div class="column is-7">
-              <VField label="Alege fisier" rules="required">
-                <div class="file is-right is-dark is-fullwidth">
-                  <b-upload v-model="file" expanded>
-                    <span class="file-cta">
-                      <span class="file-label">Caută</span>
-                    </span>
-                    <span class="file-name">
-                      <span v-if="file">{{ file.name }}</span>
-                    </span>
-                  </b-upload>
-                </div>
-              </VField>
-            </div>
           </div>
         </div>
 
@@ -90,16 +63,7 @@ export default {
     checkIfManual() {
       this.isManualImport = this.$route.query.manual
 
-      if (this.isManualImport) {
-        if (!this.database) {
-          this.loading = true
-          this.$store.dispatch('data/getDatabase').then(() => {
-            this.loading = false
-          })
-        }
-        this.title = 'Încarcă date într-un tabel existent'
-      } else {
-        this.title = `Importă date și creează tabelul ${JSON.stringify(
+      this.title = `Creează tabelul ${JSON.stringify(
           this.$route.query.name
         )}`
       }

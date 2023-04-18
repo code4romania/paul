@@ -25,6 +25,10 @@
                 <b-radio v-model="type" native-value="table-edit">
                   Creează în platformă
                 </b-radio>
+
+                <b-radio v-model="type" native-value="table-contacts">
+                  Creează tabel contacte gol
+                </b-radio>
               </VField>
             </div>
           </div>
