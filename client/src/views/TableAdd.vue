@@ -23,7 +23,7 @@
                 </b-radio>
 
                 <b-radio v-model="type" native-value="table-edit">
-                  Crează în platformă
+                  Creează în platformă
                 </b-radio>
               </VField>
             </div>
