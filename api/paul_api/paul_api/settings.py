@@ -58,6 +58,7 @@ env = environ.Env(
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
     SENTRY_TRACES_SAMPLE_RATE=(float, 0.0),
+    BACKGROUND_WORKERS=(int, 2),
 )
 environ.Env.read_env(f"{root}/.env")  # reading .env file
 
@@ -191,7 +192,7 @@ AUTHENTICATION_BACKENDS = (
 
 Q_CLUSTER = {
     "name": "paul",
-    "workers": 2,
+    "workers": env("BACKGROUND_WORKERS"),
     "recycle": 100,
     "timeout": 120,  # All tasks must finish in less than 2 minutes
     "retry": 300,  # Retry unfinished tasks after 5 minutes
