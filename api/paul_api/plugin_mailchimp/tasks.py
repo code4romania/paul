@@ -2,13 +2,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
-from api import models as api_models
-from plugin_mailchimp import utils, models, serializers
+from api.models import Table
+from plugin_mailchimp import utils, models
 from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
 def run_sync(request_user, task_id):
-    print('start mailchimp sync task')
     task = models.Task.objects.get(pk=task_id)
     if request_user:
         user = request_user
@@ -57,7 +56,6 @@ def run_sync(request_user, task_id):
     task_result.date_end = timezone.now()
     task_result.duration = task_result.date_end - task_result.date_start
     task_result.save()
-    print('ended mailchimp sync task')
     return task_result.id, task_result.success
 
 
@@ -85,7 +83,7 @@ def run_segmentation(request_user, task_id):
     filtered_view = task.segmentation_task.filtered_view
     primary_table = filtered_view.primary_table
 
-    audience_members_table = api_models.Table.objects.filter(name=settings.audience_members_table_name)
+    audience_members_table = Table.objects.filter(name=settings.audience_members_table_name)
 
     if not audience_members_table.exists():
         success = False

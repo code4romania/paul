@@ -7,19 +7,24 @@ from django.conf import settings as django_settings
 from django.utils import timezone
 from mailchimp3 import MailChimp
 
-from api import models
+from api.models import (
+    Table,
+    Database,
+    TableColumn,
+    Entry
+)
 from . import table_fields
 
 
-def get_or_create_table(table_name: str, *table_rulesets: str) -> models.Table:
+def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
     
     if not len(table_rulesets):
         raise ValueError("No table rulesets provided")
 
-    db = models.Database.objects.last()
+    db = Database.objects.last()
     user, _ = User.objects.get_or_create(username='paul-sync')
 
-    table, created = models.Table.objects.get_or_create(
+    table, created = Table.objects.get_or_create(
         name=table_name,
         database=db,
         owner=user)
@@ -34,7 +39,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> models.Table:
         table_fields_defs = functools.reduce(operator.ior, mappings, {})
         
         for field_name, field_details in table_fields_defs.items():
-            column, _ = models.TableColumn.objects.get_or_create(
+            column, _ = TableColumn.objects.get_or_create(
                 table=table,
                 name=field_name
             )
@@ -47,21 +52,21 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> models.Table:
 
 def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, tag):
     user, _ = User.objects.get_or_create(username='paul-sync')
-    tags_table, created = models.Table.objects.get_or_create(
+    tags_table, created = Table.objects.get_or_create(
         name=audience_tags_table_name,
         database_id=1,
         owner=user,
         active=True)
     if created:
-        models.TableColumn.objects.get_or_create(table=tags_table, name='id', display_name='ID', field_type="int")
-        models.TableColumn.objects.get_or_create(table=tags_table, name='name', display_name='Name', field_type="enum")
-        models.TableColumn.objects.get_or_create(table=tags_table, name='audience_id', display_name='Audience ID', field_type="text")
-        models.TableColumn.objects.get_or_create(table=tags_table, name='audience_name', display_name='Audience Name', field_type="text")
-    tag_exists = models.Entry.objects.filter(table=tags_table, data__id=tag['id']).exists()
+        TableColumn.objects.get_or_create(table=tags_table, name='id', display_name='ID', field_type="int")
+        TableColumn.objects.get_or_create(table=tags_table, name='name', display_name='Name', field_type="enum")
+        TableColumn.objects.get_or_create(table=tags_table, name='audience_id', display_name='Audience ID', field_type="text")
+        TableColumn.objects.get_or_create(table=tags_table, name='audience_name', display_name='Audience Name', field_type="text")
+    tag_exists = Entry.objects.filter(table=tags_table, data__id=tag['id']).exists()
     if not tag_exists:
         tag['audience_id'] = audience_id
         tag['audience_name'] = audience_name
-        models.Entry.objects.create(table=tags_table, data=tag)
+        Entry.objects.create(table=tags_table, data=tag)
         return 'created'
     return 'updated'
 
@@ -130,7 +135,7 @@ def retrieve_lists_data(key,
     segment_members_table_fields_defs = table_fields.TABLE_MAPPING['segment_members']
 
     for list in lists['lists']:
-        audience_exists = models.Entry.objects.filter(
+        audience_exists = Entry.objects.filter(
             table=audiences_table, data__id=list['id'])
 
         if audience_exists:
@@ -138,7 +143,7 @@ def retrieve_lists_data(key,
             stats[audiences_table_name]['updated'] += 1
         else:
             stats[audiences_table_name]['created'] += 1
-            audience_entry = models.Entry.objects.create(
+            audience_entry = Entry.objects.create(
                 table=audiences_table,
                 data={'id': list['id']})
 
@@ -158,14 +163,14 @@ def retrieve_lists_data(key,
         audience_entry.save()
 
         # Sync list stats
-        audience_stats_exists = models.Entry.objects.filter(
+        audience_stats_exists = Entry.objects.filter(
             table=audiences_stats_table, data__audience_id=list['id'])
         if audience_stats_exists:
             audience_stats_entry = audience_stats_exists[0]
             stats[audiences_stats_table_name]['updated'] += 1
         else:
             stats[audiences_stats_table_name]['created'] += 1
-            audience_stats_entry = models.Entry.objects.create(
+            audience_stats_entry = Entry.objects.create(
                 table=audiences_stats_table,
                 data={
                     'audience_id': list['id'],
@@ -188,14 +193,14 @@ def retrieve_lists_data(key,
 
         for segment in list_segments['segments']:
             # print('     Segment:', segment['name'])
-            audience_segments_exists = models.Entry.objects.filter(
+            audience_segments_exists = Entry.objects.filter(
                 table=audience_segments_table, data__audience_id=segment['list_id'])
             if audience_segments_exists:
                 audience_segments_entry = audience_segments_exists[0]
                 stats[audience_segments_table_name]['updated'] += 1
             else:
                 stats[audience_segments_table_name]['created'] += 1
-                audience_segments_entry = models.Entry.objects.create(
+                audience_segments_entry = Entry.objects.create(
                     table=audience_segments_table,
                     data={
                         'audience_id': segment['list_id'],
@@ -218,14 +223,14 @@ def retrieve_lists_data(key,
 
             for member in segment_members['members']:
                 # print('         Segment member:', member['email_address'])
-                segment_members_exists = models.Entry.objects.filter(
+                segment_members_exists = Entry.objects.filter(
                     table=segment_members_table, data__id=member['id'], data__segment_id=segment['id'])
                 if segment_members_exists:
                     segment_members_entry = segment_members_exists[0]
                     stats[segment_members_table_name]['updated'] += 1
                 else:
                     stats[segment_members_table_name]['created'] += 1
-                    segment_members_entry = models.Entry.objects.create(
+                    segment_members_entry = Entry.objects.create(
                         table=segment_members_table,
                         data={
                             'audience_id': member['list_id'],
@@ -238,7 +243,7 @@ def retrieve_lists_data(key,
                     if field in member.keys():
                         if field_def['type'] == 'enum':
                             # print(segment_members_table, field)
-                            table_column = models.TableColumn.objects.get(table=segment_members_table, name=field)
+                            table_column = TableColumn.objects.get(table=segment_members_table, name=field)
                             if not table_column.choices:
                                 table_column.choices = []
                             if 'is_list' in field_def.keys():
@@ -274,14 +279,14 @@ def retrieve_lists_data(key,
         for member in list_members['members']:
             # print('     List member:', member['email_address'])
             member['audience_name'] = list['name']
-            audience_members_exists = models.Entry.objects.filter(
+            audience_members_exists = Entry.objects.filter(
                 table=audience_members_table, data__id=member['id'], data__audience_id=list['id'])
             if audience_members_exists:
                 audience_members_entry = audience_members_exists[0]
                 stats[audience_members_table_name]['updated'] += 1
             else:
                 stats[audience_members_table_name]['created'] += 1
-                audience_members_entry = models.Entry.objects.create(
+                audience_members_entry = Entry.objects.create(
                     table=audience_members_table,
                     data={
                         'audience_id': member['list_id'],
@@ -292,7 +297,7 @@ def retrieve_lists_data(key,
                 field_def = audience_members_table_fields_defs[field]
                 if field in member.keys():
                     if field_def['type'] == 'enum':
-                        table_column = models.TableColumn.objects.get(table=audience_members_table, name=field)
+                        table_column = TableColumn.objects.get(table=audience_members_table, name=field)
                         if not table_column.choices:
                             # print('no choices', table_column)
                             table_column.choices = []
@@ -387,8 +392,9 @@ def get_emails_from_filtered_view(token, filtered_view, settings):
         else:
             continue_request = False
 
-    audience_members_table = models.Table.objects.get(
-        name=settings.audience_members_table_name)
+    audience_members_table = Table.objects.get(
+        name=settings.audience_members_table_name
+    )
 
     lists = {}
     user_hash_field = '{}__{}'.format(audience_members_table.slug, 'id')

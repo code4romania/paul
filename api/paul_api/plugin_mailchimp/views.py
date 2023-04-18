@@ -5,12 +5,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
+from api.views import EntriesPagination
 from plugin_mailchimp import (
     models,
     serializers,
 )
-from api import models as api_models
-from api.views import EntriesPagination
+from api.models import Entry
+
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -85,10 +86,10 @@ class AudiencesView(APIView):
 
     def get(self, request, format=None):
         settings = models.Settings.objects.latest()
-        audiences = api_models.Entry.objects.filter(
+        audiences = Entry.objects.filter(
             table__name=settings.audiences_table_name).values(
             'data__id', 'data__name')
-        tags = api_models.Entry.objects.filter(
+        tags = Entry.objects.filter(
             table__name=settings.audience_tags_table_name).values(
             'data__id', 'data__name', 'data__audience_id')
         response = []

@@ -4,10 +4,9 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django_celery_beat.models import PeriodicTask
 from django_q.models import Schedule
 
-from api import models as api_models
+from api.models import Filter, PluginTaskResult
 
 
 TASK_TYPES = (
@@ -42,7 +41,7 @@ class SegmentationTask(models.Model):
     Description: Model Description
     """
 
-    filtered_view = models.ForeignKey(api_models.Filter, null=True, blank=True, on_delete=models.CASCADE)
+    filtered_view = models.ForeignKey(Filter, null=True, blank=True, on_delete=models.CASCADE)
     tag = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
@@ -80,7 +79,7 @@ def delete_schedule(sender, **kwargs):
         instance.schedule.delete()
 
 
-class TaskResult(api_models.PluginTaskResult):
+class TaskResult(PluginTaskResult):
     """
     Description: Model Description
     """

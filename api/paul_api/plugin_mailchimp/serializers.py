@@ -1,4 +1,3 @@
-import json
 from django.urls import reverse
 from django.utils import timezone
 from django_q.models import Schedule
@@ -6,19 +5,19 @@ from rest_framework import serializers
 
 from api import utils as api_utils
 from api.serializers.users import OwnerSerializer
-from api.serializers import (
-    WritableSerializerMethodField,
-    TaskScheduleSerializer
-    )
-from plugin_mailchimp import models
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
-
+from api.serializers import TaskScheduleSerializer
+from plugin_mailchimp.models import (
+    Settings as MailchimpSettings,
+    Task,
+    SegmentationTask,
+    TaskResult
+)
 
 
 class SettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.Settings
+        model = MailchimpSettings
         fields = [
             "key",
             "audiences_table_name",
@@ -37,7 +36,7 @@ class TaskListSerializer(serializers.ModelSerializer):
         view_name="plugin_mailchimp:task-detail")
 
     class Meta:
-        model = models.Task
+        model = Task
         fields = (
             "url",
             "id",
@@ -59,7 +58,7 @@ class TaskListSerializer(serializers.ModelSerializer):
 class SegmentationTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.SegmentationTask
+        model = SegmentationTask
         fields = [
             "filtered_view",
             # "email_field",
@@ -76,7 +75,7 @@ class TaskSerializer(serializers.ModelSerializer):
     schedule_enabled = serializers.BooleanField(required=False, allow_null=True)
 
     class Meta:
-        model = models.Task
+        model = Task
         fields = [
             "id",
             "name",
@@ -112,7 +111,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
     schedule_enabled = serializers.BooleanField(required=False, allow_null=True)
 
     class Meta:
-        model = models.Task
+        model = Task
         fields = [
             "id",
             "name",
@@ -139,11 +138,11 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             schedule = validated_data.pop('schedule')
 
         if task_type == 'segmentation':
-            segmentation_task = models.SegmentationTask.objects.create(
+            segmentation_task = SegmentationTask.objects.create(
                 **segment_data
             )
 
-        task = models.Task.objects.create(**validated_data)
+        task = Task.objects.create(**validated_data)
 
         if task_type == 'segmentation':
             task.segmentation_task = segmentation_task
@@ -175,10 +174,10 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
         if validated_data['task_type'] == 'segmentation':
             segmentation_task = instance.segmentation_task
-            models.SegmentationTask.objects.filter(
+            SegmentationTask.objects.filter(
                 pk=segmentation_task.pk).update(**segmentation_task_data)
 
-        models.Task.objects.filter(pk=instance.pk).update(**validated_data)
+        Task.objects.filter(pk=instance.pk).update(**validated_data)
 
         if validated_data.get("schedule_enabled"):
             crontab_str = schedule.get('cron', None)
@@ -221,7 +220,7 @@ class TaskResultListSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
 
     class Meta:
-        model = models.TaskResult
+        model = TaskResult
         fields = [
             "url",
             "id",
@@ -252,7 +251,7 @@ class TaskResultSerializer(serializers.ModelSerializer):
     user = OwnerSerializer(read_only=True)
 
     class Meta:
-        model = models.TaskResult
+        model = TaskResult
         fields = [
             "id",
             "name",
