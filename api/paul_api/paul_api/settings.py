@@ -89,7 +89,9 @@ USE_AZURE = (
 
 # Optional plugins, which require a task queue
 PLUGIN_MAILCHIMP_ENABLED = env.bool("PLUGIN_MAILCHIMP_ENABLED", False)
+
 PLUGIN_WOOCOMMERCE_ENABLED = env.bool("PLUGIN_WOOCOMMERCE_ENABLED", False)
+PLUGIN_WOOCOMMERCE_ENABLED = False  # This plugin won't work until we migrate it from Celery to Django Q
 
 
 # Application definition
