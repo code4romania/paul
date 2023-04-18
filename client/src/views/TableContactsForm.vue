@@ -63,10 +63,10 @@ export default {
     checkIfManual() {
       this.isManualImport = this.$route.query.manual
 
-      this.title = `Creează tabelul ${JSON.stringify(
-          this.$route.query.name
-        )}`
-      }
+      this.title = `Importă date și creează tabelul ${JSON.stringify(
+        this.$route.query.name
+      )}`
+
     },
     submit() {
       const formData = new FormData()
