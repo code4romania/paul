@@ -7,14 +7,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_celery_beat', '0014_remove_clockedschedule_enabled'),
+        # ('django_celery_beat', '0014_remove_clockedschedule_enabled'),
         ('plugin_mailchimp', '0016_auto_20201009_0622'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='task',
-            name='periodic_task',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='plugin_tasks', to='django_celery_beat.periodictask'),
-        ),
+        # migrations.AddField(
+        #     model_name='task',
+        #     name='periodic_task',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='plugin_tasks', to='django_celery_beat.periodictask'),
+        # ),
     ]

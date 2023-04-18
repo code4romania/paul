@@ -44,7 +44,6 @@ env = environ.Env(
     # django settings
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
-    CELERY_BROKER_URL=(str, "redis://redis:6379/0"),
     EMAIL_BACKEND=(str, "django.core.mail.backends.console.EmailBackend"),
     EMAIL_HOST=(str, ""),
     EMAIL_PORT=(str, ""),
@@ -117,8 +116,6 @@ INSTALLED_APPS = [
     "crispy_forms",  # doesn't seem to be used
     # "silk",
     "djoser",
-    "django_celery_beat",
-    "django_celery_results",
     "django_q",
     "api",
 ]
@@ -358,11 +355,6 @@ except environ.ImproperlyConfigured:
     EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
     EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 
-# Celery config
-CELERY_BROKER_URL = env("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
-
 # Admin config
 DJANGO_ADMIN_EMAIL = env("DJANGO_ADMIN_EMAIL")
 DJANGO_ADMIN_PASSWORD = env("DJANGO_ADMIN_PASSWORD")
@@ -428,14 +420,6 @@ JAZZMIN_SETTINGS: Dict[str, Any] = {
         "api.filterjointable",
         "api.filter",
         "api.csvimport",
-        "django_celery_beat",
-        "django_celery_beat.clockedschedule",
-        "django_celery_beat.intervalschedule",
-        "django_celery_beat.solarschedule",
-        "django_celery_beat.crontabschedule",
-        "django_celery_beat.periodictask",
-        "django_celery_results",
-        "django_celery_results.taskresult",
         "plugin_mailchimp",
         "plugin_mailchimp.settings",
         "plugin_mailchimp.task",
@@ -464,12 +448,6 @@ JAZZMIN_SETTINGS: Dict[str, Any] = {
         "auth.group": "fas fa-users",
         "auth.user": "fas fa-user",
         "authtoken.tokenproxy": "fas fa-fingerprint",
-        "django_celery_beat.clockedschedule": "fas fa-clock",
-        "django_celery_beat.crontabschedule": "fas fa-calendar",
-        "django_celery_beat.intervalschedule": "fas fa-history",
-        "django_celery_beat.periodictask": "fas fa-hourglass",
-        "django_celery_beat.solarschedule": "fas fa-sun",
-        "django_celery_results.taskresult": "fas fa-check-double",
         "plugin_mailchimp.settings": "fas fa-cogs",
         "plugin_mailchimp.task": "fas fa-tasks",
         "plugin_mailchimp.taskresult": "fas fa-check-double",

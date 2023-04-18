@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from django_q.models import Schedule
 
 from . import (

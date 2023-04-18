@@ -16,10 +16,10 @@ class Migration(migrations.Migration):
             name='settings',
             options={'get_latest_by': 'created_on', 'verbose_name': 'Settings', 'verbose_name_plural': 'Settings'},
         ),
-        migrations.RemoveField(
-            model_name='task',
-            name='periodic_task',
-        ),
+        # migrations.RemoveField(
+        #     model_name='task',
+        #     name='periodic_task',
+        # ),
         migrations.AddField(
             model_name='task',
             name='periodic_task_enabled',
