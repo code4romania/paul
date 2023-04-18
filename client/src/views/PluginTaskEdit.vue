@@ -56,13 +56,13 @@
 
               <div class="column is-12">
                 <VField>
-                  <b-checkbox v-model="model.periodic_task.enabled"
+                  <b-checkbox v-model="model.schedule_enabled"
                     >Periodic task</b-checkbox
                   >
                 </VField>
 
-                <VField v-if="model.periodic_task.enabled">
-                  <CronEditor v-model="model.periodic_task.crontab" />
+                <VField v-if="model.schedule_enabled">
+                  <CronEditor v-model="model.schedule.cron" />
                 </VField>
               </div>
             </div>
@@ -91,9 +91,9 @@ export default {
           filtered_view: null,
           tag: ''
         },
-        periodic_task: {
-          enabled: false,
-          crontab: '*/1 * * * *'
+        schedule_enabled: null,
+        schedule: {
+          cron: '*/1 * * * *'
         }
       },
       idTask: this.$route.params.idTask
@@ -117,10 +117,9 @@ export default {
       this.$store.dispatch('plugin/getTask', this.idTask).then(() => {
         this.model = { ...this.task }
 
-        if (this.model.periodic_task == null) {
-          this.model.periodic_task = {
-            enabled: false,
-            crontab: '*/1 * * * *'
+        if (this.model.schedule == null) {
+          this.model.schedule = {
+            cron: '*/1 * * * *'
           }
         }
       })

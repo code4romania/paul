@@ -1,20 +1,18 @@
+import json
 from django.urls import reverse
 from django.utils import timezone
+from django_q.models import Schedule
 from rest_framework import serializers
-
 
 from api import utils as api_utils
 from api.serializers.users import OwnerSerializer
 from api.serializers import (
     WritableSerializerMethodField,
-    TaskScheduleCrontabSerializer,
     TaskScheduleSerializer
     )
-
 from plugin_mailchimp import models
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
-import json
 
 
 class SettingsSerializer(serializers.ModelSerializer):
@@ -34,15 +32,13 @@ class SettingsSerializer(serializers.ModelSerializer):
 
 class TaskListSerializer(serializers.ModelSerializer):
     last_edit_user = OwnerSerializer(read_only=True)
-    schedule_enabled = serializers.SerializerMethodField()
-
     crontab = serializers.SerializerMethodField()
     url = serializers.HyperlinkedIdentityField(
         view_name="plugin_mailchimp:task-detail")
 
     class Meta:
         model = models.Task
-        fields = [
+        fields = (
             "url",
             "id",
             "name",
@@ -52,24 +48,12 @@ class TaskListSerializer(serializers.ModelSerializer):
             "last_edit_date",
             "last_run_date",
             "last_edit_user",
-        ]
-
+        )
 
     def get_crontab(self, obj):
-        if obj.periodic_task:
-            return '{} {} {} {} {}'.format(
-                obj.periodic_task.crontab.minute,
-                obj.periodic_task.crontab.hour,
-                obj.periodic_task.crontab.day_of_week,
-                obj.periodic_task.crontab.day_of_month,
-                obj.periodic_task.crontab.month_of_year)
-
+        if obj.schedule:
+            return obj.schedule.cron
         return None
-
-    def get_schedule_enabled(self, obj):
-        if obj.periodic_task:
-            return obj.periodic_task.enabled
-        return False
 
 
 class SegmentationTaskSerializer(serializers.ModelSerializer):
@@ -84,13 +68,11 @@ class SegmentationTaskSerializer(serializers.ModelSerializer):
         ]
 
 
-
 class TaskSerializer(serializers.ModelSerializer):
     last_edit_user = OwnerSerializer(read_only=True)
     segmentation_task = SegmentationTaskSerializer(required=False)
     task_results = serializers.SerializerMethodField()
-    periodic_task = TaskScheduleSerializer()
-    schedule_enabled = serializers.SerializerMethodField()
+    schedule = TaskScheduleSerializer(required=False)
 
     class Meta:
         model = models.Task
@@ -100,7 +82,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "task_results",
             "task_type",
             "segmentation_task",
-            "periodic_task",
+            "schedule",
             "schedule_enabled",
             "last_edit_date",
             "last_edit_user",
@@ -112,11 +94,6 @@ class TaskSerializer(serializers.ModelSerializer):
                 "plugin_mailchimp:task-results-list",
                 kwargs={"task_pk": obj.pk}))
 
-    def get_schedule_enabled(self, obj):
-        if obj.periodic_task:
-            return obj.periodic_task.enabled
-        return False
-
 
 class TaskCreateSerializer(serializers.ModelSerializer):
     last_edit_user = serializers.HiddenField(
@@ -124,7 +101,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
     last_edit_date = serializers.HiddenField(default=timezone.now)
     segmentation_task = SegmentationTaskSerializer(
         required=False, allow_null=True)
-    periodic_task = TaskScheduleSerializer(required=False)
+    schedule = TaskScheduleSerializer(required=False, allow_null=True)
 
     class Meta:
         model = models.Task
@@ -135,20 +112,22 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             "segmentation_task",
             "last_edit_date",
             "last_edit_user",
-            "periodic_task"
+            "schedule_enabled",
+            "schedule",
         ]
 
     def create(self, validated_data):
         task_type = validated_data['task_type']
         segment_data = validated_data.pop('segmentation_task')
-        periodic_task = None
+        schedule = None
 
-        if validated_data.get('periodic_task'):
-            periodic_task = validated_data.pop('periodic_task')
+        if validated_data.get('schedule'):
+            schedule = validated_data.pop('schedule')
 
         if task_type == 'segmentation':
             segmentation_task = models.SegmentationTask.objects.create(
-                **segment_data)
+                **segment_data
+            )
 
         task = models.Task.objects.create(**validated_data)
 
@@ -156,39 +135,29 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             task.segmentation_task = segmentation_task
             task.save()
 
-        if periodic_task:
-            crontab_str = periodic_task.pop('crontab')
-            if crontab_str:
-                crontab, _ = CrontabSchedule.objects.get_or_create(
-                    minute=crontab_str.split(' ')[0],
-                    hour=crontab_str.split(' ')[1],
-                    day_of_week=crontab_str.split(' ')[2],
-                    day_of_month=crontab_str.split(' ')[3],
-                    month_of_year=crontab_str.split(' ')[4])
-            task_kwargs = {
-                'task_id': task.id,
-                'request': None
-            }
+        if schedule and validated_data.get('schedule_enabled'):
+            task_args = "{},{}".format(0, task.pk)
+
             if task.task_type == 'sync':
-                task_name = 'plugin_mailchimp.tasks.sync'
+                task_name = 'plugin_mailchimp.tasks.run_sync'
             else:
                 task_name = 'plugin_mailchimp.tasks.run_segmentation'
 
-            periodic_task_object = PeriodicTask.objects.create(
+            task_schedule = Schedule.objects.create(
                 name='[Task] {}'.format(task.name),
-                crontab=crontab,
-                enabled=periodic_task.get('enabled'),
-                task=task_name,
-                kwargs=json.dumps(task_kwargs)
+                cron=schedule.get("cron"),
+                schedule_type=Schedule.CRON,
+                func=task_name,
+                args=task_args,
             )
-            task.periodic_task = periodic_task_object
+            task.schedule = task_schedule
             task.save()
         task.refresh_from_db()
         return task
 
     def update(self, instance, validated_data):
         segmentation_task_data = validated_data.pop('segmentation_task')
-        periodic_task = validated_data.pop('periodic_task')
+        schedule = validated_data.pop('schedule')
 
         if validated_data['task_type'] == 'segmentation':
             segmentation_task = instance.segmentation_task
@@ -197,51 +166,35 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
         models.Task.objects.filter(pk=instance.pk).update(**validated_data)
 
-        if periodic_task:
-            crontab_str = periodic_task.get('crontab', None)
+        if validated_data.get("schedule_enabled"):
+            crontab_str = schedule.get('cron', None)
             if instance.task_type == 'sync':
-                task_name = 'plugin_mailchimp.tasks.sync'
+                task_name = 'plugin_mailchimp.tasks.run_sync'
             else:
                 task_name = 'plugin_mailchimp.tasks.run_segmentation'
 
-            try:
-                crontab, _ = CrontabSchedule.objects.get_or_create(
-                    minute=crontab_str.split(' ')[0],
-                    hour=crontab_str.split(' ')[1],
-                    day_of_week=crontab_str.split(' ')[2],
-                    day_of_month=crontab_str.split(' ')[3],
-                    month_of_year=crontab_str.split(' ')[4])
-            except:
-                crontab = CrontabSchedule.objects.filter(
-                    minute=crontab_str.split(' ')[0],
-                    hour=crontab_str.split(' ')[1],
-                    day_of_week=crontab_str.split(' ')[2],
-                    day_of_month=crontab_str.split(' ')[3],
-                    month_of_year=crontab_str.split(' ')[4])[0]
+            task_args = "{},{}".format(0, instance.pk)
 
-            task_kwargs = {
-                'task_id': instance.id,
-                'request': None
-            }
-
-            if instance.periodic_task:
-                periodic_task_object = instance.periodic_task
-                periodic_task_object.enabled = periodic_task.get('enabled')
-                periodic_task_object.crontab = crontab
-                periodic_task_object.kwargs = json.dumps(task_kwargs)
-                periodic_task_object.task = task_name
-                periodic_task_object.save()
+            if instance.schedule:
+                task_schedule = instance.schedule
+                task_schedule.cron = crontab_str
+                task_schedule.args = task_args
+                task_schedule.task = task_name
+                task_schedule.save()
             else:
-
-                periodic_task_object = PeriodicTask.objects.create(
+                task_schedule = Schedule.objects.create(
                     name='[Task] {}'.format(instance.name),
-                    crontab=crontab,
-                    enabled=periodic_task.get('enabled'),
-                    task=task_name,
-                    kwargs=json.dumps(task_kwargs)
+                    cron=crontab_str,
+                    schedule_type=Schedule.CRON,
+                    func=task_name,
+                    args=task_args,
                 )
-                instance.periodic_task = periodic_task_object
+                instance.schedule = task_schedule
+                instance.schedule_enabled = True
                 instance.save()
+        elif instance.schedule:
+            instance.schedule_enabled = False
+            instance.schedule.delete()
 
         instance.refresh_from_db()
         return instance

@@ -8,7 +8,7 @@ COPY ./client .
 RUN npm ci --no-audit --ignore-scripts
 RUN npm run build
 
-FROM python:3.10-slim as build
+FROM python:3.10.11-slim as build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -20,7 +20,7 @@ RUN pip install --upgrade pip setuptools cython
 COPY ./api/requirements.txt .
 RUN pip install --user -r requirements.txt
 
-FROM python:3.10-slim
+FROM python:3.10.11-slim
 
 ENV PYTHONUNBUFFERED=1
 ENV RUN_FEED=no

@@ -5,8 +5,10 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import PeriodicTask
+from django_q.models import Schedule
 
 from api import models as api_models
+
 
 TASK_TYPES = (("sync", "Import tables"), ("segmentation", "Send segmentation"))
 
@@ -16,15 +18,17 @@ class Settings(models.Model):
     Description: Model Description
     """
 
-    key = models.CharField(max_length=255)
+    key = models.CharField(max_length=255, help_text="Mailchimp API Key")
     audiences_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences")
     audiences_stats_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Stats")
     audience_segments_table_name = models.CharField(max_length=255, default="[mailchimp] Audience Segments")
     audience_members_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Members")
     segment_members_table_name = models.CharField(max_length=255, default="[mailchimp] Segments Members")
     audience_tags_table_name = models.CharField(max_length=255, default="[mailchimp] Audience Tags")
+    created_on = models.DateTimeField(blank=True, null=False, editable=False, auto_now_add=timezone.now)
 
     class Meta:
+        get_latest_by = "created_on"
         verbose_name = _("Settings")
         verbose_name_plural = _("Settings")
 
@@ -51,12 +55,13 @@ class Task(models.Model):
 
     segmentation_task = models.ForeignKey(SegmentationTask, null=True, blank=True, on_delete=models.CASCADE)
 
-    last_edit_date = models.DateTimeField(auto_now=True)
+    last_edit_date = models.DateTimeField(auto_now=True)  # TODO: The last edit is wrongly updated on cron too
     last_run_date = models.DateTimeField(null=True)
     last_edit_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks")
 
-    periodic_task = models.ForeignKey(
-        PeriodicTask, null=True, blank=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks"
+    schedule_enabled = models.BooleanField(default=False, db_index=True)
+    schedule = models.ForeignKey(
+        Schedule, null=True, blank=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks"
     )
 
     class Meta:
@@ -65,10 +70,10 @@ class Task(models.Model):
 
 
 @receiver(post_delete, sender=Task)
-def delete_periodic_task(sender, **kwargs):
+def delete_schedule(sender, **kwargs):
     instance = kwargs.get("instance")
-    if instance.periodic_task:
-        instance.periodic_task.delete()
+    if instance.schedule:
+        instance.schedule.delete()
 
 
 class TaskResult(api_models.PluginTaskResult):

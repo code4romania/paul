@@ -3,28 +3,18 @@ from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
 from api import models as api_models
-
-from celery import shared_task
 from plugin_mailchimp import utils, models, serializers
-
-from .table_fields import AUDIENCE_MEMBERS_FIELDS
-
-
-@shared_task
-def hello(a):
-    print(a)
-    return a
+from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
-@shared_task
-def sync(request, task_id):
+def run_sync(request_user, task_id):
     print('start mailchimp sync task')
     task = models.Task.objects.get(pk=task_id)
-    if hasattr(request, 'user'):
-        user = request.user
+    if request_user:
+        user = request_user
     else:
         user, _ = User.objects.get_or_create(username='paul-sync')
-    settings = models.Settings.objects.last()
+    settings = models.Settings.objects.latest()
 
     task_result = models.TaskResult.objects.create(
         user=user,
@@ -39,7 +29,7 @@ def sync(request, task_id):
     AUDIENCE_TAGS_TABLE_NAME = settings.audience_tags_table_name
 
     try:
-        success, stats = utils.run_sync(
+        success, stats = utils.retrieve_lists_data(
             KEY,
             AUDIENCES_TABLE_NAME,
             AUDIENCES_STATS_TABLE_NAME,
@@ -71,8 +61,7 @@ def sync(request, task_id):
     return task_result.id, task_result.success
 
 
-@shared_task
-def run_segmentation(request, task_id):
+def run_segmentation(request_user, task_id):
     task = models.Task.objects.get(pk=task_id)
     success = True
     stats = {
@@ -81,13 +70,13 @@ def run_segmentation(request, task_id):
         'details': []
     }
 
-    if hasattr(request, 'user'):
-        user = request.user
+    if request_user:
+        user = request_user
     else:
         user, _ = User.objects.get_or_create(username='paul-sync')
 
     token, _ = Token.objects.get_or_create(user=user)
-    settings = models.Settings.objects.last()
+    settings = models.Settings.objects.latest()
 
     task_result = models.TaskResult.objects.create(
         user=user,

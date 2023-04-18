@@ -53,10 +53,12 @@ env = environ.Env(
     EMAIL_USE_TLS=(str, ""),
     IS_CONTAINERIZED=(bool, False),
     LANGUAGE_CODE=(str, "ro"),
+    TIME_ZONE=(str, "Europe/Bucharest"),
     SECRET_KEY=(str, "secret"),
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
     SENTRY_TRACES_SAMPLE_RATE=(float, 0.0),
+    BACKGROUND_WORKERS=(int, 2),
 )
 environ.Env.read_env(f"{root}/.env")  # reading .env file
 
@@ -88,16 +90,14 @@ USE_AZURE = (
 
 # Optional plugins, which require a task queue
 PLUGIN_MAILCHIMP_ENABLED = env.bool("PLUGIN_MAILCHIMP_ENABLED", False)
+
 PLUGIN_WOOCOMMERCE_ENABLED = env.bool("PLUGIN_WOOCOMMERCE_ENABLED", False)
+PLUGIN_WOOCOMMERCE_ENABLED = False  # This plugin won't work until we migrate it from Celery to Django Q
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "api",
-    "rest_framework",
-    "rest_framework_tricks",
-    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -105,17 +105,22 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "guardian",
-    "rest_framework.authtoken",
     "django_extensions",
     "storages",
+    "guardian",
+    "rest_framework",
+    "rest_framework_tricks",
+    "rest_framework.authtoken",
+    "jazzmin",
     "corsheaders",
     "django_filters",
-    "crispy_forms",
+    "crispy_forms",  # doesn't seem to be used
     # "silk",
     "djoser",
     "django_celery_beat",
     "django_celery_results",
+    "django_q",
+    "api",
 ]
 
 if PLUGIN_WOOCOMMERCE_ENABLED:
@@ -181,6 +186,28 @@ AUTHENTICATION_BACKENDS = (
     "guardian.backends.ObjectPermissionBackend",
 )
 
+
+# Django Q2
+# https://django-q2.readthedocs.io/en/master/brokers.html
+
+Q_CLUSTER = {
+    "name": "paul",
+    "workers": env("BACKGROUND_WORKERS"),
+    "recycle": 100,
+    "timeout": 120,  # All tasks must finish in less than 2 minutes
+    "retry": 300,  # Retry unfinished tasks after 5 minutes
+    "compress": True,
+    "save_limit": 200,
+    "queue_limit": 4,
+    "cpu_affinity": 1,
+    "label": "Django Q2",
+    "orm": "default",
+    "poll": 2,
+    "guard_cycle": 3,
+    "catch_up": False,  # https://django-q2.readthedocs.io/en/latest/schedules.html#missed-schedules
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
@@ -205,7 +232,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = env("LANGUAGE_CODE")
 
-TIME_ZONE = "Europe/Bucharest"
+TIME_ZONE = env("TIME_ZONE")
 
 USE_I18N = True
 

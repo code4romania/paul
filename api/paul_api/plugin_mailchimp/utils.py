@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.conf import settings as django_settings
 from django.utils import timezone
 from api import models
 from mailchimp3 import MailChimp
@@ -60,7 +61,7 @@ def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, t
     return 'updated'
 
 
-def run_sync(key,
+def retrieve_lists_data(key,
              audiences_table_name,
              audiences_stats_table_name,
              audience_segments_table_name,
@@ -341,7 +342,7 @@ def add_list_to_segment(settings,
             except:
                 success = False
                 stats['errors'] += 1
-                stats['details'].append('{} could not be updated (mailchimp error)'.format(email))
+                stats['details'].append('{} could not be updated (mailchimp error)'.format(subscriber_hash))
 
     if stats['success']:
         stats['details'].append('<b>{}</b> members were updated with tag <b>{}</b>'.format(stats['success'], tag))
@@ -357,7 +358,11 @@ def get_emails_from_filtered_view(token, filtered_view, settings):
     headers = {'Authorization': 'Token ' + token.key}
 
     while continue_request:
-        url = 'http://api:8000/api/filters/{}/entries/?page={}'.format(filtered_view.pk, page)
+        url = 'http://{}/api/filters/{}/entries/?page={}'.format(
+            django_settings.ALLOWED_HOSTS[0],
+            filtered_view.pk, 
+            page
+        )
         r = requests.get(url, headers=headers).json()
         results += r['results']
         if r['links']['next']:
