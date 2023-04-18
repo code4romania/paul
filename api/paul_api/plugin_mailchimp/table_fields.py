@@ -1,3 +1,12 @@
+CONTACT_FIELDS = {
+    'audience_id': {
+        'display_name': 'Audience ID',
+        'type': 'text'
+    },
+
+}
+
+
 AUDIENCES_FIELDS = {
     'id': {
         'display_name': 'Id',
@@ -91,6 +100,7 @@ AUDIENCES_FIELDS = {
     # },
 }
 
+
 AUDIENCES_STATS_FIELDS = {
     'audience_id': {
         'display_name': 'Audience ID',
@@ -165,6 +175,8 @@ AUDIENCES_STATS_FIELDS = {
         'type': 'int'
     }
 }
+
+
 AUDIENCE_SEGMENTS_FIELDS = {
     'audience_id': {
         'display_name': 'Audience ID',
@@ -204,6 +216,7 @@ AUDIENCE_SEGMENTS_FIELDS = {
     }
 }
 
+
 AUDIENCE_MEMBERS_FIELDS = {
     'audience_id': {
         'display_name': 'Audience ID',
@@ -225,6 +238,10 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Unique Email Id',
         'type': 'text'
     },
+    'full_name': {  # new
+        'display_name': 'Full Name',
+        'type': 'text'
+    },
     'web_id': {
         'display_name': 'Web Id',
         'type': 'int'
@@ -237,24 +254,57 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Status',
         'type': 'enum'
     },
+    'unsubscribe_reason': {  # new
+        'display_name': 'Unsubscribe Reason',
+        'type': 'text'
+    },
+    'consents_to_one_to_one_messaging': {  # new
+        'display_name': 'One to One',
+        'type': 'bool'
+    },
     'merge_fields': {
         'display_name': 'Merge Fields',
         'type': 'text'
     },
-    'stats_click': {
-        'display_name': 'Stats Click',
-        'type': 'int',
-        'mailchimp_parent_key_name': 'stats',
-        'mailchimp_key_name': 'avg_click_rate',
+    'interests': {  # new
+        'display_name': 'Interests',
+        'type': 'text'
     },
-    'stats_open': {
+    'avg_open_rate': {
         'display_name': 'Stats Open',
         'type': 'int',
         'mailchimp_parent_key_name': 'stats',
         'mailchimp_key_name': 'avg_open_rate',
     },
+    'avg_click_rate': {
+        'display_name': 'Stats Click',
+        'type': 'int',
+        'mailchimp_parent_key_name': 'stats',
+        'mailchimp_key_name': 'avg_click_rate',
+    },
+    'total_revenue': {  # new
+        'display_name': 'Total Revenue',
+        'type': 'int',
+        'mailchimp_root_key_name': 'stats',
+        'mailchimp_parent_key_name': 'ecommerce_data',
+        'mailchimp_key_name': 'total_revenue',
+    },
+    'total_orders': {  # new
+        'display_name': 'Total Orders',
+        'type': 'int',
+        'mailchimp_root_key_name': 'stats',
+        'mailchimp_parent_key_name': 'ecommerce_data',
+        'mailchimp_key_name': 'number_of_orders',
+    },
+    'total_orders': {  # new
+        'display_name': 'Currency',
+        'type': 'text',
+        'mailchimp_root_key_name': 'stats',
+        'mailchimp_parent_key_name': 'ecommerce_data',
+        'mailchimp_key_name': 'currency_code',
+    },
     'ip_signup': {
-        'display_name': 'Ip Signup',
+        'display_name': 'IP Signup',
         'type': 'text'
     },
     'timestamp_signup': {
@@ -262,7 +312,7 @@ AUDIENCE_MEMBERS_FIELDS = {
         'type': 'date'
     },
     'ip_opt': {
-        'display_name': 'Ip Opt',
+        'display_name': 'IP Opt',
         'type': 'text'
     },
     'timestamp_opt': {
@@ -282,7 +332,7 @@ AUDIENCE_MEMBERS_FIELDS = {
         'type': 'enum'
     },
     'vip': {
-        'display_name': 'Vip',
+        'display_name': 'VIP',
         'type': 'bool'
     },
     'email_client': {
@@ -290,10 +340,37 @@ AUDIENCE_MEMBERS_FIELDS = {
         'type': 'text'
     },
     'location_country': {
-        'display_name': 'Location',
+        'display_name': 'Country',
         'type': 'text',
         'mailchimp_parent_key_name': 'location',
         'mailchimp_key_name': 'country_code',
+    },
+    'location_region': {  # new
+        'display_name': 'Region',
+        'type': 'text',
+        'mailchimp_parent_key_name': 'location',
+        'mailchimp_key_name': 'region',
+    },
+
+    #
+    # TODO: marketing_permissions
+    'marketing_permissions': {  # new  # TODO: Fix it
+        'display_name': 'Marketing Permissions',
+        'type': 'text',
+    },
+    # "marketing_permissions": [
+    #   {
+    #     "marketing_permission_id": "string",
+    #     "text": "string",
+    #     "enabled": true
+    #   }
+    # ],
+
+    'last_note': {  # new
+        'display_name': 'Last Note',
+        'type': 'text',
+        'mailchimp_parent_key_name': 'last_note',
+        'mailchimp_key_name': 'note',
     },
     'source': {
         'display_name': 'Source',
@@ -308,9 +385,8 @@ AUDIENCE_MEMBERS_FIELDS = {
         'type': 'enum',
         'is_list': True
     },
-
-
 }
+
 
 SEGMENT_MEMBERS_FIELDS = {
     'audience_id': {
@@ -407,9 +483,8 @@ SEGMENT_MEMBERS_FIELDS = {
         'mailchimp_parent_key_name': 'location',
         'mailchimp_key_name': 'country_code',
     }
-
-
 }
+
 
 TABLE_MAPPING = {
     'audiences': AUDIENCES_FIELDS,

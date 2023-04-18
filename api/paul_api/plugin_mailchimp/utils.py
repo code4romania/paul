@@ -142,7 +142,10 @@ def retrieve_lists_data(key,
                 else:
                     audience_entry.data[field] = list[field]
             except:
-                audience_entry.data[field] = list[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+                if 'mailchimp_root_key_name' in field_def:
+                    audience_entry.data[field] = list[field_def['mailchimp_root_key_name']][field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+                else:
+                    audience_entry.data[field] = list[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
 
         audience_entry.save()
 
@@ -248,7 +251,10 @@ def retrieve_lists_data(key,
                                 segment_members_entry.data[field] = member[field]
                     else:
                         try:
-                            segment_members_entry.data[field] = member[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+                            if 'mailchimp_root_key_name' in field_def:
+                                segment_members_entry.data[field] = member[field_def['mailchimp_root_key_name']][field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+                            else:
+                                segment_members_entry.data[field] = member[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
                         except Exception as e:
                                 pass
 
@@ -292,7 +298,7 @@ def retrieve_lists_data(key,
                                 table_column.choices.append(member[field])
                                 # print('append', member[field])
                                 table_column.save()
-                    if 'is_list' in field_def.keys():
+                    if 'is_list' in field_def.keys():  # TODO: Not ok
                         items = []
                         for item in member[field]:
                             tag_status = check_tag_is_present(audience_tags_table_name, list['id'], list['name'], item)
@@ -306,7 +312,10 @@ def retrieve_lists_data(key,
                             audience_members_entry.data[field] = member[field]
                 else:
                     try:
-                        audience_members_entry.data[field] = member[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+                        if 'mailchimp_root_key_name' in field_def:
+                            audience_members_entry.data[field] = member[field_def['mailchimp_root_key_name']][field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+                        else:
+                            audience_members_entry.data[field] = member[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
                     except Exception as e:
                         pass
 

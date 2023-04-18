@@ -252,6 +252,8 @@ class TableViewSet(viewsets.ModelViewSet):
         url_path="contacts",
     )
     def create_contacts_table(self, request):
+        # {"database":1,"name":"test5","active":true,"table_type":"C"}
+        
         return Response('{"id": 1}')
 
     @action(
