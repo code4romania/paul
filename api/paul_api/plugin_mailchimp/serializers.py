@@ -136,10 +136,8 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             task.save()
 
         if schedule and validated_data.get('schedule_enabled'):
-            task_kwargs = {
-                'task_id': task.id,
-                'request_user': None
-            }
+            task_args = "{},{}".format(0, task.pk)
+
             if task.task_type == 'sync':
                 task_name = 'plugin_mailchimp.tasks.run_sync'
             else:
@@ -147,10 +145,10 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
             task_schedule = Schedule.objects.create(
                 name='[Task] {}'.format(task.name),
-                cron=validated_data.get("cron"),
+                cron=schedule.get("cron"),
                 schedule_type=Schedule.CRON,
                 func=task_name,
-                kwargs=json.dumps(task_kwargs)
+                args=task_args,
             )
             task.schedule = task_schedule
             task.save()
