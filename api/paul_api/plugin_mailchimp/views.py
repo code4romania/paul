@@ -1,7 +1,6 @@
-from django_q.tasks import async_task, result
+from django_q.tasks import async_task
 from rest_framework import viewsets, mixins
 from rest_framework_tricks import filters
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -9,7 +8,6 @@ from rest_framework.decorators import action
 from plugin_mailchimp import (
     models,
     serializers,
-    tasks,
 )
 from api import models as api_models
 from api.views import EntriesPagination
@@ -24,7 +22,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         'task_type': 'task_type',
         'last_edit_date': 'last_edit_date',
         'last_run_date': 'last_run_date',
-        'schedule_enabled': 'periodic_task__enabled',
         'last_edit_user.username': 'last_edit_user__username',
     }
 
@@ -45,16 +42,9 @@ class TaskViewSet(viewsets.ModelViewSet):
         task = self.get_object()
 
         if task.task_type == 'sync':
-            # tasks.run_sync.apply_async(args=[None, task.id])
-            # task_result_id = tasks.run_sync(request, task.id)
             async_task('plugin_mailchimp.tasks.run_sync', request.user, task.id)
         else:
-            # task_result_id, _ = tasks.run_segmentation(request, task.id)
             async_task('plugin_mailchimp.tasks.run_segmentation', request.user, task.id)
-
-        # task_result = models.TaskResult.objects.get(pk=task_result_id)
-        # result = serializers.TaskResultSerializer(
-            # task_result, context={'request': request})
         result = {'data': {}}
         return Response(result)
 
@@ -69,7 +59,6 @@ class TaskResultViewSet(viewsets.ReadOnlyModelViewSet):
         'status': 'status',
         'date_start': 'date_start',
         'success': 'success',
-
     }
 
     def get_serializer_class(self):
@@ -84,6 +73,7 @@ class TaskResultViewSet(viewsets.ReadOnlyModelViewSet):
 class SettingsViewSet(mixins.RetrieveModelMixin,
                       mixins.UpdateModelMixin,
                       viewsets.GenericViewSet):
+    
     queryset = models.Settings.objects.all()
     serializer_class = serializers.SettingsSerializer
 

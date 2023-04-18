@@ -342,7 +342,7 @@ def add_list_to_segment(settings,
             except:
                 success = False
                 stats['errors'] += 1
-                stats['details'].append('{} could not be updated (mailchimp error)'.format(email))
+                stats['details'].append('{} could not be updated (mailchimp error)'.format(subscriber_hash))
 
     if stats['success']:
         stats['details'].append('<b>{}</b> members were updated with tag <b>{}</b>'.format(stats['success'], tag))

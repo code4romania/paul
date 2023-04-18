@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
+from django_q.models import Schedule
 
 from . import (
     users,
@@ -11,7 +12,7 @@ from . import (
     charts,
     csvs,
     cards
-    )
+)
 
 
 class WritableSerializerMethodField(serializers.SerializerMethodField):
@@ -31,33 +32,9 @@ class WritableSerializerMethodField(serializers.SerializerMethodField):
         return {self.field_name: data}
 
 
-class TaskScheduleCrontabSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CrontabSchedule
-        fields = [
-            "minute",
-            "hour",
-            "day_of_week",
-            "day_of_month",
-            "month_of_year"
-        ]
-
-
 class TaskScheduleSerializer(serializers.ModelSerializer):
-    crontab = WritableSerializerMethodField()
-
     class Meta:
-        model = PeriodicTask
-        fields = [
-            "enabled",
-            "crontab"
-        ]
-
-    def get_crontab(self, obj):
-        return '{} {} {} {} {}'.format(
-            obj.crontab.minute,
-            obj.crontab.hour,
-            obj.crontab.day_of_week,
-            obj.crontab.day_of_month,
-            obj.crontab.month_of_year)
+        model = Schedule
+        fields = (
+            "cron",
+        )
