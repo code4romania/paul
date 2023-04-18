@@ -246,6 +246,15 @@ class TableViewSet(viewsets.ModelViewSet):
         return Response(response)
 
     @action(
+        detail=False,
+        methods=["post"],
+        name=_("Create contacts table"),
+        url_path="contacts",
+    )
+    def create_contacts_table(self, request):
+        return Response('{"id": 1}')
+
+    @action(
         detail=True,
         methods=["post"],
         name=_("CSV manual import view"),
