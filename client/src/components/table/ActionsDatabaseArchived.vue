@@ -10,6 +10,8 @@
       :path="{ name: 'table-edit', params: { idTable: props.id } }"
     />
     
+    <ActionButtonUnarchive :idTable="props.id" />
+
     <ActionButtonDelete
       dialogTitle="Do you wish to delete this table?"
       dialogMessage="This operation permanently removes all the entries of this table. Please check the data before proceeding."
@@ -20,6 +22,7 @@
 </template>
 
 <script>
+import ActionButtonUnarchive from './ActionButtonUnarchive'
 import ActionButtonDownload from './ActionButtonDownload'
 import ActionButtonDelete from './ActionButtonDelete'
 import ActionButtonGoto from './ActionButtonGoto'
@@ -27,6 +30,7 @@ import ActionButtonGoto from './ActionButtonGoto'
 export default {
   components: {
     ActionButtonGoto,
+    ActionButtonUnarchive,
     ActionButtonDownload,
     ActionButtonDelete
   },
