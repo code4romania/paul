@@ -46,6 +46,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
     active = serializers.BooleanField(default=True)
     fields = TableColumnSerializer(many=True, required=False)
     id = serializers.IntegerField(required=False)
+    table_type = serializers.CharField(required=False)
 
     class Meta:
         model = models.Table
@@ -60,6 +61,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
             "last_edit_user",
             "last_edit_date",
             "active",
+            "table_type",
         ]
         validators = [
             serializers.UniqueTogetherValidator(

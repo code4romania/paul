@@ -158,6 +158,14 @@ class Table(models.Model):
     """
     Description: Model Description
     """
+
+    TYPE_REGULAR = ""
+    TYPE_CONTACTS = "C"
+    TYPES = (
+        (TYPE_REGULAR, _("regular")),
+        (TYPE_CONTACTS, _("contacts")),
+    )
+
     name = models.CharField(_("name"), max_length=100)
     slug = models.SlugField(_("slug"), max_length=50, null=True, blank=True)
     database = models.ForeignKey(
@@ -179,7 +187,8 @@ class Table(models.Model):
         related_name="last_table_edits",
         verbose_name=_("last edit user")
     )
-
+    table_type = models.CharField(
+        _("type"), max_length=1, default=TYPE_REGULAR, null=False, blank=True, choices=TYPES)
     filters = models.JSONField(
         verbose_name=_("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
