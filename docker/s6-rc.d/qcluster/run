@@ -1,0 +1,4 @@
+#!/command/with-contenv sh
+cd /var/www/paul_api
+
+python manage.py qcluster
