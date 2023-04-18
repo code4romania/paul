@@ -10,7 +10,11 @@ from django_q.models import Schedule
 from api import models as api_models
 
 
-TASK_TYPES = (("sync", "Import tables"), ("segmentation", "Send segmentation"))
+TASK_TYPES = (
+    ("sync", "Import data from Mailchimp"), 
+    ("segmentation", "Send segmentation to Mailchimp"),
+    ("upload", "Send contacts to Mailchimp (WIP/TODO)"),
+)
 
 
 class Settings(models.Model):
@@ -51,7 +55,7 @@ class Task(models.Model):
     """
 
     name = models.CharField(max_length=255, null=True, blank=True)
-    task_type = models.CharField(max_length=100, choices=TASK_TYPES)
+    task_type = models.CharField(max_length=100, choices=TASK_TYPES, db_index=True)  # TODO: limit this field len
 
     segmentation_task = models.ForeignKey(SegmentationTask, null=True, blank=True, on_delete=models.CASCADE)
 
