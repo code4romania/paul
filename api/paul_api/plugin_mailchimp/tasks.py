@@ -3,21 +3,27 @@ from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
 from api.models import Table
-from plugin_mailchimp import utils, models
+from plugin_mailchimp import utils
+from plugin_mailchimp.models import (
+    Task,
+    TaskResult,
+    Settings as MailchimpSettings,
+)
 from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
 def run_sync(request_user, task_id):
-    task = models.Task.objects.get(pk=task_id)
+    task = Task.objects.get(pk=task_id)
     if request_user:
         user = request_user
     else:
         user, _ = User.objects.get_or_create(username='paul-sync')
-    settings = models.Settings.objects.latest()
+    settings = MailchimpSettings.objects.latest()
 
-    task_result = models.TaskResult.objects.create(
+    task_result = TaskResult.objects.create(
         user=user,
-        task=task)
+        task=task
+    )
 
     KEY = settings.key
     AUDIENCES_TABLE_NAME = settings.audiences_table_name
@@ -60,7 +66,7 @@ def run_sync(request_user, task_id):
 
 
 def run_segmentation(request_user, task_id):
-    task = models.Task.objects.get(pk=task_id)
+    task = Task.objects.get(pk=task_id)
     success = True
     stats = {
         'success': 0,
@@ -74,9 +80,9 @@ def run_segmentation(request_user, task_id):
         user, _ = User.objects.get_or_create(username='paul-sync')
 
     token, _ = Token.objects.get_or_create(user=user)
-    settings = models.Settings.objects.latest()
+    settings = MailchimpSettings.objects.latest()
 
-    task_result = models.TaskResult.objects.create(
+    task_result = TaskResult.objects.create(
         user=user,
         task=task)
 
