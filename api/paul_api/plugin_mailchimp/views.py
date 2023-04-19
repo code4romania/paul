@@ -49,7 +49,12 @@ class TaskViewSet(viewsets.ModelViewSet):
         else:
             task_name = 'plugin_mailchimp.tasks.run_sync'
 
-        async_task(task_name, request.user, task.id)
+        async_task_id = async_task(task_name, request.user.id, task.id)
+
+        # TODO: keep the async_task_id somewhere in order to be able to delete it
+        # task.async_task_id = async_task_id
+        # task.save()
+
         result = {'data': {}}
         return Response(result)
 

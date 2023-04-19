@@ -12,13 +12,20 @@ from plugin_mailchimp.models import (
 from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
-def run_contacts_to_mailchimp(request_user, task_id):
-    task = Task.objects.get(pk=task_id)
-    if request_user:
-        user = request_user
+def run_contacts_to_mailchimp(request_user_id, task_id):
+    if request_user_id:
+        try:
+            user = User.objects.get(pk=request_user_id)
+        except User.DoesNotExist:
+            user = None
     else:
+        user = None
+
+    if not user:
         user, _ = User.objects.get_or_create(username='paul-sync')
 
+    print("****** TASK ID = ", task_id)
+    task = Task.objects.get(pk=task_id)
     # TODO: Work in progress...
     task_result = TaskResult.objects.create(
         user=user,
@@ -30,14 +37,21 @@ def run_contacts_to_mailchimp(request_user, task_id):
     return task_result.id, task_result.success
 
 
-def run_sync(request_user, task_id):
-    task = Task.objects.get(pk=task_id)
-    if request_user:
-        user = request_user
-    else:
-        user, _ = User.objects.get_or_create(username='paul-sync')
-    settings = MailchimpSettings.objects.latest()
+def run_sync(request_user_id, task_id):
 
+    if request_user_id:
+        try:
+            user = User.objects.get(pk=request_user_id)
+        except User.DoesNotExist:
+            user = None
+    else:
+        user = None
+
+    if not user:
+        user, _ = User.objects.get_or_create(username='paul-sync')
+
+    settings = MailchimpSettings.objects.latest()
+    task = Task.objects.get(pk=task_id)
     task_result = TaskResult.objects.create(
         user=user,
         task=task
@@ -83,7 +97,7 @@ def run_sync(request_user, task_id):
     return task_result.id, task_result.success
 
 
-def run_segmentation(request_user, task_id):
+def run_segmentation(request_user_id, task_id):
     task = Task.objects.get(pk=task_id)
     success = True
     stats = {
@@ -92,9 +106,15 @@ def run_segmentation(request_user, task_id):
         'details': []
     }
 
-    if request_user:
-        user = request_user
+    if request_user_id:
+        try:
+            user = User.objects.get(pk=request_user_id)
+        except User.DoesNotExist:
+            user = None
     else:
+        user = None
+
+    if not user:
         user, _ = User.objects.get_or_create(username='paul-sync')
 
     token, _ = Token.objects.get_or_create(user=user)

@@ -68,6 +68,7 @@ class Task(models.Model):
     last_run_date = models.DateTimeField(null=True)
     last_edit_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks")
 
+    async_task_id = models.CharField(default="", max_length=32, blank=True, null=False, editable=False)  # TODO
     schedule_enabled = models.BooleanField(default=False, db_index=True)
     schedule = models.ForeignKey(
         Schedule, null=True, blank=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks"
@@ -88,6 +89,8 @@ def delete_schedule(sender, **kwargs):
     instance = kwargs.get("instance")
     if instance.schedule:
         instance.schedule.delete()
+    # if instance.async_task_id:
+    #     QTask.objects.filter(id=instance.async_task_id).delete()
 
 
 class TaskResult(PluginTaskResult):
