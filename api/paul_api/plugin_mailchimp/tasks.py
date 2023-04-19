@@ -64,24 +64,8 @@ def run_sync(request_user_id, task_id):
         task=task
     )
 
-    KEY = settings.key
-    AUDIENCES_TABLE_NAME = settings.audiences_table_name
-    AUDIENCES_STATS_TABLE_NAME = settings.audiences_stats_table_name
-    AUDIENCE_MEMBERS_TABLE_NAME = settings.audience_members_table_name
-    AUDIENCE_SEGMENTS_TABLE_NAME = settings.audience_segments_table_name
-    SEGMENT_MEMBERS_TABLE_NAME = settings.segment_members_table_name
-    AUDIENCE_TAGS_TABLE_NAME = settings.audience_tags_table_name
-
     try:
-        success, stats = utils.retrieve_lists_data(
-            KEY,
-            AUDIENCES_TABLE_NAME,
-            AUDIENCES_STATS_TABLE_NAME,
-            AUDIENCE_SEGMENTS_TABLE_NAME,
-            AUDIENCE_MEMBERS_TABLE_NAME,
-            SEGMENT_MEMBERS_TABLE_NAME,
-            AUDIENCE_TAGS_TABLE_NAME
-        )
+        success, stats = utils.retrieve_lists_data(settings.key)
         task_result.success = success
         task_result.stats = stats
         task_result.status = TaskResult.FINISHED

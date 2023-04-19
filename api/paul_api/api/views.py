@@ -26,6 +26,8 @@ from . import permissions as api_permissions
 from . import utils
 from .permissions import BaseModelPermissions
 
+from plugin_mailchimp import utils as mailchimp_utils
+
 
 class EntriesPagination(PageNumberPagination):
     page_size = 10
@@ -253,8 +255,11 @@ class TableViewSet(viewsets.ModelViewSet):
     )
     def create_contacts_table(self, request):
         # {"database":1,"name":"test5","active":true,"table_type":"C"}
-        
-        return Response('{"id": 1}')
+        contact_table_id = mailchimp_utils.create_mailchimp_tables()
+        response_data = {
+            "id": contact_table_id
+        }
+        return Response(response_data)
 
     @action(
         detail=True,

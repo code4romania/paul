@@ -13,7 +13,26 @@ from api.models import (
     TableColumn,
     Entry
 )
+from plugin_mailchimp.models import Settings as MailchimpSettings
 from . import table_fields
+
+
+def create_mailchimp_tables(audiences_name=""):
+    settings = MailchimpSettings.objects.latest()
+
+    get_or_create_table(settings.audiences_table_name, 'audiences')
+    get_or_create_table(settings.audiences_stats_table_name, 'audiences_stats')
+    get_or_create_table(settings.audience_segments_table_name, 'audience_segments')
+    
+    # TODO: This table should be created by the user, not automatically
+    contact_table = get_or_create_table(
+        settings.audience_members_table_name, 'contact_fields', 'audience_members')
+    contact_table.table_type = Table.TYPE_CONTACTS
+    contact_table.save()
+    
+    get_or_create_table(settings.segment_members_table_name, 'segment_members')
+
+    return contact_table.id
 
 
 def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
@@ -52,7 +71,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
 
 def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, tag):
     user, _ = User.objects.get_or_create(username='paul-sync')
-    tags_table, created = Table.objects.get_or_create(
+    tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
         name=audience_tags_table_name,
         database_id=1,
         owner=user,
@@ -71,19 +90,22 @@ def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, t
     return 'updated'
 
 
-def retrieve_lists_data(key,
-             audiences_table_name,
-             audiences_stats_table_name,
-             audience_segments_table_name,
-             audience_members_table_name,
-             segment_members_table_name,
-             audience_tags_table_name):
+def retrieve_lists_data(key):
     '''
     Do the actual sync.
 
     Return success (bool), updates(json), errors(json)
     '''
     success = True
+
+    settings = MailchimpSettings.objects.latest()
+    audiences_table_name = settings.audiences_table_name
+    audiences_stats_table_name = settings.audiences_stats_table_name
+    audience_segments_table_name = settings.audience_segments_table_name
+    audience_members_table_name = settings.audience_members_table_name
+    segment_members_table_name = settings.segment_members_table_name
+    audience_tags_table_name = settings.audience_tags_table_name
+
     stats = {
         audiences_table_name: {
             'created': 0,
@@ -119,14 +141,14 @@ def retrieve_lists_data(key,
         "Could not connect to mailchimp. Check <b>KEY</b> "
         " in settings and make sure it has all permissions."]}
 
-    audiences_table = get_or_create_table(audiences_table_name, 'audiences')
-    audiences_stats_table = get_or_create_table(audiences_stats_table_name, 'audiences_stats')
-    audience_segments_table = get_or_create_table(audience_segments_table_name, 'audience_segments')
+    audiences_table = Table.objects.get(name=audiences_table_name)
+    audiences_stats_table = Table.objects.get(name=audiences_stats_table_name)
+    audience_segments_table = Table.objects.get(name=audience_segments_table_name)
     
     # TODO: This table should be created by the user, not automatically
-    audience_members_table = get_or_create_table(audience_members_table_name, 'contact_fields', 'audience_members')
+    audience_members_table = Table.objects.get(name=audience_members_table_name)
     
-    segment_members_table = get_or_create_table(segment_members_table_name, 'segment_members')
+    segment_members_table = Table.objects.get(name=segment_members_table_name)
 
     audiences_table_fields_defs = table_fields.TABLE_MAPPING['audiences']
     audiences_stats_table_fields_defs = table_fields.TABLE_MAPPING['audiences_stats']
