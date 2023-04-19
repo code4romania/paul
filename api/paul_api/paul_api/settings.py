@@ -87,11 +87,13 @@ USE_AZURE = (
     env.bool("USE_AZURE") and env("AZURE_ACCOUNT_NAME") and env("AZURE_ACCOUNT_KEY")
 )
 
-# Optional plugins, which require a task queue
+
 PLUGIN_MAILCHIMP_ENABLED = env.bool("PLUGIN_MAILCHIMP_ENABLED", False)
 
+# The Woocommerce plugin won't work until we migrate it from Celery to Django Q2
+# This is why its always disabled for now
 PLUGIN_WOOCOMMERCE_ENABLED = env.bool("PLUGIN_WOOCOMMERCE_ENABLED", False)
-PLUGIN_WOOCOMMERCE_ENABLED = False  # This plugin won't work until we migrate it from Celery to Django Q
+PLUGIN_WOOCOMMERCE_ENABLED = False
 
 
 # Application definition
@@ -295,6 +297,7 @@ elif USE_AZURE:
     DEFAULT_FILE_STORAGE = "storages.backends.azure_storage.AzureStorage"
     STATICFILES_STORAGE = "storages.backends.azure_storage.AzureStorage"
 
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
@@ -308,12 +311,16 @@ REST_FRAMEWORK = {
     "ORDERING_PARAM": "__order",
 }
 
-os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"  # TODO: check this!
+
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 
+
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
 
 # How to handle the unique fields of a table
 # Compound constraint is the original method which we don't use anymore (for now)
@@ -338,6 +345,7 @@ DJOSER = {
     }
 }
 
+
 DEFAULT_FROM_EMAIL = env("NO_REPLY_EMAIL")
 SERVER_EMAIL = env("NO_REPLY_EMAIL")
 NO_REPLY_EMAIL = env("NO_REPLY_EMAIL")
@@ -355,12 +363,15 @@ except environ.ImproperlyConfigured:
     EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
     EMAIL_USE_TLS = env("EMAIL_USE_TLS")
 
+
 # Admin config
 DJANGO_ADMIN_EMAIL = env("DJANGO_ADMIN_EMAIL")
 DJANGO_ADMIN_PASSWORD = env("DJANGO_ADMIN_PASSWORD")
 FRONTEND_DOMAIN = env("FRONTEND_DOMAIN")
 
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # django-jazzmin
 # -------------------------------------------------------------------------------
@@ -539,6 +550,7 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-outline-success",
     },
 }
+
 LOGIN_URL='/api/admin/login/'
 
 
