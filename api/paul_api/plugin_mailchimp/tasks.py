@@ -13,6 +13,12 @@ from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
 def run_contacts_to_mailchimp(request_user_id, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        # TODO: We should delete the django q tasks for deleted mailchimp tasks
+        raise Exception("The contacts upload task with id {} does not exist anymore".format(task_id))
+
     if request_user_id:
         try:
             user = User.objects.get(pk=request_user_id)
@@ -24,8 +30,6 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     if not user:
         user, _ = User.objects.get_or_create(username='paul-sync')
 
-    print("****** TASK ID = ", task_id)
-    task = Task.objects.get(pk=task_id)
     # TODO: Work in progress...
     task_result = TaskResult.objects.create(
         user=user,
@@ -38,6 +42,10 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
 
 
 def run_sync(request_user_id, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Exception("The sync task with id {} does not exist anymore".format(task_id))
 
     if request_user_id:
         try:
@@ -51,7 +59,6 @@ def run_sync(request_user_id, task_id):
         user, _ = User.objects.get_or_create(username='paul-sync')
 
     settings = MailchimpSettings.objects.latest()
-    task = Task.objects.get(pk=task_id)
     task_result = TaskResult.objects.create(
         user=user,
         task=task
@@ -98,7 +105,11 @@ def run_sync(request_user_id, task_id):
 
 
 def run_segmentation(request_user_id, task_id):
-    task = Task.objects.get(pk=task_id)
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Exception("The segmentation task with id {} does not exist anymore".format(task_id))
+
     success = True
     stats = {
         'success': 0,

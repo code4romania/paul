@@ -195,6 +195,8 @@ Q_CLUSTER = {
     "recycle": 100,
     "timeout": 240,  # All tasks must finish in less than 4 minutes
     "retry": 360,  # Retry unfinished tasks after 6 minutes
+    "ack_failures": True,
+    "max_attempts": 5,
     "compress": True,
     "save_limit": 200,
     "queue_limit": 4,
