@@ -188,6 +188,13 @@ export default {
       })
     },
 
+    prepareImportEmptyTable({ commit }, data) {
+      return ImportService.empty(data).then(response => {
+        commit('setImport', response)
+        return response
+      })
+    },
+
     // TABLE VIEWS
     //
     getTableViews({ commit }, { query, all }) {

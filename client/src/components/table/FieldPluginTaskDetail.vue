@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button
+    <b-button v-if="props.status=='Finished'"
       @click="showDetail"
       class="is-size-3 button-detail"
       :loading="loading"

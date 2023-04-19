@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-tag
+    <b-tag v-if="props.status=='Finished'"
       :class="{ 'is-success': props.success, 'is-danger': !props.success }"
       v-text="props.success ? 'Success' : 'Error'"
     />

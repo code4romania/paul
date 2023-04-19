@@ -84,6 +84,14 @@ const ImportService = {
     })
   },
 
+  empty(data) {
+    return ApiService.post(`tables/contacts/`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
+
   manual(idTable, data) {
     return ApiService.post(`tables/${idTable}/csv-manual-import/`, data)
   },
