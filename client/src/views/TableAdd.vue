@@ -55,6 +55,19 @@ export default {
   },
   methods: {
     submit() {
+      
+      if(this.type==='table-contacts')
+      {
+        this.$store
+        .dispatch('data/prepareImportEmptyTable', {'name': this.name}).then(respone=>{
+          console.log(respone);
+          let tmp = JSON.parse(respone);
+          console.log(tmp);
+          this.$router.push({ name: 'table-view', params: { idTable: tmp.id } })
+        })
+        return;
+
+      }
       this.$router.push({ name: this.type, query: { name: this.name } })
     }
   }

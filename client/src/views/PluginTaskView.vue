@@ -13,8 +13,8 @@
           >
             Edit task
           </router-link>
-
-          <b-button type="is-dark" @click="runTask">Run</b-button>
+          <p v-if="showText">Task-ul a fost adaugat reincarcati pagina dupa cateva minute</p>
+          <b-button v-else type="is-dark" @click="runTask">Run</b-button>
           <b-button type="" class="is-size-4" @click="getLog()"
             ><b-icon icon="refresh"></b-icon
           ></b-button>
@@ -43,6 +43,7 @@ export default {
     return {
       idTask: this.$route.params.idTask,
       log: null,
+      showText: false,
       loading: false,
       taskTable: {
         id: 'tasks',
@@ -103,14 +104,27 @@ export default {
     getLog(query) {
       this.PluginService.getTaskResults(this.idTask, query).then(response => {
         this.log = response
+        let taskIsRuning = response.results.filter(function(item){
+          return item.status!="Finished"
+        });
+        if (taskIsRuning.length==0)
+        {
+          console.log(this.showText);
+          this.showText = false
+        }else{
+          this.showText = true;
+        }
+       
       })
     },
     runTask() {
       this.loading = true
+      this.showText = true
 
       this.PluginService.runTask(this.idTask).then(() => {
-        this.getLog()
+        this.showText = true
         this.loading = false
+        this.getLog()
       })
     }
   }
