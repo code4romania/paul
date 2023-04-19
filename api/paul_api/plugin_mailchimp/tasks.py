@@ -122,17 +122,13 @@ def run_segmentation(request_user_id, task_id):
     filtered_view = task.segmentation_task.filtered_view
     primary_table = filtered_view.primary_table
 
-    audience_members_table = Table.objects.filter(name=settings.audience_members_table_name)
+    audience_members_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
 
-    if not audience_members_table.exists():
+    if not audience_members_table:
         success = False
         stats['errors'] += 1
-        stats['details'].append(
-            '"{}" does not exists. Run mailchimp import task first.'.format(
-                settings.audience_members_table_name
-            ))
+        stats['details'].append('Audience tables does not exist')
     else:
-        audience_members_table = audience_members_table[0]
         if primary_table.table != audience_members_table:
             success = False
             stats['errors'] += 1

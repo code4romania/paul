@@ -22,7 +22,7 @@ class Settings(models.Model):
     audiences_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences")
     audiences_stats_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Stats")
     audience_segments_table_name = models.CharField(max_length=255, default="[mailchimp] Audience Segments")
-    audience_members_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Members")
+    audience_members_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Members")  # TODO: Remove
     segment_members_table_name = models.CharField(max_length=255, default="[mailchimp] Segments Members")
     audience_tags_table_name = models.CharField(max_length=255, default="[mailchimp] Audience Tags")
     created_on = models.DateTimeField(blank=True, null=False, editable=False, auto_now_add=timezone.now)

@@ -255,7 +255,9 @@ class TableViewSet(viewsets.ModelViewSet):
     )
     def create_contacts_table(self, request):
         # {"database":1,"name":"test5","active":true,"table_type":"C"}
-        contact_table_id = mailchimp_utils.create_mailchimp_tables()
+        name = request.data.get("name", "").strip()
+        print("*********** ", name)
+        contact_table_id = mailchimp_utils.create_mailchimp_tables(name)
         response_data = {
             "id": contact_table_id
         }

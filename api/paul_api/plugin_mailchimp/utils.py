@@ -26,7 +26,7 @@ def create_mailchimp_tables(audiences_name=""):
     
     # TODO: This table should be created by the user, not automatically
     contact_table = get_or_create_table(
-        settings.audience_members_table_name, 'contact_fields', 'audience_members')
+        audiences_name, 'contact_fields', 'audience_members')
     contact_table.table_type = Table.TYPE_CONTACTS
     contact_table.save()
     
@@ -98,11 +98,13 @@ def retrieve_lists_data(key):
     '''
     success = True
 
+    audience_members_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
+    audience_members_table_name = audience_members_table.name
+
     settings = MailchimpSettings.objects.latest()
     audiences_table_name = settings.audiences_table_name
     audiences_stats_table_name = settings.audiences_stats_table_name
     audience_segments_table_name = settings.audience_segments_table_name
-    audience_members_table_name = settings.audience_members_table_name
     segment_members_table_name = settings.segment_members_table_name
     audience_tags_table_name = settings.audience_tags_table_name
 
@@ -144,10 +146,6 @@ def retrieve_lists_data(key):
     audiences_table = Table.objects.get(name=audiences_table_name)
     audiences_stats_table = Table.objects.get(name=audiences_stats_table_name)
     audience_segments_table = Table.objects.get(name=audience_segments_table_name)
-    
-    # TODO: This table should be created by the user, not automatically
-    audience_members_table = Table.objects.get(name=audience_members_table_name)
-    
     segment_members_table = Table.objects.get(name=segment_members_table_name)
 
     audiences_table_fields_defs = table_fields.TABLE_MAPPING['audiences']
@@ -414,9 +412,7 @@ def get_emails_from_filtered_view(token, filtered_view, settings):
         else:
             continue_request = False
 
-    audience_members_table = Table.objects.get(
-        name=settings.audience_members_table_name
-    )
+    audience_members_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
 
     lists = {}
     user_hash_field = '{}__{}'.format(audience_members_table.slug, 'id')
