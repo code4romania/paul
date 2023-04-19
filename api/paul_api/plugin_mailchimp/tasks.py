@@ -12,6 +12,24 @@ from plugin_mailchimp.models import (
 from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
 
+def run_contacts_to_mailchimp(request_user, task_id):
+    task = Task.objects.get(pk=task_id)
+    if request_user:
+        user = request_user
+    else:
+        user, _ = User.objects.get_or_create(username='paul-sync')
+
+    # TODO: Work in progress...
+    task_result = TaskResult.objects.create(
+        user=user,
+        task=task,
+        success=False,
+        status = TaskResult.FINISHED,
+        stats = {'details': ['This function is not yet implemented.']}
+    )
+    return task_result.id, task_result.success
+
+
 def run_sync(request_user, task_id):
     task = Task.objects.get(pk=task_id)
     if request_user:

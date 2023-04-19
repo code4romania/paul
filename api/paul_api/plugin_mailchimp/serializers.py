@@ -137,25 +137,24 @@ class TaskCreateSerializer(serializers.ModelSerializer):
         if validated_data.get('schedule'):
             schedule = validated_data.pop('schedule')
 
-        if task_type == 'segmentation':
+        task = Task.objects.create(**validated_data)
+
+        if task_type == Task.SEGMENTATION_TASK:
             segmentation_task = SegmentationTask.objects.create(
                 **segment_data
             )
-
-        task = Task.objects.create(**validated_data)
-
-        if task_type == 'segmentation':
             task.segmentation_task = segmentation_task
-            task.save()
 
         if schedule and validated_data.get('schedule_enabled'):
             task_args = "{},{}".format(0, task.pk)
 
-            if task.task_type == 'sync':
-                task_name = 'plugin_mailchimp.tasks.run_sync'
-            else:
+            if task.task_type == Task.SEGMENTATION_TASK:
                 task_name = 'plugin_mailchimp.tasks.run_segmentation'
-
+            elif task.task_type == Task.UPLOAD_TASK:
+                task_name = 'plugin_mailchimp.tasks.run_contacts_to_mailchimp'
+            else:
+                task_name = 'plugin_mailchimp.tasks.run_sync'
+                
             task_schedule = Schedule.objects.create(
                 name='[Task] {}'.format(task.name),
                 cron=schedule.get("cron"),
@@ -164,7 +163,8 @@ class TaskCreateSerializer(serializers.ModelSerializer):
                 args=task_args,
             )
             task.schedule = task_schedule
-            task.save()
+
+        task.save()
         task.refresh_from_db()
         return task
 
@@ -172,7 +172,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
         segmentation_task_data = validated_data.pop('segmentation_task')
         schedule = validated_data.pop('schedule')
 
-        if validated_data['task_type'] == 'segmentation':
+        if validated_data['task_type'] == Task.SEGMENTATION_TASK:
             segmentation_task = instance.segmentation_task
             SegmentationTask.objects.filter(
                 pk=segmentation_task.pk).update(**segmentation_task_data)
@@ -181,10 +181,13 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
         if validated_data.get("schedule_enabled"):
             crontab_str = schedule.get('cron', None)
-            if instance.task_type == 'sync':
-                task_name = 'plugin_mailchimp.tasks.run_sync'
-            else:
+
+            if instance.task_type == Task.SEGMENTATION_TASK:
                 task_name = 'plugin_mailchimp.tasks.run_segmentation'
+            elif instance.task_type == Task.UPLOAD_TASK:
+                task_name = 'plugin_mailchimp.tasks.run_contacts_to_mailchimp'
+            else:
+                task_name = 'plugin_mailchimp.tasks.run_sync'
 
             task_args = "{},{}".format(0, instance.pk)
 

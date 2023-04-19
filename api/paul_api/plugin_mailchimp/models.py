@@ -9,13 +9,6 @@ from django_q.models import Schedule
 from api.models import Filter, PluginTaskResult
 
 
-TASK_TYPES = (
-    ("sync", "Import data from Mailchimp"), 
-    ("segmentation", "Send segmentation to Mailchimp"),
-    ("upload", "Send contacts to Mailchimp (WIP/TODO)"),
-)
-
-
 class Settings(models.Model):
     """
     Description: Model Description
@@ -53,8 +46,17 @@ class Task(models.Model):
     Description: Model Description
     """
 
+    SYNC_TASK = "sync"
+    SEGMENTATION_TASK = "segmentation"
+    UPLOAD_TASK = "upload"
+    TASK_TYPES = (
+        (SYNC_TASK, _("Import data from Mailchimp")), 
+        (SEGMENTATION_TASK, _("Send segmentation to Mailchimp")),
+        (UPLOAD_TASK, _("Send contacts to Mailchimp (WIP/TODO)")),
+    )
+
     name = models.CharField(max_length=255, null=True, blank=True)
-    task_type = models.CharField(max_length=100, choices=TASK_TYPES, db_index=True)  # TODO: limit this field len
+    task_type = models.CharField(max_length=12, choices=TASK_TYPES, db_index=True)  # TODO: limit this field len
 
     segmentation_task = models.ForeignKey(SegmentationTask, null=True, blank=True, on_delete=models.CASCADE)
 

@@ -42,10 +42,14 @@ class TaskViewSet(viewsets.ModelViewSet):
     def run(self, request, pk):
         task = self.get_object()
 
-        if task.task_type == 'sync':
-            async_task('plugin_mailchimp.tasks.run_sync', request.user, task.id)
+        if task.task_type == models.Task.SEGMENTATION_TASK:
+            task_name = 'plugin_mailchimp.tasks.run_segmentation'
+        elif task.task_type == models.Task.UPLOAD_TASK:
+            task_name = 'plugin_mailchimp.tasks.run_contacts_to_mailchimp'
         else:
-            async_task('plugin_mailchimp.tasks.run_segmentation', request.user, task.id)
+            task_name = 'plugin_mailchimp.tasks.run_sync'
+
+        async_task(task_name, request.user, task.id)
         result = {'data': {}}
         return Response(result)
 
