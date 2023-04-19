@@ -45,10 +45,10 @@ def run_sync(request_user, task_id):
         )
         task_result.success = success
         task_result.stats = stats
-        task_result.status = 'Finished'
+        task_result.status = TaskResult.FINISHED
     except Exception as e:
         task_result.success = False
-        task_result.status = 'Finished'
+        task_result.status = TaskResult.FINISHED
         task_result.stats = {
             'details': [str(e)]
         }
@@ -126,7 +126,7 @@ def run_segmentation(request_user, task_id):
 
     task_result.success = success
     task_result.stats = stats
-    task_result.status = 'Finished'
+    task_result.status = TaskResult.FINISHED
     task_result.save()
 
     return task_result.id, task_result.success

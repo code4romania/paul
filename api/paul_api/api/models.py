@@ -539,8 +539,22 @@ class PluginTaskResult(models.Model):
     """
     Description: Model Description
     """
+    
+    RUNNING = "In progress"
+    FINISHED = "Finished"
+    STATUS_CHOICES = (
+        (RUNNING, _("In progress")),
+        (FINISHED, _("Finished")),
+    )
+
     name = models.CharField(_("name"), max_length=255, null=True, blank=True)
-    status = models.CharField(_("status"), max_length=20, default='In progress')
+    status = models.CharField(
+        _("status"), 
+        max_length=11, 
+        default=RUNNING, 
+        choices=STATUS_CHOICES,
+        db_index=True
+    )
 
     date_start = models.DateTimeField(_("date start"), auto_now_add=timezone.now)
     date_end = models.DateTimeField(_("date end"), null=True, blank=True)
@@ -548,11 +562,13 @@ class PluginTaskResult(models.Model):
     user = models.ForeignKey(
         User, null=True, on_delete=models.SET_NULL,
         related_name="%(app_label)s_%(class)s_tasks",
-        verbose_name=_("user"))
+        verbose_name=_("user")
+    )
     success = models.BooleanField(_("success"), default=False)
     stats = models.JSONField(
         _("stats"),
-        encoder=DjangoJSONEncoder, null=True, blank=True)
+        encoder=DjangoJSONEncoder, null=True, blank=True
+    )
 
     class Meta:
         abstract = True
