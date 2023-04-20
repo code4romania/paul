@@ -37,7 +37,7 @@ class Task(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
     task_type = models.CharField(max_length=100, choices=TASK_TYPES)
 
-    last_edit_date = models.DateTimeField(auto_now=True)
+    last_edit_date = models.DateTimeField(auto_now=timezone.now)
     last_run_date = models.DateTimeField(null=True)
     last_edit_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="woocommerce_tasks")
 

@@ -186,7 +186,8 @@ class Table(models.Model):
         verbose_name=_("default fields"))
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("owner"))
-    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
+    last_edit_date = models.DateTimeField(
+        _("last edit date"), null=True, blank=True, db_index=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
@@ -409,13 +410,15 @@ class Filter(models.Model):
     filters = models.JSONField(
         _("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
-    creation_date = models.DateTimeField(_("creation date"), auto_now_add=timezone.now, null=True)
+    creation_date = models.DateTimeField(
+        _("creation date"), auto_now_add=timezone.now, null=True, db_index=True)
     default_fields = models.ManyToManyField(
         TableColumn, related_name="filter_default_field", blank=True,
         verbose_name=_("default fields"))
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True,
         verbose_name=_("owner"))
-    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
+    last_edit_date = models.DateTimeField(
+        _("last edit date"), null=True, blank=True, db_index=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
@@ -480,9 +483,11 @@ class Chart(models.Model):
         _("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
-    creation_date = models.DateTimeField(_("creation date"), auto_now_add=timezone.now, null=True)
+    creation_date = models.DateTimeField(
+        _("creation date"), auto_now_add=timezone.now, null=True, db_index=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name=_("owner"))
-    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
+    last_edit_date = models.DateTimeField(
+        _("last edit date"), null=True, blank=True, db_index=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,
@@ -521,9 +526,11 @@ class Card(models.Model):
         _("filters"),
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
-    creation_date = models.DateTimeField(_("creation date"), auto_now_add=timezone.now, null=True)
+    creation_date = models.DateTimeField(
+        _("creation date"), auto_now_add=timezone.now, null=True, db_index=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name=_("owner"))
-    last_edit_date = models.DateTimeField(_("last edit date"), null=True, blank=True)
+    last_edit_date = models.DateTimeField(
+        _("last edit date"), null=True, blank=True, db_index=True)
     last_edit_user = models.ForeignKey(
         User,
         null=True,

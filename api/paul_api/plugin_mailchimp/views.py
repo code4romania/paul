@@ -6,16 +6,18 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from api.views import EntriesPagination
-from plugin_mailchimp import (
-    models,
-    serializers,
-)
 from api.models import Entry
+from plugin_mailchimp import serializers
+from plugin_mailchimp.models import (
+    Task, 
+    TaskResult, 
+    Settings as MailchimpSettings,
+)
 
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = models.Task.objects.all()
+    queryset = Task.objects.all().order_by("-last_edit_date")
     pagination_class = EntriesPagination
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = {
@@ -42,25 +44,23 @@ class TaskViewSet(viewsets.ModelViewSet):
     def run(self, request, pk):
         task = self.get_object()
 
-        if task.task_type == models.Task.SEGMENTATION_TASK:
+        if task.task_type == Task.SEGMENTATION_TASK:
             task_name = 'plugin_mailchimp.tasks.run_segmentation'
-        elif task.task_type == models.Task.UPLOAD_TASK:
+        elif task.task_type == Task.UPLOAD_TASK:
             task_name = 'plugin_mailchimp.tasks.run_contacts_to_mailchimp'
-        else:
+        elif task.task_type == Task.SYNC_TASK:
             task_name = 'plugin_mailchimp.tasks.run_sync'
+        else:
+            task_name = ""
 
-        async_task_id = async_task(task_name, request.user.id, task.id)
-
-        # TODO: keep the async_task_id somewhere in order to be able to delete it
-        # task.async_task_id = async_task_id
-        # task.save()
+        if task_name:
+            async_task(task_name, request.user.id, task.id)
 
         result = {'data': {}}
         return Response(result)
 
 
 class TaskResultViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.TaskResult.objects.all()
     pagination_class = EntriesPagination
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = {
@@ -77,14 +77,16 @@ class TaskResultViewSet(viewsets.ReadOnlyModelViewSet):
         return serializers.TaskResultSerializer
 
     def get_queryset(self):
-        return models.TaskResult.objects.filter(task=self.kwargs["task_pk"]).order_by('-date_start')
+        return TaskResult.objects.filter(
+            task=self.kwargs.get("task_pk", 0)
+        ).order_by('-date_start')
 
 
 class SettingsViewSet(mixins.RetrieveModelMixin,
                       mixins.UpdateModelMixin,
                       viewsets.GenericViewSet):
     
-    queryset = models.Settings.objects.all()
+    queryset = MailchimpSettings.objects.all()
     serializer_class = serializers.SettingsSerializer
 
 
@@ -94,7 +96,7 @@ class AudiencesView(APIView):
     """
 
     def get(self, request, format=None):
-        settings = models.Settings.objects.latest()
+        settings = MailchimpSettings.objects.latest()
         audiences = Entry.objects.filter(
             table__name=settings.audiences_table_name).values(
             'data__id', 'data__name')
@@ -108,8 +110,9 @@ class AudiencesView(APIView):
                 "id": audience['data__id'],
                 "tags": []
             }
-            audience_tags = list(filter(
-                lambda x: x['data__audience_id'] == audience_dict['id'], tags))
+            audience_tags = list(
+                filter(lambda x: x['data__audience_id'] == audience_dict['id'], tags)
+            )
 
             for tag in audience_tags:
                 audience_dict['tags'].append(tag['data__name'])
