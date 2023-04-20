@@ -29,17 +29,20 @@ if [ "${RUN_FEED}" = "yes" ]; then
 fi
 
 if [ "${RUN_CREATE_SUPER_USER}" = "yes" ]; then
-    echo "Check superuser"
+    echo "Check superuser presence"
     SUPERUSERS=$(python3 manage.py shell -c "from django.contrib.auth.models import User; print(User.objects.filter(username=\"${DJANGO_ADMIN_EMAIL}\").count())")
 
     if [ "${SUPERUSERS}" = "0" ]; then
-        echo "Create superuser"
+        echo "Create first superuser"
         python3 manage.py createsuperuser --noinput \
             --username "${DJANGO_ADMIN_EMAIL}" --email "${DJANGO_ADMIN_EMAIL}"
 
         echo "Set superuser password"
         python3 manage.py shell -c "from django.contrib.auth.models import User; u = User.objects.get(username=\"${DJANGO_ADMIN_EMAIL}\"); u.set_password(\"${DJANGO_ADMIN_PASSWORD}\"); u.save()"
+
+        echo "Add superuser to the admin group"
+        python3 manage.py shell -c "from django.contrib.auth.models import User, Group; u = User.objects.get(username=\"${DJANGO_ADMIN_EMAIL}\"); g = Group.objects.get(name='admin'); u.groups.add(g)"
     else
-        echo "Superuser already exists"
+        echo "A superuser already exists"
     fi
 fi
