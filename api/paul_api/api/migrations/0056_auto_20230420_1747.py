@@ -1,10 +1,12 @@
 from django.db import migrations
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 
 
 def delete_obsolete_table_permissions(apps, schema_editor):
     obsolete_codenames = ("view", "change", "delete")
+
+    ContentType = apps.get_model("contenttypes", "ContentType")
+    Permission = apps.get_model("auth", "Permission")
+
     try:
         ct = ContentType.objects.get(app_label="api", model="table")
     except ContentType.DoesNotExist:
