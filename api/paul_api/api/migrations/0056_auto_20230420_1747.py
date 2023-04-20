@@ -4,12 +4,14 @@ from django.contrib.contenttypes.models import ContentType
 
 
 def delete_obsolete_table_permissions(apps, schema_editor):
-    
     obsolete_codenames = ("view", "change", "delete")
-    ct = ContentType.objects.get(app_label="api", model="table")
-
-    Permission.objects.filter(
-        content_type=ct, codename__in=obsolete_codenames).delete()
+    try:
+        ct = ContentType.objects.get(app_label="api", model="table")
+    except ContentType.DoesNotExist:
+        pass
+    else:
+        Permission.objects.filter(
+            content_type=ct, codename__in=obsolete_codenames).delete()
 
 
 class Migration(migrations.Migration):
