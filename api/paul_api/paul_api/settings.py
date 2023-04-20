@@ -60,6 +60,7 @@ env = environ.Env(
     BACKGROUND_WORKERS=(int, 3),
     ADMIN_SITE_TITLE=(str, "PAUL Admin"),
     ADMIN_SITE_HEADER=(str, "PAUL"),
+    MAILCHIMP_KEY=(str, ""),
 )
 environ.Env.read_env(f"{root}/.env")  # reading .env file
 
@@ -91,6 +92,7 @@ USE_AZURE = (
 
 
 PLUGIN_MAILCHIMP_ENABLED = env.bool("PLUGIN_MAILCHIMP_ENABLED", False)
+MAILCHIMP_KEY = env("MAILCHIMP_KEY")
 
 # The Woocommerce plugin won't work until we migrate it from Celery to Django Q2
 # This is why its always disabled for now

@@ -3,7 +3,7 @@ import operator
 import requests
 
 from django.contrib.auth.models import User
-from django.conf import settings as django_settings
+from django.conf import settings
 from django.utils import timezone
 from mailchimp3 import MailChimp
 
@@ -17,12 +17,12 @@ from plugin_mailchimp.models import Settings as MailchimpSettings
 from . import table_fields
 
 
-def create_mailchimp_tables(audiences_name=""):
-    settings = MailchimpSettings.objects.latest()
+def create_mailchimp_tables(audiences_name: str="") -> int:
+    mc_settings = MailchimpSettings.objects.latest()
 
-    get_or_create_table(settings.audiences_table_name, 'audiences')
-    get_or_create_table(settings.audiences_stats_table_name, 'audiences_stats')
-    get_or_create_table(settings.audience_segments_table_name, 'audience_segments')
+    get_or_create_table(mc_settings.audiences_table_name, 'audiences')
+    get_or_create_table(mc_settings.audiences_stats_table_name, 'audiences_stats')
+    get_or_create_table(mc_settings.audience_segments_table_name, 'audience_segments')
     
     # TODO: This table should be created by the user, not automatically
     contact_table = get_or_create_table(
@@ -30,7 +30,7 @@ def create_mailchimp_tables(audiences_name=""):
     contact_table.table_type = Table.TYPE_CONTACTS
     contact_table.save()
     
-    get_or_create_table(settings.segment_members_table_name, 'segment_members')
+    get_or_create_table(mc_settings.segment_members_table_name, 'segment_members')
 
     return contact_table.id
 
@@ -69,7 +69,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
     return table
 
 
-def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, tag):
+def check_tag_is_present(audience_tags_table_name: str, audience_id: str, audience_name: str, tag) -> str:
     user, _ = User.objects.get_or_create(username='paul-sync')
     tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
         name=audience_tags_table_name,
@@ -90,7 +90,7 @@ def check_tag_is_present(audience_tags_table_name, audience_id, audience_name, t
     return 'updated'
 
 
-def retrieve_lists_data(key):
+def retrieve_lists_data(client: MailChimp):
     '''
     Do the actual sync.
 
@@ -101,12 +101,12 @@ def retrieve_lists_data(key):
     audience_members_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
     audience_members_table_name = audience_members_table.name
 
-    settings = MailchimpSettings.objects.latest()
-    audiences_table_name = settings.audiences_table_name
-    audiences_stats_table_name = settings.audiences_stats_table_name
-    audience_segments_table_name = settings.audience_segments_table_name
-    segment_members_table_name = settings.segment_members_table_name
-    audience_tags_table_name = settings.audience_tags_table_name
+    mc_settings = MailchimpSettings.objects.latest()
+    audiences_table_name = mc_settings.audiences_table_name
+    audiences_stats_table_name = mc_settings.audiences_stats_table_name
+    audience_segments_table_name = mc_settings.audience_segments_table_name
+    segment_members_table_name = mc_settings.segment_members_table_name
+    audience_tags_table_name = mc_settings.audience_tags_table_name
 
     stats = {
         audiences_table_name: {
@@ -136,12 +136,13 @@ def retrieve_lists_data(key):
 
     }
     try:
-        client = MailChimp(key)
         lists = client.lists.all()
     except:
-        return False, {'details': [
-        "Could not connect to mailchimp. Check <b>KEY</b> "
-        " in settings and make sure it has all permissions."]}
+        return (
+            False, {
+                "details": ["Could not connect to mailchimp. Check API Key."]
+            }
+        )
 
     audiences_table = Table.objects.get(name=audiences_table_name)
     audiences_stats_table = Table.objects.get(name=audiences_stats_table_name)
@@ -356,9 +357,7 @@ def retrieve_lists_data(key):
     return success, stats
 
 
-def add_list_to_segment(settings,
-             lists_users,
-             tag):
+def add_list_to_segment(client: MailChimp, lists_users, tag: str):
     '''
     Do the actual sync.
 
@@ -371,7 +370,6 @@ def add_list_to_segment(settings,
         'details': []
     }
 
-    client = MailChimp(settings.key)
     data = {
         'tags': [{'name': tag, 'status': 'active'}]
     }
@@ -393,15 +391,15 @@ def add_list_to_segment(settings,
     return success, stats
 
 
-def get_emails_from_filtered_view(token, filtered_view, settings):
+def get_emails_from_filtered_view(token, filtered_view):
     page = 1
     continue_request = True
     results = []
     headers = {'Authorization': 'Token ' + token.key}
 
-    while continue_request:
+    while continue_request:  # TODO: get rid of web request
         url = 'http://{}/api/filters/{}/entries/?page={}'.format(
-            django_settings.ALLOWED_HOSTS[0],
+            settings.ALLOWED_HOSTS[0],
             filtered_view.pk, 
             page
         )

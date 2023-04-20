@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.conf import settings
+from mailchimp3 import MailChimp
 from rest_framework.authtoken.models import Token
 
 from api.models import Table
@@ -7,7 +9,6 @@ from plugin_mailchimp import utils
 from plugin_mailchimp.models import (
     Task,
     TaskResult,
-    Settings as MailchimpSettings,
 )
 from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
 
@@ -58,14 +59,13 @@ def run_sync(request_user_id, task_id):
     if not user:
         user, _ = User.objects.get_or_create(username='paul-sync')
 
-    settings = MailchimpSettings.objects.latest()
     task_result = TaskResult.objects.create(
         user=user,
         task=task
     )
 
     try:
-        success, stats = utils.retrieve_lists_data(settings.key)
+        success, stats = utils.retrieve_lists_data(MailChimp(settings.MAILCHIMP_KEY))
         task_result.success = success
         task_result.stats = stats
         task_result.status = TaskResult.FINISHED
@@ -113,7 +113,7 @@ def run_segmentation(request_user_id, task_id):
         user, _ = User.objects.get_or_create(username='paul-sync')
 
     token, _ = Token.objects.get_or_create(user=user)
-    settings = MailchimpSettings.objects.latest()
+    # settings = MailchimpSettings.objects.latest()
 
     task_result = TaskResult.objects.create(
         user=user,
@@ -147,9 +147,9 @@ def run_segmentation(request_user_id, task_id):
                         AUDIENCE_MEMBERS_FIELDS[field]['display_name'], filtered_view.name
                     ))
         if success:
-            lists_users = utils.get_emails_from_filtered_view(token, filtered_view, settings)
+            lists_users = utils.get_emails_from_filtered_view(token, filtered_view)
             success, stats = utils.add_list_to_segment(
-                    settings,
+                    MailChimp(settings.MAILCHIMP_KEY),
                     lists_users,
                     task.segmentation_task.tag)
 
