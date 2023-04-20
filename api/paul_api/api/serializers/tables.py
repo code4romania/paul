@@ -171,6 +171,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
             "view_table": [current_user, admins],
             "change_table": [current_user, admins],
             "delete_table": [current_user, admins],
+            "update_content": [current_user, admins],
         }
 
 

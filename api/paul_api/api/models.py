@@ -194,11 +194,8 @@ class Table(models.Model):
         encoder=DjangoJSONEncoder, null=True, blank=True)
 
     class Meta:
-        # TODO: wtf?
         permissions = (
-            ("view", "View"),
-            ("change", "View"),
-            ("delete", "View"),
+            ("update_content", _("Can update table content")),
         )
         unique_together = ["name", "database"]
         verbose_name = _("table")

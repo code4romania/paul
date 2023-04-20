@@ -65,18 +65,26 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             if tables_permissions:
                 for table_permission in tables_permissions:
                     table = models.Table.objects.get(pk=table_permission["id"])
-                    if table_permission["permissions"] == "Editare":
+                    if table_permission["permissions"] == "change_table":
                         assign_perm("change_table", instance, table)
                         assign_perm("view_table", instance, table)
                         assign_perm("delete_table", instance, table)
-                    elif table_permission["permissions"] == "Vizualizare":
+                        assign_perm("update_content", instance, table)
+                    elif table_permission["permissions"] == "update_content":
+                        remove_perm("change_table", instance, table)
+                        assign_perm("update_content", instance, table)
+                        remove_perm("view_table", instance, table)
+                        remove_perm("delete_table", instance, table)
+                    elif table_permission["permissions"] == "view_table":
                         assign_perm("view_table", instance, table)
                         remove_perm("change_table", instance, table)
                         remove_perm("delete_table", instance, table)
+                        remove_perm("update_content", instance, table)
                     else:
                         remove_perm("view_table", instance, table)
                         remove_perm("change_table", instance, table)
                         remove_perm("delete_table", instance, table)
+                        remove_perm("update_content", instance, table)
         else:
             username = generate_username(validated_data["email"])
             duplicate_username = False
@@ -106,20 +114,31 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         return instance
 
     def get_tables_permissions(self, obj):
+        # TODO: This function exists in several places
         tables = []
 
         checker = ObjectPermissionChecker(obj)
 
         for table in models.Table.objects.all():
             user_perms = checker.get_perms(table)
-
             if "change_table" in user_perms:
-                table_perm = _("Edit")
+                table_perm_text = _("Edit")
+                table_perm = "change_table"
+            if "update_content" in user_perms:
+                table_perm_text = _("Update content")
+                table_perm = "update_content"
             elif "view_table" in user_perms:
-                table_perm = _("View")
+                table_perm_text = _("View")
+                table_perm = "view_table"
             else:
-                table_perm = _("No permissions")
-            tables.append({"name": table.name, "id": table.id, "permissions": table_perm})
+                table_perm_text = _("No permissions")
+                table_perm = ""
+            tables.append({
+                "name": table.name, 
+                "id": table.id, 
+                "permissions": table_perm,
+                "permissions_text": table_perm_text,
+            })
         return tables
 
 
@@ -151,12 +170,23 @@ class UserDetailSerializer(serializers.ModelSerializer):
         for table in models.Table.objects.all():
             user_perms = checker.get_perms(table)
             if "change_table" in user_perms:
-                table_perm = _("Edit")
+                table_perm_text = _("Edit")
+                table_perm = "change_table"
+            if "update_content" in user_perms:
+                table_perm_text = _("Update content")
+                table_perm = "update_content"
             elif "view_table" in user_perms:
-                table_perm = _("View")
+                table_perm_text = _("View")
+                table_perm = "view_table"
             else:
-                table_perm = _("No permissions")
-            tables.append({"name": table.name, "id": table.id, "permissions": table_perm})
+                table_perm_text = _("No permissions")
+                table_perm = ""
+            tables.append({
+                "name": table.name, 
+                "id": table.id, 
+                "permissions": table_perm,
+                "permissions_text": table_perm_text,
+            })
         return tables
 
 
