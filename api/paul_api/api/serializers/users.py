@@ -86,14 +86,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                     username__iexact=username).exclude(pk=instance.pk).count():
                         duplicate_username = True
                 else:
-                    validated_data['username'] = username
+                    validated_data["username"] = username
 
                 if not duplicate_username:
-                    if validated_data.get('userprofile'):
+                    if validated_data.get("userprofile"):
                         userprofile_data = validated_data.pop("userprofile")
                         profile = models.Userprofile.objects.get(user=instance)
-                        profile.avatar = userprofile_data['avatar']
-                        profile.language = userprofile_data['language']
+                        profile.avatar = userprofile_data.get("avatar")
+                        profile.language = userprofile_data.get("language", "")
                         profile.save()
                     User.objects.filter(pk=instance.pk).update(**validated_data)
             

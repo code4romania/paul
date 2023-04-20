@@ -93,11 +93,13 @@ class UserView(APIView):
 
     * Requires token authentication.
     * Only admin users are able to access this view.
+
+    TODO: This description does not seem accurate
     """
 
     def get(self, request, format=None):
         """
-        Return a list of all users.
+        Get the current user
         """
         user = request.user
         userprofile, _ = models.Userprofile.objects.get_or_create(user=user)
@@ -122,7 +124,7 @@ class UserView(APIView):
             "id": user.id,
             "dashboard": dashboard,
             "is_admin": admin_group in user.groups.all(),
-            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None
+            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None  # TODO: Improve this
         }
         return Response(response)
 
