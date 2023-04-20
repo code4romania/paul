@@ -58,6 +58,8 @@ env = environ.Env(
     SENTRY_ENVIRONMENT=(str, ""),
     SENTRY_TRACES_SAMPLE_RATE=(float, 0.0),
     BACKGROUND_WORKERS=(int, 3),
+    ADMIN_SITE_TITLE=(str, "PAUL Admin"),
+    ADMIN_SITE_HEADER=(str, "PAUL"),
 )
 environ.Env.read_env(f"{root}/.env")  # reading .env file
 
@@ -99,7 +101,6 @@ PLUGIN_WOOCOMMERCE_ENABLED = False
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sites",
@@ -113,6 +114,7 @@ INSTALLED_APPS = [
     "rest_framework_tricks",
     "rest_framework.authtoken",
     "jazzmin",
+    "django.contrib.admin",
     "corsheaders",
     "django_filters",
     "crispy_forms",  # doesn't seem to be used
@@ -370,7 +372,8 @@ except environ.ImproperlyConfigured:
 DJANGO_ADMIN_EMAIL = env("DJANGO_ADMIN_EMAIL")
 DJANGO_ADMIN_PASSWORD = env("DJANGO_ADMIN_PASSWORD")
 FRONTEND_DOMAIN = env("FRONTEND_DOMAIN")
-
+ADMIN_SITE_TITLE = env("ADMIN_SITE_TITLE")
+ADMIN_SITE_HEADER = env("ADMIN_SITE_HEADER")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -381,9 +384,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 JAZZMIN_SETTINGS: Dict[str, Any] = {
     # title of the window
-    "site_title": "Paul Admin",
+    "site_title": ADMIN_SITE_TITLE,
     # Title on the brand, and the login screen (19 chars max)
-    "site_header": "Paul",
+    "site_header": ADMIN_SITE_HEADER,
     # square logo to use for your site, must be present in static files, used for favicon and brand on top left
     # "site_logo": "jazzmin/img/logomark.svg",
     # "site_logo_short": "jazzmin/img/logomark.svg",
