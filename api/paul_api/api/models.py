@@ -99,6 +99,14 @@ class Userprofile(models.Model):
         verbose_name = _("user profile")
         verbose_name_plural = _("user profiles")
 
+    @staticmethod
+    def generate_username(email: str) -> str:
+        """ 
+        Generate an username from the provided email address by eliminating 
+        blank spaces before & after it and by using lowercase letters
+        """
+        return email.lower().strip()
+
 
 class UserCard(models.Model):
     """

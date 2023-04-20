@@ -7,15 +7,45 @@ from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework import serializers
 from rest_framework.response import Response
 
-from api import models
+from api.models import Table, Userprofile
 
 
-def generate_username(email: str) -> str:
-    """ 
-    Generate an username from the provided email address by eliminating 
-    blank spaces before & after it and by using lowercase letters
-    """
-    return email.lower().strip()
+class AvatarMixin:
+    def get_avatar(self, obj):
+        try:
+            request = self.context.get("request")
+            avatar_url = obj.userprofile.avatar.url
+            return request.build_absolute_uri(avatar_url)
+        except:
+            pass
+
+
+class TablesPermissionsMixin:
+    def get_tables_permissions(self, obj):
+        tables_permissions = []
+        checker = ObjectPermissionChecker(obj)
+
+        for table in Table.objects.all():
+            user_perms = checker.get_perms(table)
+            if "change_table" in user_perms:
+                table_perm_text = _("Edit")
+                table_perm = "change_table"
+            if "update_content" in user_perms:
+                table_perm_text = _("Update content")
+                table_perm = "update_content"
+            elif "view_table" in user_perms:
+                table_perm_text = _("View")
+                table_perm = "view_table"
+            else:
+                table_perm_text = _("No permissions")
+                table_perm = ""
+            tables_permissions.append({
+                "name": table.name, 
+                "id": table.id, 
+                "permissions": table_perm,
+                "permissions_text": table_perm_text,
+            })
+        return tables_permissions
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -25,7 +55,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Create a new user with the same username as the email
-        username = generate_username(validated_data["email"])
+        username = Userprofile.generate_username(validated_data["email"])
         try:
             new_user = User.objects.create(
                 email=validated_data["email"], 
@@ -34,7 +64,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _("An account with the {username} username already exists").format(username=username))
 
-        models.Userprofile.objects.create(user=new_user)
+        Userprofile.objects.create(user=new_user)
         user_group, created = Group.objects.get_or_create(name="user")
         new_user.groups.add(user_group)
         
@@ -46,7 +76,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return new_user
 
 
-class UserUpdateSerializer(serializers.ModelSerializer):
+class UserUpdateSerializer(TablesPermissionsMixin, serializers.ModelSerializer):
     tables_permissions = serializers.SerializerMethodField()
     avatar = serializers.ImageField(source="userprofile.avatar", allow_null=True, required=False)
     language = serializers.CharField(source="userprofile.language", required=False)
@@ -64,7 +94,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             tables_permissions = self.initial_data.get("tables_permissions")
             if tables_permissions:
                 for table_permission in tables_permissions:
-                    table = models.Table.objects.get(pk=table_permission["id"])
+                    table = Table.objects.get(pk=table_permission["id"])
                     if table_permission["permissions"] == "change_table":
                         assign_perm("change_table", instance, table)
                         assign_perm("delete_table", instance, table)
@@ -86,7 +116,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                         remove_perm("update_content", instance, table)
                         remove_perm("view_table", instance, table)
         else:
-            username = generate_username(validated_data["email"])
+            username = Userprofile.generate_username(validated_data["email"])
             duplicate_username = False
             with transaction.atomic():
                 # Update the username to match the email address
@@ -99,7 +129,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                 if not duplicate_username:
                     if validated_data.get("userprofile"):
                         userprofile_data = validated_data.pop("userprofile")
-                        profile = models.Userprofile.objects.get(user=instance)
+                        profile = Userprofile.objects.get(user=instance)
                         profile.avatar = userprofile_data.get("avatar")
                         profile.language = userprofile_data.get("language", "")
                         profile.save()
@@ -110,39 +140,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                     _("An account with the {username} username already exists").format(username=username))
 
         instance.refresh_from_db()
-
         return instance
 
-    def get_tables_permissions(self, obj):
-        # TODO: This function exists in several places
-        tables = []
 
-        checker = ObjectPermissionChecker(obj)
-
-        for table in models.Table.objects.all():
-            user_perms = checker.get_perms(table)
-            if "change_table" in user_perms:
-                table_perm_text = _("Edit")
-                table_perm = "change_table"
-            if "update_content" in user_perms:
-                table_perm_text = _("Update content")
-                table_perm = "update_content"
-            elif "view_table" in user_perms:
-                table_perm_text = _("View")
-                table_perm = "view_table"
-            else:
-                table_perm_text = _("No permissions")
-                table_perm = ""
-            tables.append({
-                "name": table.name, 
-                "id": table.id, 
-                "permissions": table_perm,
-                "permissions_text": table_perm_text,
-            })
-        return tables
-
-
-class UserDetailSerializer(serializers.ModelSerializer):
+class UserDetailSerializer(AvatarMixin, TablesPermissionsMixin, serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
     tables_permissions = serializers.SerializerMethodField()
     language = serializers.CharField(source="userprofile.language", required=False)
@@ -154,43 +155,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "language", "avatar", "first_name", "last_name",
             "tables_permissions"]
 
-    def get_avatar(self, obj):
-        try:
-            request = self.context.get("request")
-            avatar_url = obj.userprofile.avatar.url
-            return request.build_absolute_uri(avatar_url)
-        except:
-            pass
 
-    def get_tables_permissions(self, obj):
-        tables = []
-
-        checker = ObjectPermissionChecker(obj)
-
-        for table in models.Table.objects.all():
-            user_perms = checker.get_perms(table)
-            if "change_table" in user_perms:
-                table_perm_text = _("Edit")
-                table_perm = "change_table"
-            if "update_content" in user_perms:
-                table_perm_text = _("Update content")
-                table_perm = "update_content"
-            elif "view_table" in user_perms:
-                table_perm_text = _("View")
-                table_perm = "view_table"
-            else:
-                table_perm_text = _("No permissions")
-                table_perm = ""
-            tables.append({
-                "name": table.name, 
-                "id": table.id, 
-                "permissions": table_perm,
-                "permissions_text": table_perm_text,
-            })
-        return tables
-
-
-class UserListDataSerializer(serializers.ModelSerializer):
+class UserListDataSerializer(AvatarMixin, serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
     language = serializers.CharField(source="userprofile.language", required=False)
 
@@ -204,14 +170,6 @@ class UserListDataSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
         ]
-
-    def get_avatar(self, obj):
-        try:
-            request = self.context.get("request")
-            avatar_url = obj.userprofile.avatar.url
-            return request.build_absolute_uri(avatar_url)
-        except:
-            pass
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -231,7 +189,7 @@ class UserListSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(AvatarMixin, serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
     language = serializers.CharField(source="userprofile.language", required=False)
 
@@ -247,14 +205,6 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
         ]
-
-    def get_avatar(self, obj):
-        try:
-            request = self.context.get("request")
-            avatar_url = obj.userprofile.avatar.url
-            return request.build_absolute_uri(avatar_url)
-        except:
-            pass
 
 
 class OwnerSerializer(serializers.HyperlinkedModelSerializer):
