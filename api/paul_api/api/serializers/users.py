@@ -67,24 +67,24 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                     table = models.Table.objects.get(pk=table_permission["id"])
                     if table_permission["permissions"] == "change_table":
                         assign_perm("change_table", instance, table)
-                        assign_perm("view_table", instance, table)
                         assign_perm("delete_table", instance, table)
                         assign_perm("update_content", instance, table)
+                        assign_perm("view_table", instance, table)
                     elif table_permission["permissions"] == "update_content":
                         remove_perm("change_table", instance, table)
+                        remove_perm("delete_table", instance, table)
                         assign_perm("update_content", instance, table)
-                        remove_perm("view_table", instance, table)
-                        remove_perm("delete_table", instance, table)
-                    elif table_permission["permissions"] == "view_table":
                         assign_perm("view_table", instance, table)
+                    elif table_permission["permissions"] == "view_table":
                         remove_perm("change_table", instance, table)
                         remove_perm("delete_table", instance, table)
                         remove_perm("update_content", instance, table)
+                        assign_perm("view_table", instance, table)
                     else:
-                        remove_perm("view_table", instance, table)
                         remove_perm("change_table", instance, table)
                         remove_perm("delete_table", instance, table)
                         remove_perm("update_content", instance, table)
+                        remove_perm("view_table", instance, table)
         else:
             username = generate_username(validated_data["email"])
             duplicate_username = False
