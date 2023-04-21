@@ -3,7 +3,7 @@
     <BaseTitle title="Add table" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-      <BaseCard title="Crează un nou tabel">
+      <BaseCard title="Creează un nou tabel">
         <div class="card-container">
           <div class="columns">
             <div class="column is-6">
