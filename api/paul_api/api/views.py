@@ -24,6 +24,7 @@ from api import models, serializers, utils
 from api.permissions import (
     BaseModelPermissions, 
     TableEntryPermissions,
+    TableCustomActionPermissions,
     IsAuthenticatedOrGetToken,
 )
 from plugin_mailchimp import utils as mailchimp_utils
@@ -124,7 +125,7 @@ class UserView(APIView):
             "id": user.id,
             "dashboard": dashboard,
             "is_admin": admin_group in user.groups.all(),
-            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None  # TODO: Improve this
+            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None
         }
         return Response(response)
 
@@ -174,8 +175,7 @@ class TableViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         base_permissions = super(self.__class__, self).get_permissions()
         if self.action in ["csv_export", "xlsx_export"]:
-            # TODO: New permission class for export (and import)
-            base_permissions = (IsAuthenticatedOrGetToken(),)
+            base_permissions = (TableCustomActionPermissions(),)
         return base_permissions
 
     def create(self, request):
@@ -822,7 +822,6 @@ class FilterViewSet(viewsets.ModelViewSet):
         url_path="csv-export",
         url_name="csv-export")
     def csv_export(self, request, pk):
-        print("********* CSV EXPORT 2")
         obj = models.Filter.objects.filter(pk=pk).prefetch_related("primary_table", "join_tables")[0]
         str_fields = request.GET.get("__fields", "") if request else None
         str_order = request.GET.get("__order", "") if request else None
