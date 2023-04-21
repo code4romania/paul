@@ -257,6 +257,16 @@ class TableViewSet(viewsets.ModelViewSet):
         url_path="contacts",
     )
     def create_contacts_table(self, request):
+        # For now we only allow one "contacts" table in the platform
+        try:
+            existing_table = models.Table.objects.filter(table_type=models.Table.TYPE_CONTACTS).all()[0]
+        except IndexError:
+            pass
+        else:
+            return Response({
+                "detail": _("A contacts table already exists: {}").format(existing_table.name)
+            }, status=status.HTTP_409_CONFLICT)
+
         name = request.data.get("name", "").strip()
         contact_table_id = mailchimp_utils.create_mailchimp_tables(name)
         response_data = {
