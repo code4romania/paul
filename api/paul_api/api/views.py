@@ -20,12 +20,12 @@ from rest_framework.views import APIView
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from rest_framework_tricks.filters import OrderingFilter
 
-from api import models, serializers
-
-from . import permissions as api_permissions
-from . import utils
-from .permissions import BaseModelPermissions
-
+from api import models, serializers, utils
+from api.permissions import (
+    BaseModelPermissions, 
+    TableEntryPermissions,
+    IsAuthenticatedOrGetToken,
+)
 from plugin_mailchimp import utils as mailchimp_utils
 
 
@@ -173,8 +173,9 @@ class TableViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         base_permissions = super(self.__class__, self).get_permissions()
-        if self.action == "csv_export":
-            base_permissions = (api_permissions.IsAuthenticatedOrGetToken(),)
+        if self.action in ["csv_export", "xlsx_export"]:
+            # TODO: New permission class for export (and import)
+            base_permissions = (IsAuthenticatedOrGetToken(),)
         return base_permissions
 
     def create(self, request):
@@ -326,7 +327,6 @@ class TableViewSet(viewsets.ModelViewSet):
         }
         return Response(response)
 
-    # @permission_classes([api_permissions.IsAuthenticatedOrGetToken])
     @action(
         detail=True,
         methods=["get"],
@@ -362,7 +362,6 @@ class TableViewSet(viewsets.ModelViewSet):
 
         return response
 
-    # @permission_classes([api_permissions.IsAuthenticatedOrGetToken])
     @action(
         detail=True,
         methods=["get"],
@@ -605,7 +604,7 @@ class FilterViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         base_permissions = super(self.__class__, self).get_permissions()
         if self.action == "csv_export":
-            base_permissions = (api_permissions.IsAuthenticatedOrGetToken(),)
+            base_permissions = (IsAuthenticatedOrGetToken(),)
         return base_permissions
 
     @action(
@@ -823,6 +822,7 @@ class FilterViewSet(viewsets.ModelViewSet):
         url_path="csv-export",
         url_name="csv-export")
     def csv_export(self, request, pk):
+        print("********* CSV EXPORT 2")
         obj = models.Filter.objects.filter(pk=pk).prefetch_related("primary_table", "join_tables")[0]
         str_fields = request.GET.get("__fields", "") if request else None
         str_order = request.GET.get("__order", "") if request else None
@@ -1036,12 +1036,14 @@ class EntryViewSet(viewsets.ModelViewSet):
     filter_backends = (drf_filters.SearchFilter,)
     serializer_class = serializers.entries.EntrySerializer
     search_fields = ["data__nume"]
+    permission_classes = (TableEntryPermissions, )
 
     def get_queryset(self):
         return models.Entry.objects.order_by('id').filter(table=self.kwargs["table_pk"])
 
     def list(self, request, table_pk):
         table = models.Table.objects.get(pk=table_pk)
+
         str_fields = request.GET.get("__fields", "") if request else None
         str_order = request.GET.get("__order", "") if request else None
         table_fields = {x.name: x.field_type for x in table.fields.all().order_by("id")}
@@ -1141,7 +1143,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         base_permissions = super(self.__class__, self).get_permissions()
         if self.action == "export_errors":
-            base_permissions = (api_permissions.IsAuthenticatedOrGetToken(),)
+            base_permissions = (IsAuthenticatedOrGetToken(),)
         return base_permissions
 
     @action(
@@ -1178,6 +1180,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
         return response
 
     def create(self, request):
+        # TODO: Check table entry WRITE permissions
         file = request.FILES["file"]
         delimiter = request.POST.get("delimiter", None)
         table_id = request.POST.get("table_id")

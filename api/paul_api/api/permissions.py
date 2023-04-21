@@ -1,5 +1,8 @@
+from guardian.core import ObjectPermissionChecker
 from rest_framework import permissions
 from rest_framework.authtoken.models import Token
+
+from api.models import Table
 
 
 class BaseModelPermissions(permissions.DjangoObjectPermissions):
@@ -40,4 +43,33 @@ class NoPermission(permissions.BasePermission):
     Deny everybody
     """
     def has_permission(self, request, view):
+        return False
+
+
+class TableEntryPermissions(permissions.BasePermission):
+    """
+    Permission checks for actions performed on table Entry objects
+    based on the parent table permission levels
+
+    The parent table id must be provided in the view's kwargs as table_pk.
+    """
+
+    def has_permission(self, request, view):
+        table_pk = view.kwargs.get("table_pk", 0)
+        try:
+            table = Table.objects.get(pk=table_pk)
+        except Table.DoesNotExist:
+            return False
+
+        checker = ObjectPermissionChecker(request.user)
+        user_perms = checker.get_perms(table)
+        
+        READ_ACTIONS = ['list', 'retrieve']
+        WRITE_ACTIONS = ['create', 'update', 'partial_update', 'destroy']
+
+        if view.action in READ_ACTIONS and 'view_table' in user_perms:
+            return True
+        elif view.action in WRITE_ACTIONS and 'update_content' in user_perms:
+            return True
+
         return False
