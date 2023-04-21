@@ -91,12 +91,11 @@ USE_AZURE = (
 )
 
 
-PLUGIN_MAILCHIMP_ENABLED = env.bool("PLUGIN_MAILCHIMP_ENABLED", False)
 MAILCHIMP_KEY = env("MAILCHIMP_KEY")
+PLUGIN_MAILCHIMP_ENABLED = True if MAILCHIMP_KEY else False
 
 # The Woocommerce plugin won't work until we migrate it from Celery to Django Q2
 # This is why its always disabled for now
-PLUGIN_WOOCOMMERCE_ENABLED = env.bool("PLUGIN_WOOCOMMERCE_ENABLED", False)
 PLUGIN_WOOCOMMERCE_ENABLED = False
 
 
