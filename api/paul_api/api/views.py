@@ -2,8 +2,9 @@ import csv
 import os
 from datetime import datetime
 
-from django.contrib.auth.models import Group, User
 from django.core.paginator import Paginator
+from django.contrib.auth.models import Group, User
+from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +28,6 @@ from api.permissions import (
     TableCustomActionPermissions,
     IsAuthenticatedOrGetToken,
 )
-from plugin_mailchimp import utils as mailchimp_utils
 
 
 class EntriesPagination(PageNumberPagination):
@@ -267,6 +267,12 @@ class TableViewSet(viewsets.ModelViewSet):
                 "detail": _("A contacts table already exists: {}").format(existing_table.name)
             }, status=status.HTTP_409_CONFLICT)
 
+        if not settings.PLUGIN_MAILCHIMP_ENABLED:
+            return Response({
+                "detail": _("The Mailchimp plugin is not enabled for this installation.")
+            }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        from plugin_mailchimp import utils as mailchimp_utils
         name = request.data.get("name", "").strip()
         contact_table_id = mailchimp_utils.create_mailchimp_tables(name)
         response_data = {
