@@ -30,7 +30,7 @@ class TablesPermissionsMixin:
             if "change_table" in user_perms:
                 table_perm_text = _("Edit")
                 table_perm = "change_table"
-            if "update_content" in user_perms:
+            elif "update_content" in user_perms:
                 table_perm_text = _("Update content")
                 table_perm = "update_content"
             elif "view_table" in user_perms:
