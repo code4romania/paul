@@ -1,7 +1,10 @@
+from typing import List
+
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from guardian.core import ObjectPermissionChecker
 from rest_framework import serializers
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 
@@ -182,6 +185,7 @@ class TableSerializer(serializers.ModelSerializer):
     fields = TableColumnSerializer(many=True)
     entries = serializers.SerializerMethodField()
     default_fields = serializers.SerializerMethodField()
+    current_user_permissions = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Table
@@ -200,7 +204,8 @@ class TableSerializer(serializers.ModelSerializer):
             "active",
             "default_fields",
             "fields",
-            "filters"
+            "filters",
+            "current_user_permissions",
         ]
 
     def get_default_fields(self, obj):
@@ -211,5 +216,21 @@ class TableSerializer(serializers.ModelSerializer):
     def get_entries(self, obj):
         return self.context["request"].build_absolute_uri(reverse("table-entries-list", kwargs={"table_pk": obj.pk}))
 
-
+    def get_current_user_permissions(self, obj: models.Table) -> List[str]:
+        request = self.context.get('request', None)
+        if not request or not request.user:
+            return [""]
+        
+        table_permissions = []
+        checker = ObjectPermissionChecker(request.user)
+        user_perms = checker.get_perms(obj)
+        if "change_table" in user_perms:
+            table_permissions.append("change_table")
+        elif "update_content" in user_perms:
+            table_permissions.append("update_content")
+        elif "view_table" in user_perms:
+            table_permissions.append("view_table")
+        else:
+            table_permissions.append("")
+        return table_permissions
 
