@@ -13,6 +13,7 @@ from api.models import (
     TableColumn,
     Entry
 )
+from api.serializers.entries import EntryDataSerializer
 from plugin_mailchimp.models import Settings as MailchimpSettings
 from . import table_fields
 
@@ -410,14 +411,30 @@ def get_emails_from_filtered_view(token, filtered_view):
         else:
             continue_request = False
 
-    audience_members_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
-
     lists = {}
+    audience_members_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
     user_hash_field = '{}__{}'.format(audience_members_table.slug, 'id')
     audience_id_field = '{}__{}'.format(
         audience_members_table.slug, 'audience_id')
+
     for entry in results:
         if entry[user_hash_field] not in lists.get(entry[audience_id_field], []):
             lists.setdefault(entry[audience_id_field], [])
             lists[entry[audience_id_field]].append(entry[user_hash_field])
+
     return lists
+
+
+def get_all_contacts(contacts_table):
+    table_fields = {x.name: x.field_type for x in contacts_table.fields.all().order_by("id")}
+    fields = [x for x in table_fields.keys()]
+    context = {
+        "table": contacts_table,
+        "fields": fields,
+    }
+
+    contacts = []
+    for entry in contacts_table.entries.order_by("id"):
+        contacts.append(EntryDataSerializer(entry, context=context).data)
+
+    return contacts

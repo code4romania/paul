@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
 from mailchimp3 import MailChimp
+from mailchimp3.mailchimpclient import MailChimpError
 from rest_framework.authtoken.models import Token
 
 from api.models import Table
@@ -17,7 +18,6 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
-        # TODO: We should delete the django q tasks for deleted mailchimp tasks
         raise Exception("The contacts upload task with id {} does not exist anymore".format(task_id))
 
     if request_user_id:
@@ -29,15 +29,56 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username='paul-sync')
+        user, _ = User.objects.get_or_create(username="paul-sync")
 
-    # TODO: Work in progress...
+    success = True
+    stats = {
+        "errors": 0,
+        "skipped": 0,
+        "updated": 0,
+        "details": []
+    }
+
+    client = MailChimp(settings.MAILCHIMP_KEY)
+    contacts_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
+
+    if not contacts_table:
+        success = False
+        stats["errors"] += 1
+        stats["details"].append(_("Contacts' table does not exist"))
+    else:
+        all_contacts = utils.get_all_contacts(contacts_table)
+        for contact in all_contacts:
+            if not "audience_id" in contact.keys():
+                print("skipping: ", contact)
+                stats["skipped"] += 1
+                continue
+
+            try:
+                response = client.lists.members.create_or_update(
+                    contact.get("audience_id"), 
+                    contact.get("email_address", ""),  # "subscriber_hash" also accepts the email address
+                    {
+                        "email_address": contact.get("email_address", ""),
+                        # "merge_fields": contact.get("merge_fields", ""),  # TODO
+                        "status_if_new": "unsubscribed",
+                    })
+            except MailChimpError:
+                print("error: ", contact)
+                stats["errors"] += 1
+            else:
+                stats["updated"] += 1
+
+    stats["details"].append("{} contacts created or updated".format(stats["updated"]))
+    stats["details"].append("{} contacts skipped".format(stats["skipped"]))
+    stats["details"].append("{} contacts failed to create or update".format(stats["errors"]))
+
     task_result = TaskResult.objects.create(
         user=user,
         task=task,
-        success=False,
-        status = TaskResult.FINISHED,
-        stats = {'details': ['This function is not yet implemented.']}
+        success=success,
+        status=TaskResult.FINISHED,
+        stats=stats,
     )
     return task_result.id, task_result.success
 
@@ -127,7 +168,7 @@ def run_segmentation(request_user_id, task_id):
     if not audience_members_table:
         success = False
         stats['errors'] += 1
-        stats['details'].append('Audience tables does not exist')
+        stats['details'].append("Contacts' table does not exist")
     else:
         if primary_table.table != audience_members_table:
             success = False
