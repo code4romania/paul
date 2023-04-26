@@ -125,13 +125,11 @@ INSTALLED_APPS = [
     "djoser",
     "django_q",
     "api",
+    "plugin_mailchimp",
 ]
 
 if PLUGIN_WOOCOMMERCE_ENABLED:
     INSTALLED_APPS.append("plugin_woocommerce")
-
-if PLUGIN_MAILCHIMP_ENABLED:
-    INSTALLED_APPS.append("plugin_mailchimp")
 
 if not (USE_S3 or USE_AZURE):
     INSTALLED_APPS.append("whitenoise.runserver_nostatic")
