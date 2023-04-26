@@ -8,7 +8,8 @@ from guardian.core import ObjectPermissionChecker
 from rest_framework import serializers
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
 
-from api import models, utils
+from api.models import Database, Table, TableColumn
+from api.utils import snake_case
 from api.serializers.users import OwnerSerializer, UserSerializer
 
 
@@ -17,7 +18,7 @@ class TableColumnSerializer(serializers.ModelSerializer):
     # choices = serializers.SerializerMethodField()
 
     class Meta:
-        model = models.TableColumn
+        model = TableColumn
         fields = [
             "id",
             "name",
@@ -37,12 +38,12 @@ class TableColumnSerializer(serializers.ModelSerializer):
 
 class TableDatabaseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = models.Database
+        model = Database
         fields = ["url", "id", "name", "slug"]
 
 
 class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
-    database = serializers.PrimaryKeyRelatedField(queryset=models.Database.objects.all())
+    database = serializers.PrimaryKeyRelatedField(queryset=Database.objects.all())
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_edit_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_edit_date = serializers.HiddenField(default=timezone.now)
@@ -52,7 +53,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
     table_type = serializers.CharField(required=False)
 
     class Meta:
-        model = models.Table
+        model = Table
         fields = [
             "id",
             "database",
@@ -76,12 +77,12 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
 
     def validate(self, data):
         if "id" in data.keys():
-            table = models.Table.objects.get(pk=data["id"])
+            table = Table.objects.get(pk=data["id"])
             if table.entries.exists():
                 if "fields" in data.keys():
                     for field in data.get("fields"):
                         if "id" in field.keys():
-                            field_obj = models.TableColumn.objects.get(pk=field["id"])
+                            field_obj = TableColumn.objects.get(pk=field["id"])
                             if field_obj.field_type != field["field_type"]:
                                 raise serializers.ValidationError(
                                     {
@@ -97,15 +98,15 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
         if "fields" in validated_data.keys():
             temp_fields = validated_data.pop("fields")
 
-        new_table = models.Table.objects.create(**validated_data)
+        new_table = Table.objects.create(**validated_data)
         for i in temp_fields:
             if "display_name" not in i.keys():
                 i["display_name"] = i["name"]
-                i["name"] = utils.snake_case(i["name"])
+                i["name"] = snake_case(i["name"])
             if "name" not in i.keys():
-                i["name"] = utils.snake_case(i["display_name"])
+                i["name"] = snake_case(i["display_name"])
 
-            models.TableColumn.objects.create(table=new_table, **i)
+            TableColumn.objects.create(table=new_table, **i)
 
         return new_table
 
@@ -114,7 +115,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
             if validated_data.get('filters'):
                 filters = validated_data.pop('filters')
                 if filters:
-                    models.Table.objects.filter(pk=instance.pk).update(**{'filters': filters})
+                    Table.objects.filter(pk=instance.pk).update(**{'filters': filters})
             
             if validated_data.get('default_fields'):
                 default_fields = validated_data.pop('default_fields')
@@ -124,7 +125,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
 
             # Toggle the 'active' field
             if 'active' in validated_data:
-                models.Table.objects.filter(pk=instance.pk).update(active=validated_data['active'])
+                Table.objects.filter(pk=instance.pk).update(active=validated_data['active'])
 
             instance.refresh_from_db()
         else:
@@ -137,7 +138,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                 old_fields_ids = set(instance.fields.values_list("id", flat=True))
                 new_fields_ids = set([x.get("id") for x in validated_data.get("fields")])
                 for id_to_remove in old_fields_ids - new_fields_ids:
-                    field = models.TableColumn.objects.get(pk=id_to_remove)
+                    field = TableColumn.objects.get(pk=id_to_remove)
                     field_name = field.name
                     field.delete()
                     for entry in instance.entries.all():
@@ -146,7 +147,7 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                 # Create or update fields
                 for field in validated_data.pop("fields"):
                     if "id" in field.keys():
-                        field_obj = models.TableColumn.objects.get(pk=field["id"])
+                        field_obj = TableColumn.objects.get(pk=field["id"])
                         old_name = field_obj.name
                         new_name = field["name"]
                         if old_name != new_name:
@@ -160,8 +161,8 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                     else:
 
                         field["table"] = instance
-                        field["name"] = utils.snake_case(field["display_name"])
-                        models.TableColumn.objects.create(**field)
+                        field["name"] = snake_case(field["display_name"])
+                        TableColumn.objects.create(**field)
 
             instance.save()
         return instance
@@ -188,7 +189,7 @@ class TableSerializer(serializers.ModelSerializer):
     current_user_permissions = serializers.SerializerMethodField()
 
     class Meta:
-        model = models.Table
+        model = Table
         fields = [
             "url",
             "id",
@@ -216,7 +217,7 @@ class TableSerializer(serializers.ModelSerializer):
     def get_entries(self, obj):
         return self.context["request"].build_absolute_uri(reverse("table-entries-list", kwargs={"table_pk": obj.pk}))
 
-    def get_current_user_permissions(self, obj: models.Table) -> List[str]:
+    def get_current_user_permissions(self, obj: Table) -> List[str]:
         request = self.context.get('request', None)
         if not request or not request.user:
             return [""]
