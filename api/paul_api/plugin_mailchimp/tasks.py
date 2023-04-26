@@ -29,7 +29,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username="paul-sync")
+        user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     success = True
     stats = {
@@ -98,7 +98,7 @@ def run_sync(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username='paul-sync')
+        user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     task_result = TaskResult.objects.create(
         user=user,
@@ -151,7 +151,7 @@ def run_segmentation(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username='paul-sync')
+        user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     token, _ = Token.objects.get_or_create(user=user)
     # settings = MailchimpSettings.objects.latest()

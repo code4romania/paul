@@ -42,7 +42,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
         raise ValueError("No table rulesets provided")
 
     db = Database.objects.last()
-    user, _ = User.objects.get_or_create(username='paul-sync')
+    user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     table, created = Table.objects.get_or_create(
         name=table_name,
@@ -71,7 +71,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
 
 
 def check_tag_is_present(audience_tags_table_name: str, audience_id: str, audience_name: str, tag) -> str:
-    user, _ = User.objects.get_or_create(username='paul-sync')
+    user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
     tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
         name=audience_tags_table_name,
         database_id=1,
