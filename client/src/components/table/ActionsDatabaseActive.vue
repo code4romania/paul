@@ -13,7 +13,7 @@
       :path="{ name: 'table-edit', params: { idTable: props.id } }"
     />
 
-    <ActionButtonArchive :idTable="props.id" />
+    <ActionButtonArchive  v-if="props.user_permissions.indexOf('change_table') != -1" :idTable="props.id" />
     
     <ActionButtonDelete
       v-if="props.user_permissions.indexOf('delete_table') != -1"

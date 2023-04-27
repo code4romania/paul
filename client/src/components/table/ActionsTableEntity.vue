@@ -7,6 +7,7 @@
     />
 
     <ActionButtonGoto
+      v-if="props.user_permissions.indexOf('change_table') != -1" 
       icon="square-edit-outline"
       :path="{ name: 'entity-edit', params: { idTable, idEntity: props.id } }"
     />

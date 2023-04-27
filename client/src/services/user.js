@@ -87,7 +87,12 @@ const UserService = {
   },
 
   getRights() {
-    return ['', 'view_table', 'update_content', 'change_table']
+    return [
+      {"name":'Fara permisiuni','permission':''}, 
+      {"name":"Vizualizare",'permission':'view_table'},
+      {"name":"Actualizare/editare date",'permission':'update_content'},
+      {"name":"Actualizare/editare tabel",'permission':'change_table'}
+      ]
   }
 }
 

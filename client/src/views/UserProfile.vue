@@ -88,7 +88,7 @@
     <BaseCard
       title="Listă de permisiuni"
       v-if="user && activeUser && activeUser.is_admin && notCurrentUser"
-      style="width: 600px;"
+      style="width: 100%;"
     >
       <template #footer>
         <b-button type="is-primary" @click="save(true)">Salvează</b-button>
@@ -111,8 +111,8 @@
                     <option
                       v-for="(p, pindex) in permissions"
                       :key="`p-${pindex}`"
-                      :value="p"
-                      >{{ p }}</option
+                      :value="p.permission"
+                      >{{ p.name }} </option
                     >
                   </b-select>
                 </div>
@@ -163,6 +163,7 @@ export default {
   },
   mounted() {
     this.getUser()
+    console.log(this.permissions)
   },
   methods: {
     getUser() {
