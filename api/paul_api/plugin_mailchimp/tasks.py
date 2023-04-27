@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 from mailchimp3 import MailChimp
 from mailchimp3.mailchimpclient import MailChimpError
 from rest_framework.authtoken.models import Token
@@ -18,7 +19,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
-        raise Exception("The contacts upload task with id {} does not exist anymore".format(task_id))
+        raise Exception(_("The contacts upload task with id {} does not exist anymore").format(task_id))
 
     if request_user_id:
         try:
@@ -29,7 +30,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
+        user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     success = True
     stats = {
@@ -69,9 +70,9 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
             else:
                 stats["updated"] += 1
 
-    stats["details"].append("{} contacts created or updated".format(stats["updated"]))
-    stats["details"].append("{} contacts skipped".format(stats["skipped"]))
-    stats["details"].append("{} contacts failed to create or update".format(stats["errors"]))
+    stats["details"].append(_("{} contacts created or updated").format(stats["updated"]))
+    stats["details"].append(_("{} contacts skipped").format(stats["skipped"]))
+    stats["details"].append(_("{} contacts failed to create or update").format(stats["errors"]))
 
     task_result = TaskResult.objects.create(
         user=user,
@@ -87,7 +88,7 @@ def run_sync(request_user_id, task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
-        raise Exception("The sync task with id {} does not exist anymore".format(task_id))
+        raise Exception(_("The sync task with id {} does not exist anymore").format(task_id))
 
     if request_user_id:
         try:
@@ -98,7 +99,7 @@ def run_sync(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
+        user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     task_result = TaskResult.objects.create(
         user=user,
@@ -121,7 +122,7 @@ def run_sync(request_user_id, task_id):
     if task_result.success:
         for table, table_stats in task_result.stats.items():
             for k, v in table_stats.items():
-                stats_details.append('<b>{}</b> {} in <b>{}</b>'.format(v, k, table))
+                stats_details.append(_('<b>{}</b> {} in <b>{}</b>').format(v, k, table))
         task_result.stats['details'] = stats_details
     task_result.date_end = timezone.now()
     task_result.duration = task_result.date_end - task_result.date_start
@@ -133,7 +134,7 @@ def run_segmentation(request_user_id, task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
-        raise Exception("The segmentation task with id {} does not exist anymore".format(task_id))
+        raise Exception(_("The segmentation task with id {} does not exist anymore").format(task_id))
 
     success = True
     stats = {
@@ -151,9 +152,9 @@ def run_segmentation(request_user_id, task_id):
         user = None
 
     if not user:
-        user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
+        user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
-    token, _ = Token.objects.get_or_create(user=user)
+    token, created = Token.objects.get_or_create(user=user)
     # settings = MailchimpSettings.objects.latest()
 
     task_result = TaskResult.objects.create(
@@ -168,13 +169,13 @@ def run_segmentation(request_user_id, task_id):
     if not audience_members_table:
         success = False
         stats['errors'] += 1
-        stats['details'].append("Contacts' table does not exist")
+        stats['details'].append(_("Contacts' table does not exist"))
     else:
         if primary_table.table != audience_members_table:
             success = False
             stats['errors'] += 1
             stats['details'].append(
-                '<b>{}</b> needs to be the primary table in <b>{}</b> filtered view'.format(
+                _('<b>{}</b> needs to be the primary table in <b>{}</b> filtered view').format(
                     audience_members_table, filtered_view.name
                 ))
         primary_table_fields =  primary_table.fields.values_list('name', flat=True)
@@ -184,7 +185,7 @@ def run_segmentation(request_user_id, task_id):
                 success = False
                 stats['errors'] += 1
                 stats['details'].append(
-                    '<b>{}</b> field needs to be selected in the primary table in <b>{}</b> filtered view'.format(
+                    _('<b>{}</b> field needs to be selected in the primary table in <b>{}</b> filtered view').format(
                         AUDIENCE_MEMBERS_FIELDS[field]['display_name'], filtered_view.name
                     ))
         if success:

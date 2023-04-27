@@ -5,6 +5,7 @@ import requests
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 from mailchimp3 import MailChimp
 
 from api.models import (
@@ -63,10 +64,10 @@ def create_mailchimp_tables(audiences_name: str="") -> int:
 def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
     
     if not len(table_rulesets):
-        raise ValueError("No table rulesets provided")
+        raise ValueError(_("No table rulesets provided"))
 
     db = Database.objects.last()
-    user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
+    user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
     table, created = Table.objects.get_or_create(
         name=table_name,
@@ -83,7 +84,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
         table_fields_defs = functools.reduce(operator.ior, mappings, {})
         
         for field_name, field_details in table_fields_defs.items():
-            column, _ = TableColumn.objects.get_or_create(
+            column, created = TableColumn.objects.get_or_create(
                 table=table,
                 name=field_name
             )
@@ -95,7 +96,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
 
 
 def check_tag_is_present(audience_tags_table_name: str, audience_id: str, audience_name: str, tag) -> str:
-    user, _ = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
+    user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
     tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
         name=audience_tags_table_name,
         database_id=1,
@@ -165,7 +166,7 @@ def retrieve_lists_data(client: MailChimp):
     except:
         return (
             False, {
-                "details": ["Could not connect to mailchimp. Check API Key."]
+                "details": [_("Could not connect to mailchimp. Check API Key.")]
             }
         )
 
@@ -391,12 +392,12 @@ def add_list_to_segment(client: MailChimp, lists_users, tag: str):
             except:
                 success = False
                 stats['errors'] += 1
-                stats['details'].append('{} could not be updated (mailchimp error)'.format(subscriber_hash))
+                stats['details'].append(_('{} could not be updated (Mailchimp error)').format(subscriber_hash))
 
     if stats['success']:
-        stats['details'].append('<b>{}</b> members were updated with tag <b>{}</b>'.format(stats['success'], tag))
+        stats['details'].append(_('<b>{}</b> members were updated with tag <b>{}</b>').format(stats['success'], tag))
     if stats['errors']:
-        stats['details'].append('<b>{}</b> members were not updated with tag <b>{}</b>'.format(stats['errors'], tag))
+        stats['details'].append(_('<b>{}</b> members were not updated with tag <b>{}</b>').format(stats['errors'], tag))
     return success, stats
 
 
