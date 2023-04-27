@@ -251,16 +251,18 @@ CONTACT_FIELDS = {
     },
     'birthday': {  # was "birthdate"
         'display_name': 'Birthday',
-        'type': 'text',  # MM/DD
+        'type': 'text',  # MM/DD or MM/DD set in Mailchimp
         'mailchimp_path': ('merge_fields', 'BIRTHDAY'),
     },
     'project': {
         'display_name': 'Project',
-        'type': 'text'
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'PROJECT'),
     },
     'gdpr': {
         'display_name': 'GDPR',
-        'type': 'date'
+        'type': 'date',
+        'mailchimp_path': ('merge_fields', 'GDPR'),
     },
     # 'gdpr_permission': {
     #     'display_name': 'GDPR Permission',
@@ -268,11 +270,13 @@ CONTACT_FIELDS = {
     # },
     'contact_added_on': {
         'display_name': 'Added On',
-        'type': 'date'
+        'type': 'date',
+        'mailchimp_path': ('merge_fields', 'C_ADDEDON'),
     },
     'contact_source': {
         'display_name': 'Source',
-        'type': 'text'
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'C_SOURCE'),
     },
 }
 
