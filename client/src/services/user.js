@@ -90,8 +90,8 @@ const UserService = {
     return [
       {"name":'Fara permisiuni','permission':''}, 
       {"name":"Vizualizare",'permission':'view_table'},
-      {"name":"Actulizare/editare date",'permission':'update_content'},
-      {"name":"Actulizare/editare tabel",'permission':'change_table'}
+      {"name":"Actualizare/editare date",'permission':'update_content'},
+      {"name":"Actualizare/editare tabel",'permission':'change_table'}
       ]
   }
 }
