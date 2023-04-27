@@ -24,22 +24,16 @@ AUDIENCES_FIELDS = {
         'display_name': 'Campaign Defaults (email)',
         'type': 'text',
         'mailchimp_path': ('campaign_defaults', 'from_email'),
-        'mailchimp_parent_key_name': 'campaign_defaults',
-        'mailchimp_key_name': 'from_email',
     },
     'campaign_defaults_name': {
         'display_name': 'Campaign Defaults (name)',
         'type': 'text',
         'mailchimp_path': ('campaign_defaults', 'from_name'),
-        'mailchimp_parent_key_name': 'campaign_defaults',
-        'mailchimp_key_name': 'from_name',
     },
     'campaign_defaults_subject': {
         'display_name': 'Campaign Defaults (subject)',
         'type': 'text',
         'mailchimp_path': ('campaign_defaults', 'subject'),
-        'mailchimp_parent_key_name': 'campaign_defaults',
-        'mailchimp_key_name': 'subject',
     },
     'notify_on_subscribe': {
         'display_name': 'Notify On Subscribe',
@@ -257,7 +251,7 @@ CONTACT_FIELDS = {
     },
     'birthday': {  # was "birthdate"
         'display_name': 'Birthday',
-        'type': 'date',
+        'type': 'text',  # MM/DD
         'mailchimp_path': ('merge_fields', 'BIRTHDAY'),
     },
     'project': {
@@ -340,39 +334,26 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Stats Open',
         'type': 'int',
         'mailchimp_path': ('stats', 'avg_open_rate'),
-        'mailchimp_parent_key_name': 'stats',
-        'mailchimp_key_name': 'avg_open_rate',
     },
     'avg_click_rate': {
         'display_name': 'Stats Click',
         'type': 'int',
         'mailchimp_path': ('stats', 'avg_click_rate'),
-        'mailchimp_parent_key_name': 'stats',
-        'mailchimp_key_name': 'avg_click_rate',
     },
     'total_revenue': {  # new
         'display_name': 'Total Revenue',
         'type': 'int',
-        'mailchimp_root_key_name': 'stats',
-        'mailchimp_path': ('ecommerce_data', 'total_revenue'),
-        'mailchimp_parent_key_name': 'ecommerce_data',
-        'mailchimp_key_name': 'total_revenue',
+        'mailchimp_path': ('stats', 'ecommerce_data', 'total_revenue'),
     },
     'total_orders': {  # new
         'display_name': 'Total Orders',
         'type': 'int',
-        'mailchimp_root_key_name': 'stats',
-        'mailchimp_path': ('ecommerce_data', 'number_of_orders'),
-        'mailchimp_parent_key_name': 'ecommerce_data',
-        'mailchimp_key_name': 'number_of_orders',
+        'mailchimp_path': ('stats', 'ecommerce_data', 'number_of_orders'),
     },
     'total_orders': {  # new
         'display_name': 'Currency',
         'type': 'text',
-        'mailchimp_root_key_name': 'stats',
-        'mailchimp_path': ('ecommerce_data', 'currency_code'),
-        'mailchimp_parent_key_name': 'ecommerce_data',
-        'mailchimp_key_name': 'currency_code',
+        'mailchimp_path': ('stats', 'ecommerce_data', 'currency_code'),
     },
     'ip_signup': {
         'display_name': 'IP Signup',
@@ -414,15 +395,11 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Country',
         'type': 'text',
         'mailchimp_path': ('location', 'country_code'),
-        'mailchimp_parent_key_name': 'location',
-        'mailchimp_key_name': 'country_code',
     },
     'location_region': {  # new
         'display_name': 'Region',
         'type': 'text',
         'mailchimp_path': ('location', 'region'),
-        'mailchimp_parent_key_name': 'location',
-        'mailchimp_key_name': 'region',
     },
 
     #
@@ -443,8 +420,6 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Last Note',
         'type': 'text',
         'mailchimp_path': ('last_note', 'note'),
-        'mailchimp_parent_key_name': 'last_note',
-        'mailchimp_key_name': 'note',
     },
     'source': {
         'display_name': 'Source',
@@ -507,15 +482,11 @@ SEGMENT_MEMBERS_FIELDS = {
         'display_name': 'Stats Click',
         'type': 'int',
         'mailchimp_path': ('stats', 'avg_click_rate'),
-        'mailchimp_parent_key_name': 'stats',
-        'mailchimp_key_name': 'avg_click_rate',
     },
     'stats_open': {
         'display_name': 'Stats Open',
         'type': 'int',
         'mailchimp_path': ('stats', 'avg_open_rate'),
-        'mailchimp_parent_key_name': 'stats',
-        'mailchimp_key_name': 'avg_open_rate',
     },
     'ip_signup': {
         'display_name': 'Ip Signup',
@@ -557,8 +528,6 @@ SEGMENT_MEMBERS_FIELDS = {
         'display_name': 'Location',
         'type': 'text',
         'mailchimp_path': ('location', 'country_code'),
-        'mailchimp_parent_key_name': 'location',
-        'mailchimp_key_name': 'country_code',
     }
 }
 

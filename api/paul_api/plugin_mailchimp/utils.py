@@ -181,6 +181,7 @@ def retrieve_lists_data(client: MailChimp):
     audiences_stats_table_fields_defs = table_fields.TABLE_MAPPING['audiences_stats']
     audience_segments_table_fields_defs = table_fields.TABLE_MAPPING['audience_segments']
     audience_members_table_fields_defs = table_fields.TABLE_MAPPING['audience_members']
+    contact_table_fields_defs = table_fields.TABLE_MAPPING['contact_fields']
     segment_members_table_fields_defs = table_fields.TABLE_MAPPING['segment_members']
 
     for mlist in lists['lists']:
@@ -337,11 +338,13 @@ def retrieve_lists_data(client: MailChimp):
                         'audience_name': mlist['name']
                         })
 
-            for field in audience_members_table_fields_defs:
-                field_def = audience_members_table_fields_defs[field]
+            audience_and_contact_fields_defs = audience_members_table_fields_defs | contact_table_fields_defs
+            for field in audience_and_contact_fields_defs:
+                field_def = audience_and_contact_fields_defs[field]
 
                 try:
                     field_value = get_field_value(field, field_def, member)
+                    print(field_value, field_def)
                 except KeyError:
                     continue
 
