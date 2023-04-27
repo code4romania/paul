@@ -18,6 +18,30 @@ from plugin_mailchimp.models import Settings as MailchimpSettings
 from . import table_fields
 
 
+def get_field_value(field_name: str, field_def: dict, source: dict) -> str:
+    if ("mailchimp_path" in field_def) and len(field_def["mailchimp_path"]):
+        # if mailchimp_path = ('aaa', 'bbb', 'field_name') then
+        # try to get the value of source['aaa']['bbb']['field_name']
+        path = field_def["mailchimp_path"]
+        value = source.get(path[0])
+        for p in path[1:]:
+            if value is None:
+                break
+            value = value.get(p)
+    else:
+        # just get source['field_name']
+        path = field_name
+        value = source.get(path)
+    return value
+
+
+def is_list_field(field_def: dict) -> bool:
+    if "is_list" in field_def.keys():
+        return field_def["is_list"]
+    else:
+        return False
+
+
 def create_mailchimp_tables(audiences_name: str="") -> int:
     mc_settings = MailchimpSettings.objects.latest()
 
@@ -156,9 +180,9 @@ def retrieve_lists_data(client: MailChimp):
     audience_members_table_fields_defs = table_fields.TABLE_MAPPING['audience_members']
     segment_members_table_fields_defs = table_fields.TABLE_MAPPING['segment_members']
 
-    for list in lists['lists']:
+    for mlist in lists['lists']:
         audience_exists = Entry.objects.filter(
-            table=audiences_table, data__id=list['id'])
+            table=audiences_table, data__id=mlist['id'])
 
         if audience_exists:
             audience_entry = audience_exists[0]
@@ -167,26 +191,21 @@ def retrieve_lists_data(client: MailChimp):
             stats[audiences_table_name]['created'] += 1
             audience_entry = Entry.objects.create(
                 table=audiences_table,
-                data={'id': list['id']})
+                data={'id': mlist['id']})
 
         for field in audiences_table_fields_defs:
             field_def = audiences_table_fields_defs[field]
-            try:
-                if field_def['type'] == 'date':
-                    audience_entry.data[field] = list[field][:10]
-                else:
-                    audience_entry.data[field] = list[field]
-            except:
-                if 'mailchimp_root_key_name' in field_def:
-                    audience_entry.data[field] = list[field_def['mailchimp_root_key_name']][field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
-                else:
-                    audience_entry.data[field] = list[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
+            field_value = get_field_value(field, field_def, mlist)
+            if field_def['type'] == 'date':
+                audience_entry.data[field] = field_value[:10]
+            else:
+                audience_entry.data[field] = field_value
 
         audience_entry.save()
 
         # Sync list stats
         audience_stats_exists = Entry.objects.filter(
-            table=audiences_stats_table, data__audience_id=list['id'])
+            table=audiences_stats_table, data__audience_id=mlist['id'])
         if audience_stats_exists:
             audience_stats_entry = audience_stats_exists[0]
             stats[audiences_stats_table_name]['updated'] += 1
@@ -195,23 +214,24 @@ def retrieve_lists_data(client: MailChimp):
             audience_stats_entry = Entry.objects.create(
                 table=audiences_stats_table,
                 data={
-                    'audience_id': list['id'],
-                    'audience_name': list['name']
+                    'audience_id': mlist['id'],
+                    'audience_name': mlist['name']
                     })
         for field in audiences_stats_table_fields_defs:
             field_def = audiences_stats_table_fields_defs[field]
+            field_value = get_field_value(field, field_def, mlist)
             try:
                 if field_def['type'] == 'date':
-                    audience_stats_entry.data[field] = list['stats'][field][:10]
+                    audience_stats_entry.data[field] = field_value[:10]
                 else:
-                    audience_stats_entry.data[field] = list['stats'][field]
+                    audience_stats_entry.data[field] = field_value
             except:
                 pass
 
         audience_stats_entry.save()
 
         # Sync list segments
-        list_segments = client.lists.segments.all(list_id=list['id'], get_all=True)
+        list_segments = client.lists.segments.all(list_id=mlist['id'], get_all=True)
 
         for segment in list_segments['segments']:
             # print('     Segment:', segment['name'])
@@ -226,22 +246,23 @@ def retrieve_lists_data(client: MailChimp):
                     table=audience_segments_table,
                     data={
                         'audience_id': segment['list_id'],
-                        'audience_name': list['name']
+                        'audience_name': mlist['name']
                         })
             for field in audience_segments_table_fields_defs:
                 field_def = audience_segments_table_fields_defs[field]
+                field_value = get_field_value(field, field_def, segment)
                 try:
                     if field_def['type'] == 'date':
-                        audience_segments_entry.data[field] = segment[field][:10]
+                        audience_segments_entry.data[field] = field_value[:10]
                     else:
-                        audience_segments_entry.data[field] = segment[field]
+                        audience_segments_entry.data[field] = field_value
                 except:
                     pass
 
             audience_segments_entry.save()
 
             # Sync segment members
-            segment_members = client.lists.segments.members.all(list_id=list['id'], segment_id=segment['id'], get_all=True)
+            segment_members = client.lists.segments.members.all(list_id=mlist['id'], segment_id=segment['id'], get_all=True)
 
             for member in segment_members['members']:
                 # print('         Segment member:', member['email_address'])
@@ -257,52 +278,46 @@ def retrieve_lists_data(client: MailChimp):
                         data={
                             'audience_id': member['list_id'],
                             'segment_id': segment['id'],
-                            'audience_name': list['name'],
+                            'audience_name': mlist['name'],
                             'segment_name': segment['name']
                             })
                 for field in segment_members_table_fields_defs:
                     field_def = segment_members_table_fields_defs[field]
-                    if field in member.keys():
-                        if field_def['type'] == 'enum':
-                            # print(segment_members_table, field)
-                            table_column = TableColumn.objects.get(table=segment_members_table, name=field)
-                            if not table_column.choices:
-                                table_column.choices = []
-                            if 'is_list' in field_def.keys():
-                                for item in member[field]:
-                                    if item not in table_column.choices:
-                                        table_column.choices.append(item)
-                                        table_column.save()
-                            else:
-                                if member[field] not in table_column.choices:
-                                    table_column.choices.append(member[field])
+                    field_value = get_field_value(field, field_def, member)
+
+                    if field_def['type'] == 'enum':
+                        # print(segment_members_table, field)
+                        table_column = TableColumn.objects.get(table=segment_members_table, name=field)
+                        
+                        if not table_column.choices:
+                            table_column.choices = []
+                        if is_list_field(field_def):
+                            for item in field_value:
+                                if item not in table_column.choices:
+                                    table_column.choices.append(item)
                                     table_column.save()
-                        if 'is_list' in field_def.keys():
-                            segment_members_entry.data[field] = ','.join(member[field])
                         else:
-                            if field_def['type'] == 'date':
-                                segment_members_entry.data[field] = member[field][:10]
-                            else:
-                                segment_members_entry.data[field] = member[field]
+                            if field_value not in table_column.choices:
+                                table_column.choices.append(field_value)
+                                table_column.save()
+                    if is_list_field(field_def):
+                        segment_members_entry.data[field] = ','.join(field_value)
                     else:
-                        try:
-                            if 'mailchimp_root_key_name' in field_def:
-                                segment_members_entry.data[field] = member[field_def['mailchimp_root_key_name']][field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
-                            else:
-                                segment_members_entry.data[field] = member[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
-                        except Exception as e:
-                                pass
+                        if field_def['type'] == 'date':
+                            segment_members_entry.data[field] = field_value[:10]
+                        else:
+                            segment_members_entry.data[field] = field_value
 
                 segment_members_entry.save()
 
         # # Sync list members
-        list_members = client.lists.members.all(list_id=list['id'], get_all=True)
+        list_members = client.lists.members.all(list_id=mlist['id'], get_all=True)
 
         for member in list_members['members']:
             # print('     List member:', member['email_address'])
-            member['audience_name'] = list['name']
+            member['audience_name'] = mlist['name']
             audience_members_exists = Entry.objects.filter(
-                table=audience_members_table, data__id=member['id'], data__audience_id=list['id'])
+                table=audience_members_table, data__id=member['id'], data__audience_id=mlist['id'])
             if audience_members_exists:
                 audience_members_entry = audience_members_exists[0]
                 stats[audience_members_table_name]['updated'] += 1
@@ -312,47 +327,40 @@ def retrieve_lists_data(client: MailChimp):
                     table=audience_members_table,
                     data={
                         'audience_id': member['list_id'],
-                        'audience_name': list['name']
+                        'audience_name': mlist['name']
                         })
 
             for field in audience_members_table_fields_defs:
                 field_def = audience_members_table_fields_defs[field]
-                if field in member.keys():
-                    if field_def['type'] == 'enum':
-                        table_column = TableColumn.objects.get(table=audience_members_table, name=field)
-                        if not table_column.choices:
-                            # print('no choices', table_column)
-                            table_column.choices = []
-                        if 'is_list' in field_def.keys():
-                            for item in member[field]:
-                                if item['name'] not in table_column.choices:
-                                    table_column.choices.append(item['name'])
-                                    table_column.save()
-                        else:
-                            if member[field] not in table_column.choices:
-                                table_column.choices.append(member[field])
-                                # print('append', member[field])
+                field_value = get_field_value(field, field_def, member)
+
+                if field_def['type'] == 'enum':
+                    table_column = TableColumn.objects.get(table=audience_members_table, name=field)
+                    if not table_column.choices:
+                        # print('no choices', table_column)
+                        table_column.choices = []
+                    if is_list_field(field_def):
+                        for item in field_value:
+                            if item['name'] not in table_column.choices:
+                                table_column.choices.append(item['name'])
                                 table_column.save()
-                    if 'is_list' in field_def.keys():  # TODO: Not ok
-                        items = []
-                        for item in member[field]:
-                            tag_status = check_tag_is_present(audience_tags_table_name, list['id'], list['name'], item)
-                            items.append(item['name'])
-                            stats[audience_tags_table_name][tag_status] += 1
-                        audience_members_entry.data[field] = ','.join(items)
                     else:
-                        if field_def['type'] == 'enum':
-                            audience_members_entry.data[field] = member[field][:10]
-                        else:
-                            audience_members_entry.data[field] = member[field]
+                        if field_value not in table_column.choices:
+                            table_column.choices.append(field_value)
+                            # print('append', field_value)
+                            table_column.save()
+                if is_list_field(field_def):
+                    items = []
+                    for item in field_value:
+                        tag_status = check_tag_is_present(audience_tags_table_name, mlist['id'], mlist['name'], item)
+                        items.append(item['name'])
+                        stats[audience_tags_table_name][tag_status] += 1
+                    audience_members_entry.data[field] = ','.join(items)
                 else:
-                    try:
-                        if 'mailchimp_root_key_name' in field_def:
-                            audience_members_entry.data[field] = member[field_def['mailchimp_root_key_name']][field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
-                        else:
-                            audience_members_entry.data[field] = member[field_def['mailchimp_parent_key_name']][field_def['mailchimp_key_name']]
-                    except Exception as e:
-                        pass
+                    if field_def['type'] == 'enum':
+                        audience_members_entry.data[field] = field_value[:10]
+                    else:
+                        audience_members_entry.data[field] = field_value
 
             audience_members_entry.save()
     return success, stats

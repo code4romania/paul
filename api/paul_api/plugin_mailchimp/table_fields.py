@@ -23,18 +23,21 @@ AUDIENCES_FIELDS = {
     'campaign_defaults_email': {
         'display_name': 'Campaign Defaults (email)',
         'type': 'text',
+        'mailchimp_path': ('campaign_defaults', 'from_email'),
         'mailchimp_parent_key_name': 'campaign_defaults',
         'mailchimp_key_name': 'from_email',
     },
     'campaign_defaults_name': {
         'display_name': 'Campaign Defaults (name)',
         'type': 'text',
+        'mailchimp_path': ('campaign_defaults', 'from_name'),
         'mailchimp_parent_key_name': 'campaign_defaults',
         'mailchimp_key_name': 'from_name',
     },
     'campaign_defaults_subject': {
         'display_name': 'Campaign Defaults (subject)',
         'type': 'text',
+        'mailchimp_path': ('campaign_defaults', 'subject'),
         'mailchimp_parent_key_name': 'campaign_defaults',
         'mailchimp_key_name': 'subject',
     },
@@ -96,74 +99,92 @@ AUDIENCES_FIELDS = {
 AUDIENCES_STATS_FIELDS = {
     'audience_id': {
         'display_name': 'Audience ID',
+        'mailchimp_path': ('stats', 'audience_id'),
         'type': 'text'
     },
     'audience_name': {
         'display_name': 'Audience Name',
+        'mailchimp_path': ('stats', 'audience_name'),
         'type': 'enum'
     },
     'avg_sub_rate': {
         'display_name': 'Avg Sub Rate',
+        'mailchimp_path': ('stats', 'avg_sub_rate'),
         'type': 'int'
     },
     'avg_unsub_rate': {
         'display_name': 'Avg Unsub Rate',
+        'mailchimp_path': ('stats', 'avg_unsub_rate'),
         'type': 'int'
     },
     'campaign_count': {
         'display_name': 'Campaign Count',
+        'mailchimp_path': ('stats', 'campaign_count'),
         'type': 'int'
     },
     'campaign_last_sent': {
         'display_name': 'Campaign Last Sent',
+        'mailchimp_path': ('stats', 'campaign_last_sent'),
         'type': 'date'
     },
     'cleaned_count': {
         'display_name': 'Cleaned Count',
+        'mailchimp_path': ('stats', 'cleaned_count'),
         'type': 'int'
     },
     'cleaned_count_since_send': {
         'display_name': 'Cleaned Count Since Send',
+        'mailchimp_path': ('stats', 'cleaned_count_since'),
         'type': 'int'
     },
     'click_rate': {
         'display_name': 'Click Rate',
+        'mailchimp_path': ('stats', 'click_rate'),
         'type': 'int'
     },
     'last_sub_date': {
         'display_name': 'Last Sub Date',
+        'mailchimp_path': ('stats', 'last_sub_date'),
         'type': 'date'
     },
     'last_unsub_date': {
         'display_name': 'Last Unsub Date',
+        'mailchimp_path': ('stats', 'last_unsub_date'),
         'type': 'date'
     },
     'member_count': {
         'display_name': 'Member Count',
+        'mailchimp_path': ('stats', 'member_count'),
         'type': 'int'
     },
     'member_count_since_send': {
         'display_name': 'Member Count Since Send',
+        'mailchimp_path': ('stats', 'member_count_since_send'),
         'type': 'int'
     },
     'merge_field_count': {
         'display_name': 'Merge Field Count',
+        'mailchimp_path': ('stats', 'merge_field_count'),
         'type': 'int'
     },
     'open_rate': {
         'display_name': 'Open Rate',
+        'mailchimp_path': ('stats', 'open_rate'),
         'type': 'int'
     },
     'target_sub_rate': {
         'display_name': 'Target Sub Rate',
+        'mailchimp_path': ('stats', 'target_sub_rate'),
         'type': 'int'
     },
     'unsubscribe_count': {
         'display_name': 'Unsubscribe Count',
+        'mailchimp_path': ('stats', 'ubsubscribe_count'),
         'type': 'int'
     },
     'unsubscribe_count_since_send': {
         'display_name': 'Unsubscribe Count Since Send',
+        'mailchimp_path': ('stats', 'ubsubscribe_count_since_send'),
         'type': 'int'
     }
 }
@@ -210,30 +231,34 @@ AUDIENCE_SEGMENTS_FIELDS = {
 
 
 CONTACT_FIELDS = {
-    'first_name': {
+    'fname': {   # was "first_name"
         'display_name': 'First Name',
-        'type': 'text'
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'FNAME'),
     },
-    'last_name': {
+    'lname': {  # was "last_name"
         'display_name': 'Last Name',
-        'type': 'text'
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'LNAME'),
     },
     # # This field is in AUDIENCE_MEMBERS_FIELDS
     # 'email_address': {
     #     'display_name': 'Email Address',
     #     'type': 'text'
     # },
-    'telephone': {
+    'phone': {  # was "phone"
         'display_name': 'Telephone',
-        'type': 'text'
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'PHONE'),
     },
     'city': {
         'display_name': 'City',
         'type': 'text'
     },
-    'birthdate': {
-        'display_name': 'Birthdate',
-        'type': 'date'
+    'birthday': {  # was "birthdate"
+        'display_name': 'Birthday',
+        'type': 'date',
+        'mailchimp_path': ('merge_fields', 'BIRTHDAY'),
     },
     'project': {
         'display_name': 'Project',
@@ -279,10 +304,10 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Unique Email Id',
         'type': 'text'
     },
-    'full_name': {  # new
-        'display_name': 'Full Name',
-        'type': 'text'
-    },
+    # 'full_name': {  # new
+    #     'display_name': 'Full Name',
+    #     'type': 'text'
+    # },
     'web_id': {
         'display_name': 'Web Id',
         'type': 'int'
@@ -303,10 +328,10 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'One to One',
         'type': 'bool'
     },
-    'merge_fields': {
-        'display_name': 'Merge Fields',
-        'type': 'text'
-    },
+    # 'merge_fields': {  # The merge_fields will contain all custom contact fields
+    #     'display_name': 'Merge Fields',
+    #     'type': 'text'
+    # },
     'interests': {  # new
         'display_name': 'Interests',
         'type': 'text'
@@ -314,12 +339,14 @@ AUDIENCE_MEMBERS_FIELDS = {
     'avg_open_rate': {
         'display_name': 'Stats Open',
         'type': 'int',
+        'mailchimp_path': ('stats', 'avg_open_rate'),
         'mailchimp_parent_key_name': 'stats',
         'mailchimp_key_name': 'avg_open_rate',
     },
     'avg_click_rate': {
         'display_name': 'Stats Click',
         'type': 'int',
+        'mailchimp_path': ('stats', 'avg_click_rate'),
         'mailchimp_parent_key_name': 'stats',
         'mailchimp_key_name': 'avg_click_rate',
     },
@@ -327,6 +354,7 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Total Revenue',
         'type': 'int',
         'mailchimp_root_key_name': 'stats',
+        'mailchimp_path': ('ecommerce_data', 'total_revenue'),
         'mailchimp_parent_key_name': 'ecommerce_data',
         'mailchimp_key_name': 'total_revenue',
     },
@@ -334,6 +362,7 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Total Orders',
         'type': 'int',
         'mailchimp_root_key_name': 'stats',
+        'mailchimp_path': ('ecommerce_data', 'number_of_orders'),
         'mailchimp_parent_key_name': 'ecommerce_data',
         'mailchimp_key_name': 'number_of_orders',
     },
@@ -341,6 +370,7 @@ AUDIENCE_MEMBERS_FIELDS = {
         'display_name': 'Currency',
         'type': 'text',
         'mailchimp_root_key_name': 'stats',
+        'mailchimp_path': ('ecommerce_data', 'currency_code'),
         'mailchimp_parent_key_name': 'ecommerce_data',
         'mailchimp_key_name': 'currency_code',
     },
@@ -383,12 +413,14 @@ AUDIENCE_MEMBERS_FIELDS = {
     'location_country': {
         'display_name': 'Country',
         'type': 'text',
+        'mailchimp_path': ('location', 'country_code'),
         'mailchimp_parent_key_name': 'location',
         'mailchimp_key_name': 'country_code',
     },
     'location_region': {  # new
         'display_name': 'Region',
         'type': 'text',
+        'mailchimp_path': ('location', 'region'),
         'mailchimp_parent_key_name': 'location',
         'mailchimp_key_name': 'region',
     },
@@ -410,6 +442,7 @@ AUDIENCE_MEMBERS_FIELDS = {
     'last_note': {  # new
         'display_name': 'Last Note',
         'type': 'text',
+        'mailchimp_path': ('last_note', 'note'),
         'mailchimp_parent_key_name': 'last_note',
         'mailchimp_key_name': 'note',
     },
@@ -473,12 +506,14 @@ SEGMENT_MEMBERS_FIELDS = {
     'stats_click': {
         'display_name': 'Stats Click',
         'type': 'int',
+        'mailchimp_path': ('stats', 'avg_click_rate'),
         'mailchimp_parent_key_name': 'stats',
         'mailchimp_key_name': 'avg_click_rate',
     },
     'stats_open': {
         'display_name': 'Stats Open',
         'type': 'int',
+        'mailchimp_path': ('stats', 'avg_open_rate'),
         'mailchimp_parent_key_name': 'stats',
         'mailchimp_key_name': 'avg_open_rate',
     },
@@ -521,6 +556,7 @@ SEGMENT_MEMBERS_FIELDS = {
     'location_country': {
         'display_name': 'Location',
         'type': 'text',
+        'mailchimp_path': ('location', 'country_code'),
         'mailchimp_parent_key_name': 'location',
         'mailchimp_key_name': 'country_code',
     }
