@@ -104,7 +104,7 @@ def check_tag_is_present(audience_tags_table_name: str, audience_id: str, audien
     db = Database.objects.last()
     tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
         name=audience_tags_table_name,
-        database_id=db,
+        database_id=db.pk,
         owner=user,
         active=True)
     if created:
@@ -376,11 +376,11 @@ def retrieve_lists_data(client: MailChimp):
                         stats[audience_tags_table_name][tag_status] += 1
                     audience_members_entry.data[field] = ','.join(items)
                 else:
-                    if field_def['type'] == 'enum':  # TODO: ???
+                    # if field_def['type'] == 'enum':  # TODO: Check this!
+                    if field_def['type'] == 'date':
                         audience_members_entry.data[field] = field_value[:10]
                     else:
                         audience_members_entry.data[field] = field_value
-
             audience_members_entry.save()
     return success, stats
 

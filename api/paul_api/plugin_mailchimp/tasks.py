@@ -92,9 +92,17 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                 else:
                     print(_("Mailchimp path too long:"), path)
 
-
+            # TODO: check which data is read-only so that we don't bother uploading it and maybe automate this dict
             data = {
                 "email_address": contact.get("email_address", ""),
+                "email_type": contact.get("email_type", ""),
+                "status": contact.get("status", ""),
+                "ubsubscribe_reason": contact.get("unsubscribe_reason", ""),
+                "interests": contact.get("interests", ""),
+                "language": contact.get("language", ""),
+                "vip": contact.get("vip", ""),
+                "email_client": contact.get("email_client", ""),
+                "source": contact.get("source", ""),
                 "status_if_new": "unsubscribed",
                 **merge_fields,
             }
@@ -105,9 +113,8 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                     contact.get("email_address", ""),  # "subscriber_hash" also accepts the email address
                     data
                 )
-            except (MailChimpError, ValueError):
-                print("Mailchimp Error: ", contact)
-                print(response)
+            except MailChimpError as e:
+                print("Mailchimp Error: ", str(e))
                 stats["errors"] += 1
             else:
                 stats["updated"] += 1
