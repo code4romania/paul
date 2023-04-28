@@ -80,24 +80,28 @@ class EntrySerializer(serializers.ModelSerializer):
                     try:
                         int(field_value)
                     except:
-                        errors[field_name] = _("Integer is not valid")
+                        errors[field_name] = _("{}: Integer is not valid").format(field_name)
                 elif field.field_type == "float":
                     try:
                         float(field_value)
                     except:
-                        errors[field_name] = _("Float is not valid")
+                        errors[field_name] = _("{}: Float is not valid").format(field_name)
                 elif field.field_type == "date":
                     try:
                         # datetime.strptime(field_value, "%Y-%m-%dT%H:%M:%S%z")
                         isoparse(field_value)
                     except Exception as e:
                         print(e)
-                        errors[field_name] = _("Invalid date format")
+                        errors[field_name] = _("{}: Invalid date format").format(field_name)
                 elif field.field_type == "enum":
                     if field_value not in field.choices:
                         errors[field_name] = _(
-                            "{field_value} is not a valid choice ({valid_choices})"
-                        ).format(field_value=field_value, valid_choices=",".join(field.choices))
+                            "{field_name}: {field_value} is not a valid choice ({valid_choices})"
+                        ).format(
+                            field_name=field_name,
+                            field_value=field_value, 
+                            valid_choices=",".join(field.choices)
+                        )
 
         if errors:
             raise serializers.ValidationError(errors)
