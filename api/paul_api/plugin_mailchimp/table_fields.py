@@ -1,3 +1,8 @@
+# NOTES:
+# The mailchimp_path parameter is optional
+# The mailchimp_path can be at most 5 levels deep ('a', 'b', 'c', 'd', 'e')
+# If mailchimp_path is missing, the path will be ('field_name', )
+
 
 AUDIENCES_FIELDS = {
     'id': {
@@ -235,19 +240,40 @@ CONTACT_FIELDS = {
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'LNAME'),
     },
-    # # This field is in AUDIENCE_MEMBERS_FIELDS
-    # 'email_address': {
-    #     'display_name': 'Email Address',
-    #     'type': 'text'
-    # },
-    'phone': {  # was "phone"
+    'phone': {
         'display_name': 'Telephone',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'PHONE'),
     },
+    'addr1': {
+        'display_name': 'Address1',
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'ADDRESS', 'addr1'),
+    },
+    'addr2': {
+        'display_name': 'Address2',
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'ADDRESS', 'addr2'),
+    },
     'city': {
         'display_name': 'City',
-        'type': 'text'
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'ADDRESS', 'city'),
+    },
+    'state': {
+        'display_name': 'State',
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'ADDRESS', 'state'),
+    },
+    'zip': {
+        'display_name': 'ZIP',
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'ADDRESS', 'zip'),
+    },
+    'country': {
+        'display_name': 'Country',
+        'type': 'text',
+        'mailchimp_path': ('merge_fields', 'ADDRESS', 'country'),
     },
     'birthday': {  # was "birthdate"
         'display_name': 'Birthday',
@@ -274,7 +300,7 @@ CONTACT_FIELDS = {
         'mailchimp_path': ('merge_fields', 'C_ADDEDON'),
     },
     'contact_source': {
-        'display_name': 'Source',
+        'display_name': 'Contact Source',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'C_SOURCE'),
     },

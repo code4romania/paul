@@ -7,12 +7,8 @@ from mailchimp3.mailchimpclient import MailChimpError
 from rest_framework.authtoken.models import Token
 
 from api.models import Table
-from plugin_mailchimp import utils
-from plugin_mailchimp.models import (
-    Task,
-    TaskResult,
-)
-from plugin_mailchimp.table_fields import AUDIENCE_MEMBERS_FIELDS
+from plugin_mailchimp import utils, table_fields
+from plugin_mailchimp.models import Task, TaskResult
 
 
 def run_contacts_to_mailchimp(request_user_id, task_id):
@@ -43,6 +39,11 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     client = MailChimp(settings.MAILCHIMP_KEY)
     contacts_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
 
+    audience_members_table_fields_defs = table_fields.TABLE_MAPPING['audience_members']
+    contact_table_fields_defs = table_fields.TABLE_MAPPING['contact_fields']
+
+    task_result = TaskResult.objects.create(user=user, task=task)
+
     if not contacts_table:
         success = False
         stats["errors"] += 1
@@ -55,17 +56,58 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                 stats["skipped"] += 1
                 continue
 
+            merge_fields = {}
+            for mfield in contact_table_fields_defs:
+                try:
+                    value = contact[mfield]
+                except KeyError:
+                    continue
+
+                field_def = contact_table_fields_defs[mfield]
+                path = field_def.get("mailchimp_path", (mfield, ))
+                path_len = len(path)    
+
+                # Build Mailchimp data structure like {'aaa': {'bbb': {'ccc': {'ddd': value}}}} for
+                # items which have their path like ('aaa', 'bbb', 'ccc', 'ddd')
+                if path_len == 1:
+                    merge_fields[path[0]] = value
+                elif path_len == 2:
+                    merge_fields[path[0]] = merge_fields.get(path[0], {})
+                    merge_fields[path[0]][path[1]] = value
+                elif path_len == 3:
+                    merge_fields[path[0]] = merge_fields.get(path[0], {})
+                    merge_fields[path[0]][path[1]] = merge_fields[path[0]].get(path[1], {})
+                    merge_fields[path[0]][path[1]][path[2]] = value
+                elif path_len == 4:
+                    merge_fields[path[0]] = merge_fields.get(path[0], {})
+                    merge_fields[path[0]][path[1]] = merge_fields[path[0]].get(path[1], {})
+                    merge_fields[path[0]][path[1]][path[2]] = merge_fields[path[0]][path[1]].get(path[2], {})
+                    merge_fields[path[0]][path[1]][path[2]][path[3]] = value
+                elif path_len == 5:
+                    merge_fields[path[0]] = merge_fields.get(path[0], {})
+                    merge_fields[path[0]][path[1]] = merge_fields[path[0]].get(path[1], {})
+                    merge_fields[path[0]][path[1]][path[2]] = merge_fields[path[0]][path[1]].get(path[2], {})
+                    merge_fields[path[0]][path[1]][path[2]][path[3]] = merge_fields[path[0]][path[1]][path[2]].get(path[3], {})
+                    merge_fields[path[0]][path[1]][path[2]][path[3]][path[4]] = value
+                else:
+                    print(_("Mailchimp path too long:"), path)
+
+
+            data = {
+                "email_address": contact.get("email_address", ""),
+                "status_if_new": "unsubscribed",
+                **merge_fields,
+            }
+
             try:
                 response = client.lists.members.create_or_update(
                     contact.get("audience_id"), 
                     contact.get("email_address", ""),  # "subscriber_hash" also accepts the email address
-                    {
-                        "email_address": contact.get("email_address", ""),
-                        # "merge_fields": contact.get("merge_fields", ""),  # TODO
-                        "status_if_new": "unsubscribed",
-                    })
-            except MailChimpError:
-                print("error: ", contact)
+                    data
+                )
+            except (MailChimpError, ValueError):
+                print("Mailchimp Error: ", contact)
+                print(response)
                 stats["errors"] += 1
             else:
                 stats["updated"] += 1
@@ -74,13 +116,11 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     stats["details"].append(_("{} contacts skipped").format(stats["skipped"]))
     stats["details"].append(_("{} contacts failed to create or update").format(stats["errors"]))
 
-    task_result = TaskResult.objects.create(
-        user=user,
-        task=task,
-        success=success,
-        status=TaskResult.FINISHED,
-        stats=stats,
-    )
+    task_result.success = success
+    task_result.status = TaskResult.FINISHED
+    task_result.stats = stats
+    task_result.save()
+
     return task_result.id, task_result.success
 
 
@@ -186,7 +226,7 @@ def run_segmentation(request_user_id, task_id):
                 stats['errors'] += 1
                 stats['details'].append(
                     _('<b>{}</b> field needs to be selected in the primary table in <b>{}</b> filtered view').format(
-                        AUDIENCE_MEMBERS_FIELDS[field]['display_name'], filtered_view.name
+                        table_fields.AUDIENCE_MEMBERS_FIELDS[field]['display_name'], filtered_view.name
                     ))
         if success:
             lists_users = utils.get_emails_from_filtered_view(token, filtered_view)

@@ -17,7 +17,7 @@ from api.models import (
 )
 from api.serializers.entries import EntryDataSerializer
 from plugin_mailchimp.models import Settings as MailchimpSettings
-from . import table_fields
+from plugin_mailchimp import table_fields
 
 
 def get_field_value(field_name: str, field_def: dict, source: dict) -> str:
@@ -28,8 +28,10 @@ def get_field_value(field_name: str, field_def: dict, source: dict) -> str:
         path = field_def["mailchimp_path"]
         value = source.get(path[0])
         for p in path[1:]:
-            if value is None:
-                break
+            if type(value) is not dict:
+                # We cannot continue down the chain because
+                # the previous level value was not a dict
+                raise KeyError
             value = value[p]
     else:
         # just get source['field_name']
@@ -99,9 +101,10 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
 
 def check_tag_is_present(audience_tags_table_name: str, audience_id: str, audience_name: str, tag) -> str:
     user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
+    db = Database.objects.last()
     tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
         name=audience_tags_table_name,
-        database_id=1,
+        database_id=db,
         owner=user,
         active=True)
     if created:
@@ -221,6 +224,7 @@ def retrieve_lists_data(client: MailChimp):
                     'audience_id': mlist['id'],
                     'audience_name': mlist['name']
                     })
+        
         for field in audiences_stats_table_fields_defs:
             field_def = audiences_stats_table_fields_defs[field]
 
@@ -344,10 +348,12 @@ def retrieve_lists_data(client: MailChimp):
 
                 try:
                     field_value = get_field_value(field, field_def, member)
-                    print(field_value, field_def)
                 except KeyError:
                     continue
-
+                except Exception as e:
+                    print(e)
+                    raise e
+                
                 if field_def['type'] == 'enum':
                     table_column = TableColumn.objects.get(table=audience_members_table, name=field)
                     if not table_column.choices:
@@ -361,6 +367,7 @@ def retrieve_lists_data(client: MailChimp):
                         if field_value not in table_column.choices:
                             table_column.choices.append(field_value)
                             table_column.save()
+
                 if is_list_field(field_def):
                     items = []
                     for item in field_value:
@@ -369,7 +376,7 @@ def retrieve_lists_data(client: MailChimp):
                         stats[audience_tags_table_name][tag_status] += 1
                     audience_members_entry.data[field] = ','.join(items)
                 else:
-                    if field_def['type'] == 'enum':
+                    if field_def['type'] == 'enum':  # TODO: ???
                         audience_members_entry.data[field] = field_value[:10]
                     else:
                         audience_members_entry.data[field] = field_value
