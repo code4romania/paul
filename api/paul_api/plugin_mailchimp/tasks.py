@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -33,7 +35,8 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
         "errors": 0,
         "skipped": 0,
         "updated": 0,
-        "details": []
+        "details": [],
+        "error_messages": [],
     }
 
     client = MailChimp(settings.MAILCHIMP_KEY)
@@ -108,14 +111,19 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
             }
 
             try:
-                response = client.lists.members.create_or_update(
+                client.lists.members.create_or_update(
                     contact.get("audience_id"), 
                     contact.get("email_address", ""),  # "subscriber_hash" also accepts the email address
                     data
                 )
             except MailChimpError as e:
-                print("Mailchimp Error: ", str(e))
                 stats["errors"] += 1
+                try:
+                    error_message = literal_eval(str(e))["errors"][0]["message"]
+                except (SyntaxError, KeyError):
+                    error_message = str(e)
+                stats["error_messages"].append(
+                    _("Error for {}: {}").format(contact.get("email_address", ""), error_message))
             else:
                 stats["updated"] += 1
 
@@ -123,7 +131,15 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     stats["details"].append(_("{} contacts skipped").format(stats["skipped"]))
     stats["details"].append(_("{} contacts failed to create or update").format(stats["errors"]))
 
-    task_result.success = success
+    if not stats["errors"]:
+        task_result.success = success
+    else:
+        # Only send the first five error messages for display
+        for message in stats["error_messages"][:5]:
+            stats["details"].append(message)
+        if len(stats["error_messages"]) > 5:
+            stats["details"].append("...")
+
     task_result.status = TaskResult.FINISHED
     task_result.stats = stats
     task_result.save()
