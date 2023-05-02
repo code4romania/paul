@@ -246,32 +246,32 @@ CONTACT_FIELDS = {
         'mailchimp_path': ('merge_fields', 'PHONE'),
     },
     'addr1': {
-        'display_name': 'Address1',
+        'display_name': 'Address Line 1',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'ADDRESS', 'addr1'),
     },
     'addr2': {
-        'display_name': 'Address2',
+        'display_name': 'Address Line 2',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'ADDRESS', 'addr2'),
     },
     'city': {
-        'display_name': 'City',
+        'display_name': 'Address City',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'ADDRESS', 'city'),
     },
     'state': {
-        'display_name': 'State',
+        'display_name': 'Address State',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'ADDRESS', 'state'),
     },
     'zip': {
-        'display_name': 'ZIP',
+        'display_name': 'Address ZIP',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'ADDRESS', 'zip'),
     },
     'country': {
-        'display_name': 'Country',
+        'display_name': 'Address Country',
         'type': 'text',
         'mailchimp_path': ('merge_fields', 'ADDRESS', 'country'),
     },
@@ -295,7 +295,7 @@ CONTACT_FIELDS = {
     #     'type': 'text'
     # },
     'contact_added_on': {
-        'display_name': 'Added On',
+        'display_name': 'Contact Added On',
         'type': 'date',
         'mailchimp_path': ('merge_fields', 'C_ADDEDON'),
     },
@@ -371,34 +371,34 @@ AUDIENCE_MEMBERS_FIELDS = {
         'mailchimp_path': ('stats', 'avg_click_rate'),
     },
     'total_revenue': {  # new
-        'display_name': 'Total Revenue',
+        'display_name': 'Stats Total Revenue',
         'type': 'int',
         'mailchimp_path': ('stats', 'ecommerce_data', 'total_revenue'),
     },
     'total_orders': {  # new
-        'display_name': 'Total Orders',
+        'display_name': 'Stats Total Orders',
         'type': 'int',
         'mailchimp_path': ('stats', 'ecommerce_data', 'number_of_orders'),
     },
     'total_orders': {  # new
-        'display_name': 'Currency',
+        'display_name': 'Stats Currency',
         'type': 'text',
         'mailchimp_path': ('stats', 'ecommerce_data', 'currency_code'),
     },
     'ip_signup': {
-        'display_name': 'IP Signup',
+        'display_name': 'Signup IP',
         'type': 'text'
     },
     'timestamp_signup': {
-        'display_name': 'Timestamp Signup',
+        'display_name': 'Signup Timestamp',
         'type': 'date'
     },
     'ip_opt': {
-        'display_name': 'IP Opt',
+        'display_name': 'Opt IP',
         'type': 'text'
     },
     'timestamp_opt': {
-        'display_name': 'Timestamp Opt',
+        'display_name': 'Opt Timestamp',
         'type': 'date'
     },
     'member_rating': {
@@ -422,12 +422,12 @@ AUDIENCE_MEMBERS_FIELDS = {
         'type': 'text'
     },
     'location_country': {
-        'display_name': 'Country',
+        'display_name': 'Location Country',
         'type': 'text',
         'mailchimp_path': ('location', 'country_code'),
     },
     'location_region': {  # new
-        'display_name': 'Region',
+        'display_name': 'Location Region',
         'type': 'text',
         'mailchimp_path': ('location', 'region'),
     },
@@ -555,7 +555,7 @@ SEGMENT_MEMBERS_FIELDS = {
         'type': 'text'
     },
     'location_country': {
-        'display_name': 'Location',
+        'display_name': 'Location Country',
         'type': 'text',
         'mailchimp_path': ('location', 'country_code'),
     }
