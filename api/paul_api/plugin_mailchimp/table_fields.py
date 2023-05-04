@@ -561,6 +561,25 @@ SEGMENT_MEMBERS_FIELDS = {
     }
 }
 
+AUDIENCE_TAGS_FIELDS = {
+    'id': {
+        'display_name': 'ID',
+        'type': 'text'
+    },
+    'name': {
+        'display_name': 'Name',
+        'type': 'enum'
+    },
+    'audience_id': {
+        'display_name': 'Audience ID',
+        'type': 'text'
+    },
+    'audience_name': {
+        'display_name': 'Audience Name',
+        'type': 'text'
+    },
+}
+
 
 TABLE_MAPPING = {
     'audiences': AUDIENCES_FIELDS,
@@ -569,4 +588,5 @@ TABLE_MAPPING = {
     'contact_fields': CONTACT_FIELDS,
     'audience_members': AUDIENCE_MEMBERS_FIELDS,
     'segment_members': SEGMENT_MEMBERS_FIELDS,
+    'audience_tags': AUDIENCE_TAGS_FIELDS,
 }

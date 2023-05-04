@@ -53,8 +53,8 @@ def create_mailchimp_tables(audiences_name: str="") -> int:
     get_or_create_table(mc_settings.audiences_table_name, 'audiences')
     get_or_create_table(mc_settings.audiences_stats_table_name, 'audiences_stats')
     get_or_create_table(mc_settings.audience_segments_table_name, 'audience_segments')
+    get_or_create_table(mc_settings.audience_tags_table_name, 'audience_tags')
     
-    # TODO: This table should be created by the user, not automatically
     contact_table = get_or_create_table(
         audiences_name, 'contact_fields', 'audience_members')
     contact_table.table_type = Table.TYPE_CONTACTS
@@ -99,19 +99,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
     return table
 
 
-def check_tag_is_present(audience_tags_table_name: str, audience_id: str, audience_name: str, tag) -> str:
-    user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
-    db = Database.objects.last()
-    tags_table, created = Table.objects.get_or_create(  # TODO: Fixme!
-        name=audience_tags_table_name,
-        database_id=db.pk,
-        owner=user,
-        active=True)
-    if created:
-        TableColumn.objects.get_or_create(table=tags_table, name='id', display_name='ID', field_type="int")
-        TableColumn.objects.get_or_create(table=tags_table, name='name', display_name='Name', field_type="enum")
-        TableColumn.objects.get_or_create(table=tags_table, name='audience_id', display_name='Audience ID', field_type="text")
-        TableColumn.objects.get_or_create(table=tags_table, name='audience_name', display_name='Audience Name', field_type="text")
+def check_tag_is_present(tags_table: Table, audience_id: str, audience_name: str, tag) -> str:
     tag_exists = Entry.objects.filter(table=tags_table, data__id=tag['id']).exists()
     if not tag_exists:
         tag['audience_id'] = audience_id
@@ -179,6 +167,7 @@ def retrieve_lists_data(client: MailChimp):
     audiences_stats_table = Table.objects.get(name=audiences_stats_table_name)
     audience_segments_table = Table.objects.get(name=audience_segments_table_name)
     segment_members_table = Table.objects.get(name=segment_members_table_name)
+    tags_table = Table.objects.get(name=audience_tags_table_name)
 
     audiences_table_fields_defs = table_fields.TABLE_MAPPING['audiences']
     audiences_stats_table_fields_defs = table_fields.TABLE_MAPPING['audiences_stats']
@@ -242,6 +231,8 @@ def retrieve_lists_data(client: MailChimp):
 
         # Sync list segments
         list_segments = client.lists.segments.all(list_id=mlist['id'], get_all=True)
+        segment_members_creation_queue = []
+        segment_members_update_queue = []
 
         for segment in list_segments['segments']:
             audience_segments_exists = Entry.objects.filter(
@@ -283,14 +274,14 @@ def retrieve_lists_data(client: MailChimp):
                     stats[segment_members_table_name]['updated'] += 1
                 else:
                     stats[segment_members_table_name]['created'] += 1
-                    segment_members_entry = Entry.objects.create(
+                    segment_members_entry = Entry(
                         table=segment_members_table,
                         data={
                             'audience_id': member['list_id'],
                             'segment_id': segment['id'],
                             'audience_name': mlist['name'],
                             'segment_name': segment['name']
-                            })
+                        })
                 for field in segment_members_table_fields_defs:
                     field_def = segment_members_table_fields_defs[field]
                     
@@ -321,10 +312,18 @@ def retrieve_lists_data(client: MailChimp):
                         else:
                             segment_members_entry.data[field] = field_value
 
-                segment_members_entry.save()
+                if segment_members_exists:
+                    segment_members_update_queue.append(segment_members_entry)
+                else:
+                    segment_members_creation_queue.append(segment_members_entry)
+            
+        Entry.objects.bulk_create(segment_members_creation_queue, batch_size=50)
+        Entry.objects.bulk_update(segment_members_update_queue, ["data"], batch_size=50)
 
         # # Sync list members
         list_members = client.lists.members.all(list_id=mlist['id'], get_all=True)
+        list_members_creation_queue = []
+        list_members_update_queue = []
 
         for member in list_members['members']:
             member['audience_name'] = mlist['name']
@@ -335,12 +334,12 @@ def retrieve_lists_data(client: MailChimp):
                 stats[audience_members_table_name]['updated'] += 1
             else:
                 stats[audience_members_table_name]['created'] += 1
-                audience_members_entry = Entry.objects.create(
+                audience_members_entry = Entry(
                     table=audience_members_table,
                     data={
                         'audience_id': member['list_id'],
                         'audience_name': mlist['name']
-                        })
+                    })
 
             audience_and_contact_fields_defs = audience_members_table_fields_defs | contact_table_fields_defs
             for field in audience_and_contact_fields_defs:
@@ -368,10 +367,10 @@ def retrieve_lists_data(client: MailChimp):
                             table_column.choices.append(field_value)
                             table_column.save()
 
-                if is_list_field(field_def):
+                if is_list_field(field_def):  # FIXME: Should check if this is a Tag field
                     items = []
                     for item in field_value:
-                        tag_status = check_tag_is_present(audience_tags_table_name, mlist['id'], mlist['name'], item)
+                        tag_status = check_tag_is_present(tags_table, mlist['id'], mlist['name'], item)
                         items.append(item['name'])
                         stats[audience_tags_table_name][tag_status] += 1
                     audience_members_entry.data[field] = ','.join(items)
@@ -381,7 +380,15 @@ def retrieve_lists_data(client: MailChimp):
                         audience_members_entry.data[field] = field_value[:10]
                     else:
                         audience_members_entry.data[field] = field_value
-            audience_members_entry.save()
+          
+            if audience_members_exists:
+                list_members_update_queue.append(audience_members_entry)
+            else:
+                list_members_creation_queue.append(audience_members_entry)
+        
+        Entry.objects.bulk_create(list_members_creation_queue, batch_size=50)
+        Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
+
     return success, stats
 
 
