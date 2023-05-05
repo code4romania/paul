@@ -473,3 +473,37 @@ def get_all_contacts(contacts_table):
         contacts.append(EntryDataSerializer(entry, context=context).data)
 
     return contacts
+
+
+def update_table_fields(table: Table, column_model: TableColumn, field_defs: dict) -> int:
+    """
+    Update table fields with the new field defs
+    """
+    
+    total_updates = 0
+    for field_name, field_details in field_defs.items():
+        # First, check if a column with the current name already exists
+        try:
+            column = column_model.objects.get(table=table, name=field_name)
+        except column_model.DoesNotExist:
+            column = None
+
+        # Check if the column exists with the old name
+        if not column and field_details.get('old_key'):
+            try:
+                column = column_model.objects.get(table=table, name=field_details.get('old_key', ''))
+            except column_model.DoesNotExist:
+                column = None
+
+        # If the column does not exist with either the current name or the old name, create it
+        if not column:
+            column = column_model(table=table)
+        
+        # Update the column details
+        column.name = field_name
+        column.display_name = field_details['display_name']
+        column.field_type = field_details['type']
+        column.save()
+        total_updates += 1
+    
+    return total_updates
