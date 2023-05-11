@@ -83,7 +83,7 @@ defusedxml==0.7.1
     #   -r requirements.txt
     #   python3-openid
     #   social-auth-core
-django==3.2.18
+django==3.2.19
     # via
     #   -r requirements.txt
     #   django-cors-headers

@@ -1,4 +1,4 @@
-pip-tools==6.13.0
-black==23.3.0
+pip-tools~=6.13.0
+black~=23.3.0
 
 -r requirements.txt
