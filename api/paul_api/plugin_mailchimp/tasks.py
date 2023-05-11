@@ -37,6 +37,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
         "updated": 0,
         "details": [],
         "error_messages": [],
+        "skipped_contacts": [],
     }
 
     client = MailChimp(settings.MAILCHIMP_KEY)
@@ -56,6 +57,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
         for contact in all_contacts:
             if not "audience_id" in contact.keys():
                 print("skipping: ", contact)
+                stats["skipped_contacts"].append(str(contact)[:100])
                 stats["skipped"] += 1
                 continue
 
@@ -98,12 +100,12 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
             # TODO: check which data is read-only so that we don't bother uploading it and maybe automate this dict
             data = {
                 "email_address": contact.get("email_address", ""),
-                "email_type": contact.get("email_type", ""),
+                "email_type": contact.get("email_type", "text"),
                 "status": contact.get("status", ""),
                 "ubsubscribe_reason": contact.get("unsubscribe_reason", ""),
-                "interests": contact.get("interests", ""),
+                # "interests": contact.get("interests", ""),
                 "language": contact.get("language", ""),
-                "vip": contact.get("vip", ""),
+                "vip": bool(contact.get("vip", False)),
                 "email_client": contact.get("email_client", ""),
                 "source": contact.get("source", ""),
                 "status_if_new": "unsubscribed",
@@ -117,18 +119,24 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                     data
                 )
             except MailChimpError as e:
+                print("MAILCHIMP EXCEPTION = ", e)
                 stats["errors"] += 1
                 try:
-                    error_message = literal_eval(str(e))["errors"][0]["message"]
+                    error_message = '"{}" {}'.format(
+                        literal_eval(str(e))["errors"][0]["field"],
+                        literal_eval(str(e))["errors"][0]["message"]
+                    )
                 except (SyntaxError, KeyError):
                     error_message = str(e)
                 stats["error_messages"].append(
-                    _("Error for {}: {}").format(contact.get("email_address", ""), error_message))
+                    _("First error for {}: {}").format(contact.get("email_address", ""), error_message))
             else:
                 stats["updated"] += 1
 
     stats["details"].append(_("{} contacts created or updated").format(stats["updated"]))
     stats["details"].append(_("{} contacts skipped").format(stats["skipped"]))
+    if len(stats["skipped_contacts"]):
+        stats["details"].append(", ".join(stats["skipped_contacts"][:5]))
     stats["details"].append(_("{} contacts failed to create or update").format(stats["errors"]))
 
     if not stats["errors"]:
