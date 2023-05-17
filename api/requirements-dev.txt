@@ -9,10 +9,6 @@ asgiref==3.5.2
     #   -r requirements.txt
     #   django
     #   djoser
-asttokens==2.2.1
-    # via
-    #   -r requirements.txt
-    #   stack-data
 azure-core==1.25.0
     # via
     #   -r requirements.txt
@@ -22,17 +18,13 @@ azure-storage-blob==12.13.1
     # via
     #   -r requirements.txt
     #   django-storages
-backcall==0.2.0
-    # via
-    #   -r requirements.txt
-    #   ipython
 black==23.3.0
     # via -r requirements-dev.in
 blessed==1.20.0
     # via -r requirements.txt
-boto3==1.26.109
+boto3==1.26.135
     # via -r requirements.txt
-botocore==1.29.109
+botocore==1.29.135
     # via
     #   -r requirements.txt
     #   boto3
@@ -74,10 +66,6 @@ cryptography==37.0.4
     #   -r requirements.txt
     #   azure-storage-blob
     #   social-auth-core
-decorator==5.1.1
-    # via
-    #   -r requirements.txt
-    #   ipython
 defusedxml==0.7.1
     # via
     #   -r requirements.txt
@@ -87,10 +75,8 @@ django==3.2.19
     # via
     #   -r requirements.txt
     #   django-cors-headers
-    #   django-extensions
     #   django-filter
     #   django-guardian
-    #   django-jazzmin
     #   django-picklefield
     #   django-q2
     #   django-sendgrid-v5
@@ -99,13 +85,9 @@ django==3.2.19
     #   djangorestframework-guardian
     #   djangorestframework-simplejwt
     #   drf-nested-routers
-django-cors-headers==3.14.0
-    # via -r requirements.txt
-django-crispy-forms==1.14.0
+django-cors-headers==4.0.0
     # via -r requirements.txt
 django-environ==0.10.0
-    # via -r requirements.txt
-django-extensions==3.2.0
     # via -r requirements.txt
 django-filter==2.4.0
     # via
@@ -115,13 +97,11 @@ django-guardian==2.4.0
     # via
     #   -r requirements.txt
     #   djangorestframework-guardian
-django-jazzmin==2.5.0
-    # via -r requirements.txt
 django-picklefield==3.1
     # via
     #   -r requirements.txt
     #   django-q2
-django-q2==1.5.2
+django-q2==1.5.3
     # via -r requirements.txt
 django-rest-framework-tricks==0.2.14
     # via -r requirements.txt
@@ -142,13 +122,10 @@ djangorestframework==3.13.1
     #   -r requirements.txt
     #   django-rest-framework-tricks
     #   django-rest-swagger
-    #   djangorestframework-csv
     #   djangorestframework-guardian
     #   djangorestframework-simplejwt
     #   drf-nested-routers
     #   drf-tweaks
-djangorestframework-csv==2.1.1
-    # via -r requirements.txt
 djangorestframework-guardian==0.3.0
     # via -r requirements.txt
 djangorestframework-simplejwt==4.8.0
@@ -165,11 +142,7 @@ et-xmlfile==1.1.0
     # via
     #   -r requirements.txt
     #   openpyxl
-executing==1.2.0
-    # via
-    #   -r requirements.txt
-    #   stack-data
-faker==18.4.0
+faker==18.9.0
     # via -r requirements.txt
 gevent==22.10.2
     # via -r requirements.txt
@@ -189,8 +162,6 @@ idna==3.3
     #   requests
 inflection==0.5.1
     # via -r requirements.txt
-ipython==8.12.0
-    # via -r requirements.txt
 isodate==0.6.1
     # via
     #   -r requirements.txt
@@ -199,10 +170,6 @@ itypes==1.2.0
     # via
     #   -r requirements.txt
     #   coreapi
-jedi==0.18.1
-    # via
-    #   -r requirements.txt
-    #   ipython
 jinja2==3.1.2
     # via
     #   -r requirements.txt
@@ -212,16 +179,12 @@ jmespath==1.0.1
     #   -r requirements.txt
     #   boto3
     #   botocore
-mailchimp3==3.0.17
+mailchimp3==3.0.18
     # via -r requirements.txt
 markupsafe==2.1.1
     # via
     #   -r requirements.txt
     #   jinja2
-matplotlib-inline==0.1.3
-    # via
-    #   -r requirements.txt
-    #   ipython
 msrest==0.7.1
     # via
     #   -r requirements.txt
@@ -243,52 +206,24 @@ packaging==23.1
     # via
     #   black
     #   build
-parso==0.8.3
-    # via
-    #   -r requirements.txt
-    #   jedi
 pathspec==0.9.0
     # via black
 pep517==0.13.0
     # via build
-pexpect==4.8.0
-    # via
-    #   -r requirements.txt
-    #   ipython
-pickleshare==0.7.5
-    # via
-    #   -r requirements.txt
-    #   ipython
 pillow==9.5.0
     # via -r requirements.txt
 pip-tools==6.13.0
     # via -r requirements-dev.in
 platformdirs==2.5.2
     # via black
-prompt-toolkit==3.0.30
-    # via
-    #   -r requirements.txt
-    #   ipython
-psutil==5.9.4
+psutil==5.9.5
     # via -r requirements.txt
 psycopg2-binary==2.9.3
     # via -r requirements.txt
-ptyprocess==0.7.0
-    # via
-    #   -r requirements.txt
-    #   pexpect
-pure-eval==0.2.2
-    # via
-    #   -r requirements.txt
-    #   stack-data
 pycparser==2.21
     # via
     #   -r requirements.txt
     #   cffi
-pygments==2.12.0
-    # via
-    #   -r requirements.txt
-    #   ipython
 pyjwt==2.4.0
     # via
     #   -r requirements.txt
@@ -316,7 +251,7 @@ pytz==2022.1
     #   djangorestframework
 pyyaml==6.0
     # via -r requirements.txt
-requests==2.28.1
+requests==2.30.0
     # via
     #   -r requirements.txt
     #   azure-core
@@ -330,8 +265,6 @@ requests-oauthlib==1.3.1
     #   -r requirements.txt
     #   msrest
     #   social-auth-core
-rerun==1.0.30
-    # via -r requirements.txt
 s3transfer==0.6.0
     # via
     #   -r requirements.txt
@@ -349,10 +282,8 @@ simplejson==3.17.6
 six==1.16.0
     # via
     #   -r requirements.txt
-    #   asttokens
     #   azure-core
     #   blessed
-    #   djangorestframework-csv
     #   drf-tweaks
     #   isodate
     #   python-dateutil
@@ -369,10 +300,6 @@ sqlparse==0.4.2
     # via
     #   -r requirements.txt
     #   django
-stack-data==0.6.2
-    # via
-    #   -r requirements.txt
-    #   ipython
 starkbank-ecdsa==2.0.3
     # via
     #   -r requirements.txt
@@ -382,19 +309,10 @@ tomli==2.0.1
     #   black
     #   build
     #   pep517
-traitlets==5.3.0
-    # via
-    #   -r requirements.txt
-    #   ipython
-    #   matplotlib-inline
 typing-extensions==4.3.0
     # via
     #   -r requirements.txt
     #   azure-core
-unicodecsv==0.14.1
-    # via
-    #   -r requirements.txt
-    #   djangorestframework-csv
 uritemplate==4.1.1
     # via
     #   -r requirements.txt
@@ -409,7 +327,6 @@ wcwidth==0.2.5
     # via
     #   -r requirements.txt
     #   blessed
-    #   prompt-toolkit
 wheel==0.37.1
     # via pip-tools
 whitenoise==6.4.0

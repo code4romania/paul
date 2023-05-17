@@ -8,21 +8,17 @@ asgiref==3.5.2
     # via
     #   django
     #   djoser
-asttokens==2.2.1
-    # via stack-data
 azure-core==1.25.0
     # via
     #   azure-storage-blob
     #   msrest
 azure-storage-blob==12.13.1
     # via django-storages
-backcall==0.2.0
-    # via ipython
 blessed==1.20.0
     # via -r requirements.in
-boto3==1.26.109
+boto3==1.26.135
     # via -r requirements.in
-botocore==1.29.109
+botocore==1.29.135
     # via
     #   boto3
     #   s3transfer
@@ -48,8 +44,6 @@ cryptography==37.0.4
     # via
     #   azure-storage-blob
     #   social-auth-core
-decorator==5.1.1
-    # via ipython
 defusedxml==0.7.1
     # via
     #   python3-openid
@@ -58,10 +52,8 @@ django==3.2.19
     # via
     #   -r requirements.in
     #   django-cors-headers
-    #   django-extensions
     #   django-filter
     #   django-guardian
-    #   django-jazzmin
     #   django-picklefield
     #   django-q2
     #   django-sendgrid-v5
@@ -70,13 +62,9 @@ django==3.2.19
     #   djangorestframework-guardian
     #   djangorestframework-simplejwt
     #   drf-nested-routers
-django-cors-headers==3.14.0
-    # via -r requirements.in
-django-crispy-forms==1.14.0
+django-cors-headers==4.0.0
     # via -r requirements.in
 django-environ==0.10.0
-    # via -r requirements.in
-django-extensions==3.2.0
     # via -r requirements.in
 django-filter==2.4.0
     # via
@@ -86,11 +74,9 @@ django-guardian==2.4.0
     # via
     #   -r requirements.in
     #   djangorestframework-guardian
-django-jazzmin==2.5.0
-    # via -r requirements.in
 django-picklefield==3.1
     # via django-q2
-django-q2==1.5.2
+django-q2==1.5.3
     # via -r requirements.in
 django-rest-framework-tricks==0.2.14
     # via -r requirements.in
@@ -107,13 +93,10 @@ djangorestframework==3.13.1
     #   -r requirements.in
     #   django-rest-framework-tricks
     #   django-rest-swagger
-    #   djangorestframework-csv
     #   djangorestframework-guardian
     #   djangorestframework-simplejwt
     #   drf-nested-routers
     #   drf-tweaks
-djangorestframework-csv==2.1.1
-    # via -r requirements.in
 djangorestframework-guardian==0.3.0
     # via -r requirements.in
 djangorestframework-simplejwt==4.8.0
@@ -126,9 +109,7 @@ drf-tweaks==0.9.7
     # via -r requirements.in
 et-xmlfile==1.1.0
     # via openpyxl
-executing==1.2.0
-    # via stack-data
-faker==18.4.0
+faker==18.9.0
     # via -r requirements.in
 gevent==22.10.2
     # via -r requirements.in
@@ -142,26 +123,20 @@ idna==3.3
     # via requests
 inflection==0.5.1
     # via -r requirements.in
-ipython==8.12.0
-    # via -r requirements.in
 isodate==0.6.1
     # via msrest
 itypes==1.2.0
     # via coreapi
-jedi==0.18.1
-    # via ipython
 jinja2==3.1.2
     # via coreschema
 jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-mailchimp3==3.0.17
+mailchimp3==3.0.18
     # via -r requirements.in
 markupsafe==2.1.1
     # via jinja2
-matplotlib-inline==0.1.3
-    # via ipython
 msrest==0.7.1
     # via azure-storage-blob
 oauthlib==3.2.0
@@ -172,28 +147,14 @@ openapi-codec==1.3.2
     # via django-rest-swagger
 openpyxl==3.1.2
     # via -r requirements.in
-parso==0.8.3
-    # via jedi
-pexpect==4.8.0
-    # via ipython
-pickleshare==0.7.5
-    # via ipython
 pillow==9.5.0
     # via -r requirements.in
-prompt-toolkit==3.0.30
-    # via ipython
-psutil==5.9.4
+psutil==5.9.5
     # via -r requirements.in
 psycopg2-binary==2.9.3
     # via -r requirements.in
-ptyprocess==0.7.0
-    # via pexpect
-pure-eval==0.2.2
-    # via stack-data
 pycparser==2.21
     # via cffi
-pygments==2.12.0
-    # via ipython
 pyjwt==2.4.0
     # via
     #   djangorestframework-simplejwt
@@ -215,7 +176,7 @@ pytz==2022.1
     #   djangorestframework
 pyyaml==6.0
     # via -r requirements.in
-requests==2.28.1
+requests==2.30.0
     # via
     #   -r requirements.in
     #   azure-core
@@ -228,8 +189,6 @@ requests-oauthlib==1.3.1
     # via
     #   msrest
     #   social-auth-core
-rerun==1.0.30
-    # via -r requirements.in
 s3transfer==0.6.0
     # via boto3
 sendgrid==6.9.7
@@ -240,10 +199,8 @@ simplejson==3.17.6
     # via django-rest-swagger
 six==1.16.0
     # via
-    #   asttokens
     #   azure-core
     #   blessed
-    #   djangorestframework-csv
     #   drf-tweaks
     #   isodate
     #   python-dateutil
@@ -254,18 +211,10 @@ social-auth-core==4.3.0
     # via social-auth-app-django
 sqlparse==0.4.2
     # via django
-stack-data==0.6.2
-    # via ipython
 starkbank-ecdsa==2.0.3
     # via sendgrid
-traitlets==5.3.0
-    # via
-    #   ipython
-    #   matplotlib-inline
 typing-extensions==4.3.0
     # via azure-core
-unicodecsv==0.14.1
-    # via djangorestframework-csv
 uritemplate==4.1.1
     # via coreapi
 urllib3==1.26.11
@@ -274,9 +223,7 @@ urllib3==1.26.11
     #   requests
     #   sentry-sdk
 wcwidth==0.2.5
-    # via
-    #   blessed
-    #   prompt-toolkit
+    # via blessed
 whitenoise==6.4.0
     # via -r requirements.in
 zope-event==4.5.0
