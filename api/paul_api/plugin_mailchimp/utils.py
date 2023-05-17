@@ -507,3 +507,39 @@ def update_table_fields(table: Table, column_model: TableColumn, field_defs: dic
         total_updates += 1
     
     return total_updates
+
+
+def update_entry_data_keys(table: Table, entry_model: Entry, field_defs: dict) -> int:
+    """
+    Update table entry data keys from the old key value to the new key value,
+    if the new key doesn't already exist
+    """
+    
+    total_updates = 0
+    entry_update_queue = []
+    entries = entry_model.objects.filter(table=table)
+    
+    key_mapping = {}
+    for field_name, field_details in field_defs.items():
+        old_key = field_details.get('old_key')
+        if old_key:
+            key_mapping[old_key] = field_name
+        
+    # Rename old keys for each table entry
+    for entry in entries:
+        if not entry.data:
+            continue
+        changed = False
+        for old_key in key_mapping.keys():
+            if old_key in entry.data:
+                if key_mapping[old_key] not in entry.data:
+                    # if the new key does not already exist then move the value
+                    val = entry.data.pop(old_key)
+                    entry.data[key_mapping[old_key]] = val
+                    changed = True
+        if changed:
+            entry_update_queue.append(entry)
+            total_updates += 1
+
+    entry_model.objects.bulk_update(entry_update_queue, ["data"], batch_size=50)
+    return total_updates
