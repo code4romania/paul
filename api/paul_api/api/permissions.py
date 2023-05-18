@@ -65,7 +65,7 @@ class TableEntryPermissions(IsAuthenticatedOrGetToken):
         user_perms = checker.get_perms(table)
         
         READ_ACTIONS = ['list', 'retrieve']
-        WRITE_ACTIONS = ['create', 'update', 'partial_update', 'destroy']
+        WRITE_ACTIONS = ['create', 'update', 'partial_update', 'destroy', 'bulk_delete']
 
         if view.action in READ_ACTIONS and 'view_table' in user_perms:
             return True

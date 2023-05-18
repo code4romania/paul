@@ -1145,6 +1145,24 @@ class EntryViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    @action(
+        detail=False,
+        methods=["post"],
+        url_name="bulk-delete",
+        url_path="bulk-delete",
+    )
+    def bulk_delete(self, request, table_pk):
+        """ Bulk delete up to 100 entries from the same table """
+        
+        entry_ids = request.data.get('entries', [])
+        if not isinstance(entry_ids, list) or len(entry_ids) > 100:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        if entry_ids:
+            models.Entry.objects.filter(table__id=table_pk, id__in=entry_ids).delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CsvImportViewSet(viewsets.ModelViewSet):
     queryset = models.CsvImport.objects.order_by('id').all()
