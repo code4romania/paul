@@ -409,8 +409,11 @@ def add_list_to_segment(client: MailChimp, lists_users, tag: str):
         'tags': [{'name': tag, 'status': 'active'}]
     }
 
-    for audience, subcribers in lists_users.items():
-        for subscriber_hash in subcribers:
+    for audience, subscribers in lists_users.items():
+        for subscriber_hash in subscribers:
+            if not subscriber_hash:
+                # TODO: Count how many updates were skipped
+                continue
             try:
                 x = client.lists.members.tags.update(list_id=audience, subscriber_hash=subscriber_hash, data=data)
                 stats['success'] += 1
