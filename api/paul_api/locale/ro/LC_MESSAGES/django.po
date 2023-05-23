@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-25 09:52+0300\n"
+"POT-Creation-Date: 2023-05-23 21:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "Coloane"
 
 #: api/admin.py:168
 msgid "Join Tables"
-msgstr "Tabele unite"
+msgstr "Tabele asociate"
 
 #: api/forms.py:100
 #, python-brace-format
@@ -40,7 +40,7 @@ msgstr ""
 #: api/management/commands/seed-frontend-domain.py:14
 #, python-brace-format
 msgid "New frontend domain: {domain}"
-msgstr "Nou domeniu: {domain}"
+msgstr "Domeniu nou: {domain}"
 
 #: api/middlewares.py:24
 #, python-brace-format
@@ -375,7 +375,7 @@ msgstr "câmp join"
 
 #: api/models.py:409
 msgid "join tables"
-msgstr "tabele join"
+msgstr "tabele asociate"
 
 #: api/models.py:414 api/models.py:487 api/models.py:530
 msgid "creation date"
@@ -459,53 +459,52 @@ msgid "Unknown fields: {field_names}"
 msgstr "Câmpuri necunoscute: {field_names}"
 
 #: api/serializers/entries.py:83
-msgid "Integer is not valid"
-msgstr "Număr întreg invalid"
+msgid "{}: Integer is not valid"
+msgstr "{}: Număr întreg invalid"
 
 #: api/serializers/entries.py:88
-msgid "Float is not valid"
-msgstr "Număr cu zecimale invalid"
+msgid "{}: Float is not valid"
+msgstr "{}: Număr cu zecimale invalid"
 
 #: api/serializers/entries.py:95
-msgid "Invalid date format"
-msgstr "Format dată invalid"
+msgid "{}: Invalid date format"
+msgstr "{}: Format dată invalid"
 
 #: api/serializers/entries.py:99
-#, python-brace-format
-msgid "{field_value} is not a valid choice ({valid_choices})"
-msgstr "{field_value} nu este o alegere validă ({valid_choices})"
+msgid "{field_name}: {field_value} is not a valid choice ({valid_choices})"
+msgstr "{field_name}: {field_value} nu este o alegere validă ({valid_choices})"
 
-#: api/serializers/entries.py:130
+#: api/serializers/entries.py:134
 #, python-brace-format
 msgid "The {unique_field_names} fields must be unique together"
 msgstr "Câmpurile {unique_field_names} trebuie să fie unice împreună"
 
-#: api/serializers/entries.py:134 api/serializers/entries.py:149
+#: api/serializers/entries.py:138 api/serializers/entries.py:153
 #, python-brace-format
 msgid "The {unique_field_name} field must be unique in table"
 msgstr "Câmpul {unique_field_name} trebuie să fie unic în tabel"
 
-#: api/serializers/entries.py:145
+#: api/serializers/entries.py:149
 #, python-brace-format
 msgid "The {unique_field_names} fields must be unique in table"
 msgstr "Câmpurile {unique_field_names} trebuie să fie unice în tabel"
 
-#: api/serializers/entries.py:158
+#: api/serializers/entries.py:162
 #, python-brace-format
 msgid "The {field_name} field is required"
 msgstr "Câmpul {field_name} este obligatoriu"
 
-#: api/serializers/entries.py:164
+#: api/serializers/entries.py:168
 #, python-brace-format
 msgid "The {field_name} field value must be one of: {field_choices}"
 msgstr ""
 "Valoarea câmpului {field_name} trebuie să fie una dintre: {field_choices}"
 
-#: api/serializers/tables.py:70
+#: api/serializers/tables.py:74
 msgid "This table name is already being used."
 msgstr "Acest nume de tabel este deja utilizat."
 
-#: api/serializers/tables.py:87
+#: api/serializers/tables.py:91
 msgid "Changing field type is not permited on a table with entries"
 msgstr ""
 "Modificarea tipului de coloană nu este permisă pentru un tabel cu intrări"
@@ -674,7 +673,7 @@ msgstr "Exportă XLSX"
 msgid "Create from FilterView"
 msgstr "Creează din FilterView"
 
-#: api/views.py:1167
+#: api/views.py:1185
 msgid "CSV Errors Export"
 msgstr "Exportă erori CSV"
 
@@ -710,3 +709,75 @@ msgstr "Sarcină"
 #: plugin_mailchimp/models.py:83 plugin_woocommerce/models.py:50
 msgid "Tasks"
 msgstr "Sarcini"
+
+#: plugin_mailchimp/tasks.py:20
+msgid "The contacts upload task with id {} does not exist anymore"
+msgstr "Sarcina cu id {} de încarcare contacte nu mai există"
+
+#: plugin_mailchimp/tasks.py:54 plugin_mailchimp/tasks.py:243
+msgid "Contacts' table does not exist"
+msgstr "Tabelul de contacte nu există"
+
+#: plugin_mailchimp/tasks.py:98
+msgid "Mailchimp path too long:"
+msgstr "Cale Mailchimp prea lungă:"
+
+#: plugin_mailchimp/tasks.py:132
+msgid "First error for {}: {}"
+msgstr "Prima eroare pentru {}: {}"
+
+#: plugin_mailchimp/tasks.py:136
+msgid "{} contacts created or updated"
+msgstr "{} contacte create sau actualizate"
+
+#: plugin_mailchimp/tasks.py:137
+msgid "{} contacts skipped"
+msgstr "{} contacte sărite"
+
+#: plugin_mailchimp/tasks.py:140
+msgid "{} contacts failed to create or update"
+msgstr "{} contacte ce nu au putut fi create sau actualizate"
+
+#: plugin_mailchimp/tasks.py:162
+msgid "The sync task with id {} does not exist anymore"
+msgstr "Sarcina cu id {} pentru sincronizare nu mai există"
+
+#: plugin_mailchimp/tasks.py:196
+msgid "<b>{}</b> {} in <b>{}</b>"
+msgstr "<b>{}</b> {} în <b>{}</b>"
+
+#: plugin_mailchimp/tasks.py:208
+msgid "The segmentation task with id {} does not exist anymore"
+msgstr "Sarcina cu id {} de segmentare nu mai există"
+
+#: plugin_mailchimp/tasks.py:249
+msgid "<b>{}</b> needs to be the primary table in <b>{}</b> filtered view"
+msgstr "<b>{}</b> trebuie să fie tabelul primar în vizualizarea filtrată <b>{}</b>"
+
+#: plugin_mailchimp/tasks.py:259
+msgid ""
+"<b>{}</b> field needs to be selected in the primary table in <b>{}</b> "
+"filtered view"
+msgstr ""
+"Câmpul <b>{}</b> trebuie selectat în tabelul primar în vizualizarea filtrată "
+"<b>{}</b>"
+
+#: plugin_mailchimp/utils.py:71
+msgid "No table rulesets provided"
+msgstr "Nu există reguli pentru tabel"
+
+#: plugin_mailchimp/utils.py:162
+msgid "Could not connect to mailchimp. Check API Key."
+msgstr "Nu s-a putut conecta la Mailchimp. Verificați cheia API."
+
+#: plugin_mailchimp/utils.py:424
+msgid "{} could not be updated (Mailchimp error)"
+msgstr "{} nu a putut fi actualizat (eroare Mailchimp)"
+
+#: plugin_mailchimp/utils.py:427
+msgid "<b>{}</b> members were updated with tag <b>{}</b>"
+msgstr "<b>{}</b> membri actualizați cu eticheta <b>{}</b>"
+
+#: plugin_mailchimp/utils.py:429
+msgid "<b>{}</b> members were not updated with tag <b>{}</b>"
+msgstr "<b>{}</b> membri nu au fost actualizați cu eticheta <b>{}</b>"
