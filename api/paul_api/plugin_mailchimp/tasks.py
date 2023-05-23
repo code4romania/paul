@@ -3,7 +3,7 @@ from ast import literal_eval
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from mailchimp3 import MailChimp
 from mailchimp3.mailchimpclient import MailChimpError
 from rest_framework.authtoken.models import Token

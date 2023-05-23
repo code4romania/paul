@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group, User
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
 from openpyxl import Workbook

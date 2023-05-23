@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group, User
 from django.db import IntegrityError, transaction
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from djoser.conf import settings as djsettings
 from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import assign_perm, remove_perm

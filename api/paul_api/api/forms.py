@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.forms import (BooleanField, CharField, ChoiceField, DateTimeField,
                           FloatField, IntegerField, ModelForm)
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .validators import (validate_bool, validate_date, validate_enum,
                          validate_float, validate_int, validate_text)

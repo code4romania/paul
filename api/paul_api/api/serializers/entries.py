@@ -4,7 +4,7 @@ from dateutil.parser import isoparse
 from django.conf import settings
 from django.utils import timezone
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from guardian.core import ObjectPermissionChecker
 from rest_framework import serializers
 

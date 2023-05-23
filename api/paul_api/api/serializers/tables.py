@@ -3,7 +3,7 @@ from typing import List
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from guardian.core import ObjectPermissionChecker
 from rest_framework import serializers
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
