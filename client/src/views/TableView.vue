@@ -42,8 +42,12 @@
             Adaugă intrare nouă
           </router-link>
 
-          <a :href="exportPath" class="button is-primary" target="_blank">
-            Exportă
+          <a :href="exportCsvPath" class="button is-primary" target="_blank">
+            Exportă CSV
+          </a>
+
+          <a :href="exportXlsxPath" class="button is-primary" target="_blank">
+            Exportă XLSX
           </a>
         </div>
       </template>
@@ -109,12 +113,22 @@ export default {
         (this.filterMode ? 'Date procesate' : 'Tabel') + ' – ' + this.table.name
       )
     },
-    exportPath() {
+    exportCsvPath() {
       return ApiService.getPath(
         (this.filterMode ? 'filters' : 'tables') +
           '/' +
           this.idTable +
           '/csv-export/?' +
+          QueryString(this.$route.query),
+        true
+      )
+    },
+    exportXlsxPath() {
+      return ApiService.getPath(
+        (this.filterMode ? 'filters' : 'tables') +
+          '/' +
+          this.idTable +
+          '/xlsx-export/?' +
           QueryString(this.$route.query),
         true
       )
