@@ -1046,12 +1046,83 @@ class FilterViewSet(viewsets.ModelViewSet):
         return response
 
 
+class EntryGlobalViewSet(viewsets.ModelViewSet):
+    queryset = models.Entry.objects.all().order_by("id")
+    pagination_class = EntriesPagination
+    serializer_class = serializers.entries.EntryReadSerializer
+    # filter_backends = (drf_filters.SearchFilter, )
+    # search_fields = ("data", )
+    # # permission_classes = (TableEntryPermissions, )
+
+    # def list(self, request):
+    #     page = self.paginate_queryset(self.queryset)
+
+    #     if page is not None:
+    #         serializer = serializers.entries.EntryReadSerializer(
+    #             page,
+    #             many=True,
+    #             context={"request": request},
+    #         )
+    #         return self.get_paginated_response(serializer.data)
+    #     serializer = serializers.entries.EntryReadSerializer(self.queryset, many=True)
+    #     return Response(serializer.data)
+
+    def list(self, request):
+        pass
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_name="search",
+        url_path="search",
+    )
+    def search(self, request):
+        """ Text search over the entries """
+        
+        needle = request.GET.get("query")
+
+        tables = models.Table.objects.all()
+        table_ids = []
+        for table in tables:
+            # TODO: apply permissions
+            table_ids.append(table.id)
+
+        queryset = models.Entry.objects.filter(table__id__in=table_ids, data__icontains=needle)
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = serializers.entries.EntryReadSerializer(
+                page,
+                many=True,
+                context={"request": request},
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.entries.EntryReadSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class EntryViewSet(viewsets.ModelViewSet):
     pagination_class = EntriesPagination
-    filter_backends = (drf_filters.SearchFilter,)
     serializer_class = serializers.entries.EntrySerializer
-    search_fields = ["data__nume"]
     permission_classes = (TableEntryPermissions, )
+    filter_backends = (drf_filters.SearchFilter, )
+    search_fields = ("data", )
 
     def get_queryset(self):
         return models.Entry.objects.order_by('id').filter(table=self.kwargs["table_pk"])
