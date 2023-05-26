@@ -56,11 +56,12 @@ def create_mailchimp_tables(audiences_name: str="") -> int:
     get_or_create_table(mc_settings.audience_tags_table_name, 'audience_tags')
     
     contact_table = get_or_create_table(
-        audiences_name, 'contact_fields', 'audience_members')
+        audiences_name, 'contact_merge_fields', 'audience_members')
     contact_table.table_type = Table.TYPE_CONTACTS
     contact_table.save()
     
-    get_or_create_table(mc_settings.segment_members_table_name, 'segment_members')
+    get_or_create_table(
+        mc_settings.segment_members_table_name, 'contact_merge_fields', 'segment_members')
 
     return contact_table.id
 
@@ -173,7 +174,7 @@ def retrieve_lists_data(client: MailChimp):
     audiences_stats_table_fields_defs = table_fields.TABLE_MAPPING['audiences_stats']
     audience_segments_table_fields_defs = table_fields.TABLE_MAPPING['audience_segments']
     audience_members_table_fields_defs = table_fields.TABLE_MAPPING['audience_members']
-    contact_table_fields_defs = table_fields.TABLE_MAPPING['contact_fields']
+    contact_merge_fields_defs = table_fields.TABLE_MAPPING['contact_merge_fields']
     segment_members_table_fields_defs = table_fields.TABLE_MAPPING['segment_members']
 
     for mlist in lists['lists']:
@@ -266,6 +267,7 @@ def retrieve_lists_data(client: MailChimp):
             # Sync segment members
             segment_members = client.lists.segments.members.all(list_id=mlist['id'], segment_id=segment['id'], get_all=True)
 
+            segment_members_and_contact_fields_defs = segment_members_table_fields_defs | contact_merge_fields_defs
             for member in segment_members['members']:
                 segment_members_exists = Entry.objects.filter(
                     table=segment_members_table, data__id=member['id'], data__segment_id=segment['id'])
@@ -282,8 +284,8 @@ def retrieve_lists_data(client: MailChimp):
                             'audience_name': mlist['name'],
                             'segment_name': segment['name']
                         })
-                for field in segment_members_table_fields_defs:
-                    field_def = segment_members_table_fields_defs[field]
+                for field in segment_members_and_contact_fields_defs:
+                    field_def = segment_members_and_contact_fields_defs[field]
                     
                     try:
                         field_value = get_field_value(field, field_def, member)
@@ -341,7 +343,7 @@ def retrieve_lists_data(client: MailChimp):
                         'audience_name': mlist['name']
                     })
 
-            audience_and_contact_fields_defs = audience_members_table_fields_defs | contact_table_fields_defs
+            audience_and_contact_fields_defs = audience_members_table_fields_defs | contact_merge_fields_defs
             for field in audience_and_contact_fields_defs:
                 field_def = audience_and_contact_fields_defs[field]
 

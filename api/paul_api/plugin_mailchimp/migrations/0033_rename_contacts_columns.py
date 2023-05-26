@@ -11,7 +11,7 @@ def rename_columns(apps, schema_editor):
     TableColumn = apps.get_model("api", "TableColumn")
 
     audience_members_table_fields_defs = TABLE_MAPPING['audience_members']
-    contact_table_fields_defs = TABLE_MAPPING['contact_fields']
+    contact_table_fields_defs = TABLE_MAPPING['contact_merge_fields']
 
     try:
         table = Table.objects.filter(table_type="C")[0]

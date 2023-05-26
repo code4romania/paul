@@ -277,7 +277,7 @@ AUDIENCE_SEGMENTS_FIELDS = {
 }
 
 
-CONTACT_FIELDS = {
+MERGE_FIELDS = {
     'fname': {   # was "first_name"
         'old_key': 'first_name',
         'display_name': 'First Name',
@@ -610,11 +610,6 @@ SEGMENT_MEMBERS_FIELDS = {
         'display_name': 'Status',
         'type': 'enum'
     },
-    'merge_fields': {
-        'old_key': '',
-        'display_name': 'Merge Fields',
-        'type': 'text'
-    },
     'stats_click': {
         'old_key': '',
         'display_name': 'Stats Click',
@@ -708,7 +703,7 @@ TABLE_MAPPING = {
     'audiences': AUDIENCES_FIELDS,
     'audiences_stats': AUDIENCES_STATS_FIELDS,
     'audience_segments': AUDIENCE_SEGMENTS_FIELDS,
-    'contact_fields': CONTACT_FIELDS,
+    'contact_merge_fields': MERGE_FIELDS,
     'audience_members': AUDIENCE_MEMBERS_FIELDS,
     'segment_members': SEGMENT_MEMBERS_FIELDS,
     'audience_tags': AUDIENCE_TAGS_FIELDS,

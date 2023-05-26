@@ -44,7 +44,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     contacts_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
 
     audience_members_table_fields_defs = table_fields.TABLE_MAPPING['audience_members']
-    contact_table_fields_defs = table_fields.TABLE_MAPPING['contact_fields']
+    contact_merge_fields_defs = table_fields.TABLE_MAPPING['contact_merge_fields']
 
     task_result = TaskResult.objects.create(user=user, task=task)
 
@@ -62,13 +62,13 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                 continue
 
             merge_fields = {}
-            for mfield in contact_table_fields_defs:
+            for mfield in contact_merge_fields_defs:
                 try:
                     value = contact[mfield]
                 except KeyError:
                     continue
 
-                field_def = contact_table_fields_defs[mfield]
+                field_def = contact_merge_fields_defs[mfield]
                 path = field_def.get("mailchimp_path", (mfield, ))
                 path_len = len(path)    
 
