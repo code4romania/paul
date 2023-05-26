@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.models import Group, User
 from django.conf import settings
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
 from guardian.shortcuts import get_objects_for_user
@@ -1068,22 +1068,22 @@ class EntryGlobalViewSet(viewsets.ModelViewSet):
     #     return Response(serializer.data)
 
     def list(self, request):
-        pass
+        return Http404
 
     def create(self, request):
-        pass
+        return Http404
 
     def retrieve(self, request, pk=None):
-        pass
+        return Http404
 
     def update(self, request, pk=None):
-        pass
+        return Http404
 
     def partial_update(self, request, pk=None):
-        pass
+        return Http404
 
     def destroy(self, request, pk=None):
-        pass
+        return Http404
 
     @action(
         detail=False,
@@ -1102,7 +1102,8 @@ class EntryGlobalViewSet(viewsets.ModelViewSet):
             # TODO: apply permissions
             table_ids.append(table.id)
 
-        queryset = models.Entry.objects.filter(table__id__in=table_ids, data__icontains=needle)
+        queryset = models.Entry.objects.filter(
+            table__id__in=table_ids, data__icontains=needle).order_by("id")
         page = self.paginate_queryset(queryset)
 
         if page is not None:

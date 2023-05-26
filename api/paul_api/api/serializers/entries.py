@@ -57,7 +57,7 @@ class EntryDataSerializer(serializers.ModelSerializer):
 class EntryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
-        fields = ["url", "id", "date_created", "data"]
+        fields = ["url", "id", "table", "date_created", "data"]
 
     def get_url(self, obj):
         return self.context["request"].build_absolute_uri(
