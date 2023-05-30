@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <ActionButtonGoto
       icon="eye-outline"
       :path="{ name: 'entity-view', params: { idTable, idEntity: props.id } }"
@@ -21,17 +22,23 @@
         })
       "
     />
+
+    <ActionCheckboxBulkDelete
+      idEntity="props.id"
+    />
   </div>
 </template>
 
 <script>
 import ActionButtonDelete from './ActionButtonDelete'
 import ActionButtonGoto from './ActionButtonGoto'
+import ActionCheckboxBulkDelete from './ActionCheckboxBulkDelete';
 
 export default {
   components: {
     ActionButtonDelete,
-    ActionButtonGoto
+    ActionButtonGoto,
+    ActionCheckboxBulkDelete
   },
   props: {
     idTable: Number,

@@ -35,7 +35,18 @@
 
       <BaseTable :data="user.dashboard.filters" :fields="fields.tableViews" />
     </BaseCard>
-  </div>
+
+    <BaseCard title="Caută înregistrări"
+      ><template #actions>
+        <router-link :to="{ name: 'filter-view' }" class="button is-primary">
+          Caută
+        </router-link>
+      </template>
+
+      <BaseTable :fields="fields.tableViews" />
+    </BaseCard>
+
+</div>
 </template>
 
 <script>
@@ -101,6 +112,26 @@ export default {
           {
             name: 'owner.username',
             display_name: 'Creat de'
+          },
+          {
+            name: 'actions',
+            display_name: ' ',
+            component: 'ActionsTableView',
+            custom_class: 'actions',
+            sortable: false,
+            sticky: true
+          }
+        ],
+        searchResults: [
+          {
+            name: 'name',
+            component: 'FieldRouterLink',
+            props: { route: 'filter-table-view', param: 'idTable' },
+            display_name: 'Nume tabel'
+          },
+          {
+            name: 'resultText',
+            display_name: 'Rezultat'
           },
           {
             name: 'actions',

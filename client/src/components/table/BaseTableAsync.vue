@@ -69,6 +69,13 @@
           </span>
         </div>
 
+        <div class="delete-items">
+          <a  class="button is-primary">
+            <!-- TODO -->
+            Șterge elementele selectate
+          </a>
+        </div>
+
         <div class="pagination-jump" v-if="tableEntries.count / perPage > 4">
           <div class="control">
             <input
