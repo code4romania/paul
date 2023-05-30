@@ -18,7 +18,7 @@ RUN apt-get install -y --no-install-recommends gettext git gcc g++
 RUN pip install --upgrade pip setuptools cython
 
 COPY ./api/requirements.txt .
-RUN pip install --user -r requirements.txt
+RUN pip install --user --no-warn-script-location -r requirements.txt
 
 FROM python:3.11.3-slim
 
