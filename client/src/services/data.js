@@ -66,6 +66,11 @@ const TableService = {
 
   deleteEntity(idTable, idEntity) {
     return ApiService.delete(`tables/${idTable}/entries/${idEntity}/`)
+  },
+
+  bulkDeleteEntities(idTable, data) {
+    // console.log(JSON.stringify(data))
+    return ApiService.post(`tables/${idTable}/entries/bulk-delete/`, data)
   }
 }
 
@@ -103,6 +108,15 @@ const ImportService = {
     })
   }
 }
+
+const SearchService = {
+  searchEntries(id, query) {
+    // TODO
+    const queryString = query != null ? '?' + QueryString(query) : ''
+    return ApiService.get(`entries/search/${queryString}`)
+  }
+}
+
 
 //
 //
@@ -218,5 +232,6 @@ export {
   ImportService,
   TableService,
   TableViewService,
-  DataService
+  DataService,
+  SearchService
 }

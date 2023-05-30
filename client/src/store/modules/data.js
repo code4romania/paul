@@ -28,7 +28,9 @@ export default {
     card: null,
     cards: null,
     users: null,
-    loading: {}
+    loading: {},
+    searchResults: null,
+    searchTerm: null
   },
   mutations: {
     setUser(state, data) {
@@ -85,6 +87,12 @@ export default {
     },
     setLoading(state, { idTable, status }) {
       Vue.set(state.loading, idTable, status)
+    },
+    setSearchResults(state, data) {
+      state.searchResults = data
+    },
+    setSearchTerm(state, data) {
+      state.searchTerm = data
     }
   },
   actions: {

@@ -36,15 +36,26 @@
       <BaseTable :data="user.dashboard.filters" :fields="fields.tableViews" />
     </BaseCard>
 
-    <BaseCard title="Caută înregistrări"
-      ><template #actions>
-        <router-link :to="{ name: 'filter-view' }" class="button is-primary">
-          Caută
-        </router-link>
-      </template>
-
-      <BaseTable :fields="fields.tableViews" />
-    </BaseCard>
+    <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
+      <BaseCard title="Caută înregistrări">
+        <div class="card-container">
+          <div class="columns">
+            <div class="column is-6">
+              <VField label="Termen căutat" rules="required">
+                <b-input v-model="searchTerm" />
+              </VField>
+            </div>
+            <div class="column is-6">
+            </div>
+          </div>
+        </div>
+        <template #footer>
+          <b-button class="is-primary" @click="passes(submitSearch)">
+              Caută
+          </b-button>
+        </template>
+      </BaseCard>
+    </ValidationObserver>
 
 </div>
 </template>
@@ -121,26 +132,6 @@ export default {
             sortable: false,
             sticky: true
           }
-        ],
-        searchResults: [
-          {
-            name: 'name',
-            component: 'FieldRouterLink',
-            props: { route: 'filter-table-view', param: 'idTable' },
-            display_name: 'Nume tabel'
-          },
-          {
-            name: 'resultText',
-            display_name: 'Rezultat'
-          },
-          {
-            name: 'actions',
-            display_name: ' ',
-            component: 'ActionsTableView',
-            custom_class: 'actions',
-            sortable: false,
-            sticky: true
-          }
         ]
       }
     }
@@ -164,6 +155,10 @@ export default {
           this.$set(this.cards, index, response.value)
         })
       })
+    },
+    submitSearch() {
+      // TODO
+      console.log("");
     }
   }
 }
