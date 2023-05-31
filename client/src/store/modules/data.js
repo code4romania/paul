@@ -30,7 +30,13 @@ export default {
     users: null,
     loading: {},
     searchResults: null,
-    searchTerm: null
+    searchTerm: null,
+    bulkDeleteItems: null
+  },
+  getters: {
+    getBulkDeleteItems(state) {
+      return state.bulkDeleteItems
+    },
   },
   mutations: {
     setUser(state, data) {
@@ -93,6 +99,12 @@ export default {
     },
     setSearchTerm(state, data) {
       state.searchTerm = data
+    },
+    setBulkDeleteItems(state, data) {
+      state.bulkDeleteItems = data
+    },
+    clearBulkDeleteItems(state) {
+      state.bulkDeleteItems = null
     }
   },
   actions: {
@@ -357,6 +369,27 @@ export default {
           ToastService.open('The user has been deleted')
         })
       })
+    },
+
+    // TABLE ENTRY BULK DELETE
+    // 
+    updateBulkDeleteEntry({ commit, state }, {entryId, checked}) {
+      let items = state.bulkDeleteItems
+      if (items == null) {
+        items = Array()
+      }
+
+      if (checked) {
+        console.log("Adding item to list: " + entryId)
+        items.push(entryId)
+      } else {
+        console.log("Removing item from list: " + entryId)
+        items = items.filter(item => item !== entryId)
+      }
+      commit('setBulkDeleteItems', items)
+
+      console.log("Current deletion list: ", state.bulkDeleteItems)
     }
+
   }
 }

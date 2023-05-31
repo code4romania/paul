@@ -173,6 +173,11 @@ export default {
           update: this.getTableEntries
         }
       })
+    },
+
+    updateBulkDeleteList(item) {
+      console.log('update bulk delete list (TableView)')
+      console.log(item)
     }
   }
 }

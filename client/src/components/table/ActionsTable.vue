@@ -24,7 +24,7 @@
     />
 
     <ActionCheckboxBulkDelete
-      idEntity="props.id"
+      :idEntity="props.id"
     />
   </div>
 </template>
@@ -44,6 +44,5 @@ export default {
     idTable: Number,
     props: Object
   },
-  methods: {}
 }
 </script>

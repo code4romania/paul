@@ -256,6 +256,10 @@ export default {
     },
     onPageChange(page) {
       // console.log('onPageChange', page)
+      
+      // console.log(this.$store.getters['data/getBulkDeleteItems'])
+      this.$store.commit('data/clearBulkDeleteItems')
+
       this.updateQueryRequest({ page })
     },
     onPerPageChange(event) {
