@@ -69,7 +69,6 @@ const TableService = {
   },
 
   bulkDeleteEntities(idTable, data) {
-    // console.log(JSON.stringify(data))
     return ApiService.post(`tables/${idTable}/entries/bulk-delete/`, data)
   }
 }

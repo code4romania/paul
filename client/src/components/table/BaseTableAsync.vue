@@ -70,8 +70,7 @@
         </div>
 
         <div class="delete-items">
-          <a  class="button is-primary">
-            <!-- TODO -->
+          <a class="button is-primary" :disabled="bulkDeleteDisabled" @click.prevent="onBulkDelete">
             Șterge elementele selectate
           </a>
         </div>
@@ -117,6 +116,8 @@ import FieldStatusTag from './FieldStatusTag'
 import FieldTagList from './FieldTagList'
 
 import FieldService from '@/services/field'
+import { TableService } from '@/services/data'
+import { ToastService } from '@/services/buefy'
 import getNestedObj from 'lodash.get'
 
 import { mapState } from 'vuex'
@@ -166,6 +167,13 @@ export default {
         return state.loading[this.idTable]
       }
     }),
+    bulkDeleteDisabled() {
+      let items = this.$store.getters['data/getBulkDeleteItems']
+      if(items && items.length) {
+        return false
+      }
+      return true
+    },
     columns() {
       if (this.table == null) return
 
@@ -257,9 +265,7 @@ export default {
     onPageChange(page) {
       // console.log('onPageChange', page)
       
-      // console.log(this.$store.getters['data/getBulkDeleteItems'])
       this.$store.commit('data/clearBulkDeleteItems')
-
       this.updateQueryRequest({ page })
     },
     onPerPageChange(event) {
@@ -277,6 +283,23 @@ export default {
     },
     onResize() {
       this.updateTableHeight()
+    },
+    onBulkDelete() {
+      if (this.bulkDeleteDisabled) {
+        return
+      }
+      let data = {
+        entries: this.$store.getters['data/getBulkDeleteItems']
+      }
+      TableService.bulkDeleteEntities(this.idTable, data).then(() => {
+        return this.$store.dispatch('data/getDatabase').then(() => {
+            this.$store.commit('data/clearBulkDeleteItems')
+            ToastService.open('Tabelul a fost actualizat')
+          }
+        )
+      })
+      
+      this.$emit('update')
     }
   },
   watch: {

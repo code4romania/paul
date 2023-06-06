@@ -150,6 +150,7 @@ export default {
   },
   methods: {
     getTableEntries() {
+      this.$store.commit('data/clearBulkDeleteItems')
       this.$store.dispatch(
         this.filterMode ? 'data/getTableViewEntries' : 'data/getTableEntries',
         {
@@ -175,10 +176,6 @@ export default {
       })
     },
 
-    updateBulkDeleteList(item) {
-      console.log('update bulk delete list (TableView)')
-      console.log(item)
-    }
   }
 }
 </script>

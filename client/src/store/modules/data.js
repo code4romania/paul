@@ -380,15 +380,11 @@ export default {
       }
 
       if (checked) {
-        console.log("Adding item to list: " + entryId)
         items.push(entryId)
       } else {
-        console.log("Removing item from list: " + entryId)
         items = items.filter(item => item !== entryId)
       }
       commit('setBulkDeleteItems', items)
-
-      console.log("Current deletion list: ", state.bulkDeleteItems)
     }
 
   }
