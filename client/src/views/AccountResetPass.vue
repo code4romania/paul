@@ -1,20 +1,20 @@
 <template>
   <div>
-    <h1 class="title is-1">Password reset</h1>
+    <h1 class="title is-1">{{ $t('passwordReset') }}</h1>
 
     <div class="subtitle">
-      Enter a new password
+      {{ $t('enterNewPassword') }}
     </div>
 
     <div class="form">
       <ValidationObserver v-slot="{ passes }" tag="form" @submit.prevent>
-        <VField label="Password" rules="required" name="new_password">
+        <VField :label="$t('passwordLabel')" rules="required" name="new_password">
           <b-input type="password" v-model="new_password" />
         </VField>
 
         <VField
           rules="required|confirmed:new_password"
-          label="Confirm password"
+          label="$t('confirmPasswordLabel')"
         >
           <b-input type="password" v-model="re_new_password"
         /></VField>
@@ -24,7 +24,7 @@
           class="button-submit is-primary"
           @click="passes(submit)"
         >
-          Save
+          {{ $t('save') }}
         </b-button>
       </ValidationObserver>
     </div>
@@ -52,7 +52,7 @@ export default {
         this.new_password,
         this.re_new_password
       ).then(() => {
-        ToastService.open('Your password has been changed')
+        ToastService.open(this.$t('passwordChanged'))
         this.$router.push({ name: 'login' })
       })
     }

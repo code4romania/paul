@@ -1,11 +1,11 @@
 <template>
   <div>
-    <BaseTitle title="Management carduri" :hasBackButton="false" />
+    <BaseTitle :title="$t('cardsManagement')" :hasBackButton="false" />
 
-    <BaseCard title="Carduri" v-if="cards"
+    <BaseCard :title="$t('cards')" v-if="cards"
       ><template #actions>
         <router-link :to="{ name: 'card-edit' }" class="button is-primary">
-          Adaugă un card
+          {{ $t('addCard') }}
         </router-link>
       </template>
 
@@ -41,25 +41,25 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'card-view', param: 'idCard' },
-            display_name: 'Nume card'
+            display_name: this.$t('cardName')
           },
           {
             name: 'creation_date',
             field_type: 'date',
-            display_name: 'Creat la'
+            display_name: this.$t('createdOn')
           },
           {
             name: 'table',
-            display_name: 'Date de intrare',
+            display_name: this.$t('inputData'),
             component: 'FieldTagList'
           },
           {
             name: 'owner.username',
-            display_name: 'Creat de'
+            display_name: this.$t('createdBy')
           },
           {
             name: 'show_dashboard',
-            display_name: 'Publică în dashboard',
+            display_name: this.$t('publishToDashboard'),
             component: 'FieldCheckbox',
             centered: true,
             sortable: false,

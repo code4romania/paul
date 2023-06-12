@@ -1,16 +1,16 @@
 <template>
   <div>
-    <h1 class="title is-1">Ai uitat parola?</h1>
+    <h1 class="title is-1">{{ $t('forgotPassword') }}</h1>
 
     <template v-if="$route.query.confirmation == null">
       <div class="subtitle">
-        Introdu adresa de e-mail si vei primi un mesaj cu instrucțiuni.
+        {{ $t('forgotPasswordInsertEmail') }}
       </div>
 
       <div class="form">
         <ValidationObserver v-slot="{ passes }" tag="form" @submit.prevent>
-          <VField label="Email" rules="required|email">
-            <b-input v-model="email" placeholder="e@mail.com" />
+          <VField :label="$t('emailLabel')" rules="required|email">
+            <b-input v-model="email" placeholder="test@example.com" />
           </VField>
 
           <b-button
@@ -18,7 +18,7 @@
             class="button-submit is-primary"
             @click="passes(submit)"
           >
-            Trimite instrucțiuni
+            {{ $t('forgotPasswordSendInstructions') }}
           </b-button>
         </ValidationObserver>
       </div>
@@ -26,7 +26,7 @@
     
     <template v-else>
       <div class="subtitle">
-        Vei primi un email cu un link de resetare a parolei. Dacă nu îl găsești, te rugăm sa verifici și în directorul "spam".
+        {{ $t('forgotPasswordInstructionsConfirmation') }}
       </div>
     </template>
   </div>

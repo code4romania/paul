@@ -1,6 +1,6 @@
 <template>
   <div v-if="card">
-    <BaseTitle title="Card view" />
+    <BaseTitle :title="$t('cardView')" />
 
     <FilterHead
       v-if="table"
@@ -9,7 +9,7 @@
       filterMode
     />
 
-    <BaseCard :title="`Card — ${card.name}`">
+    <BaseCard :title="`$t('card') — ${card.name}`">
       <template #actions>
         <div class="buttons">
           <router-link
@@ -19,7 +19,7 @@
               params: { idTable: card.config.table }
             }"
           >
-            Vezi sursa de date
+            {{ $t('showDataSource') }}
           </router-link>
           <router-link
             class="button is-primary"
@@ -28,16 +28,16 @@
               params: { idCard }
             }"
           >
-            Editează card
+            {{ $t('editCard') }}
           </router-link>
         </div>
       </template>
 
       <template #default>
         <div class="card-container" v-if="table">
-          Ultima actualizare: {{ table.last_edit_date | parseDate }}
+          {{ $t('lastUpdate') }}: {{ table.last_edit_date | parseDate }}
           <span v-if="table.last_edit_user"
-            >de
+            >{{ $t('by') }}
             {{
               table.last_edit_user.first_name +
                 ' ' +

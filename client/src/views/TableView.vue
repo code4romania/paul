@@ -17,12 +17,12 @@
 
     <BaseCard :title="title">
       <template #title v-if="tableEntries">
-        <span class="entries">{{ tableEntries.count }} intrări</span>
+        <span class="entries">{{ tableEntries.count }} {{ $t('entries') }}</span>
       </template>
       <template #actions>
         <div class="buttons">
           <b-button class="is-dark" @click="openModalColumns">
-            Schimbă tabel
+            {{ $t('changeTable') }}Schimbă tabel
           </b-button>
 
           <router-link
@@ -31,7 +31,7 @@
               name: filterMode ? 'filter-edit' : 'table-edit',
               params: { idTable }
             }"
-            v-text="'Editează'"
+            v-text="$t('edit')"
           />
 
           <router-link
@@ -39,26 +39,26 @@
             class="button is-primary"
             :to="{ name: 'entity-edit', params: { idTable } }"
           >
-            Adaugă intrare nouă
+            {{ $t('addNewEntry') }}
           </router-link>
 
           <a :href="exportCsvPath" class="button is-primary" target="_blank">
-            Exportă CSV
+            {{ $t('csvExport') }}
           </a>
 
           <a :href="exportXlsxPath" class="button is-primary" target="_blank">
-            Exportă XLSX
+            {{ $t('xlsxExport') }}
           </a>
         </div>
       </template>
 
       <template #default>
         <div class="card-container">
-          Ultima actualizare: {{ table.last_edit_date | parseDate }}
+          {{ $t('lastUpdate') }}: {{ table.last_edit_date | parseDate }}
           <span
             v-if="table.last_edit_user"
             v-text="
-              `de ${table.last_edit_user.first_name} ${table.last_edit_user.last_name}`
+              `$t('by') ${table.last_edit_user.first_name} ${table.last_edit_user.last_name}`
             "
           />
         </div>
@@ -110,7 +110,7 @@ export default {
     }),
     title() {
       return (
-        (this.filterMode ? 'Date procesate' : 'Tabel') + ' – ' + this.table.name
+        (this.filterMode ? this.$t('processedData') : this.$t('table')) + ' – ' + this.table.name
       )
     },
     exportCsvPath() {

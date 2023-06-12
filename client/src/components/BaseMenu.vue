@@ -9,7 +9,7 @@
     <b-menu-list>
       <b-menu-item
         :icon="menuActive ? 'menu-open' : 'menu-icon'"
-        label="MENU"
+        :label="$t('menuLabel')"
         class="menu-header"
         @click="toggleMenu"
       />
@@ -17,21 +17,21 @@
       <b-menu-item
         tag="router-link"
         icon="monitor-screenshot"
-        label="Dashboard"
+        :label="$t('dashboardLabel')"
         :to="{ name: 'dashboard' }"
       />
 
       <b-menu-item
         tag="router-link"
         icon="dns-outline"
-        label="Administrare tabele"
+        :label="$t('manageTablesLabel')"
         :to="{ name: 'database-view' }"
       />
 
       <b-menu-item
         tag="router-link"
         icon="tune"
-        label="Date procesate"
+        :label="$t('processedDataLabel')"
         :to="{ name: 'filter-view' }"
       />
 
@@ -41,7 +41,7 @@
         @click="!menuActive && toggleMenu()"
       >
         <template #label="props">
-          <span>Vizualizare date</span>
+          <span>{{ $t('viewData') }}</span>
           <b-icon
             class="menu-tick"
             :icon="props.expanded ? 'menu-up' : 'menu-down'"
@@ -49,12 +49,12 @@
         </template>
         <b-menu-item
           tag="router-link"
-          label="Grafice"
+          :label="$t('chartsLabel')"
           :to="{ name: 'charts-view' }"
         />
         <b-menu-item
           tag="router-link"
-          label="Carduri"
+          :label="$t('cardsLabel')"
           :to="{ name: 'cards-view' }"
         />
       </b-menu-item>
@@ -62,7 +62,7 @@
       <b-menu-item
         tag="router-link"
         icon="account-details-outline"
-        label="Utilizatori"
+        :label="$t('usersLabel')"
         v-if="isAdmin"
         :to="{ name: 'users-view' }"
       />
@@ -70,7 +70,7 @@
       <b-menu-item
         tag="router-link"
         icon="application-import"
-        label="Actualizare date"
+        :label="$t('updateDataLabel')"
         :to="{ name: 'table-import', query: { manual: true } }"
       />
 
@@ -80,7 +80,7 @@
         @click="!menuActive && toggleMenu()"
       >
         <template #label="props">
-          <span>Integrări</span>
+          <span>{{ $t('integrations') }}</span>
           <b-icon
             class="menu-tick"
             :icon="props.expanded ? 'menu-up' : 'menu-down'"
@@ -89,18 +89,18 @@
 
         <b-menu-item
           tag="router-link"
-          label="Mailchimp"
+          :label="$t('mailchimpLabel')"
           :to="{ name: 'plugin-view', params: { plugin: 'mailchimp' } }"
         />
 
         <!-- <b-menu-item
           tag="router-link"
-          label="Woocommerce"
+          :label="$t('wooCommerceLabel')"
           :to="{ name: 'plugin-view', params: { plugin: 'woocommerce' } }"
         /> -->
       </b-menu-item>
 
-      <b-menu-item tag="a" icon="school" label="Tutoriale" disabled />
+      <b-menu-item tag="a" icon="school" :label="$t('tutorialsLabel')" disabled />
     </b-menu-list>
   </b-menu>
 </template>

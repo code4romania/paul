@@ -1,9 +1,9 @@
 <template>
   <div>
-    <BaseTitle title="Utilizatori" />
+    <BaseTitle :title="$t('users')" />
 
     <ValidationObserver v-slot="{ passes }" tag="form" @submit.prevent>
-      <BaseCard title="Change password" v-if="user">
+      <BaseCard :title="$t('changePassword')" v-if="user">
         <template #actions></template>
 
         <template #footer>
@@ -12,7 +12,7 @@
             class="is-primary"
             @click="passes(submit)"
           >
-            Send request
+            {{ $t('sendRequest') }}
           </b-button>
         </template>
 
@@ -22,12 +22,12 @@
 
             <div class="columns">
               <div class="column is-6">
-                <VField label="Enter current password" rules="required">
+                <VField :label="$t('currentPasswordLabel')" rules="required">
                   <b-input type="password" v-model="current_password"/>
                 </VField>
 
                 <VField
-                  label="Enter new password"
+                  :label="$t('enterNewPasswordLabel')"
                   rules="required"
                   name="new_password"
                 >
@@ -35,7 +35,7 @@
                 </VField>
 
                 <VField
-                  label="Repeat new password"
+                  :label="$t('repeatNewPasswordLabel')"
                   rules="required|confirmed:new_password"
                 >
                   <b-input type="password" v-model="re_new_password"/>
@@ -84,7 +84,7 @@ export default {
         this.current_password
       ).then(() => {
         this.$store.dispatch('logout')
-        ToastService.open('Password has been changed, please login again')
+        ToastService.open(this.$t('passwordChangedLoginAgain'))
       })
     }
   }

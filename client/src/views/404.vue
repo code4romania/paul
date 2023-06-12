@@ -4,10 +4,10 @@
       <br />
       
       <p style="font-size: 96px">404</p>
-      <h2>Page could not be found</h2>
+      <h2>{{ $t('pageNotFound') }}</h2>
       
       <br /><br />
-      <a href="/" class="button is-primary">START OVER</a>
+      <a href="/" class="button is-primary">{{ $t('startOver') }}</a>
     </h1>
   </div>
 </template>

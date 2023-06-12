@@ -1,11 +1,11 @@
 <template>
   <div>
-    <BaseTitle title="Date procesate" :hasBackButton="false" />
+    <BaseTitle :title="$t('processedData')" :hasBackButton="false" />
 
-    <BaseCard title="Tabele procesate" v-if="tableViews"
+    <BaseCard :title="$t('processedTables')" v-if="tableViews"
       ><template #actions>
         <router-link :to="{ name: 'filter-edit' }" class="button is-primary">
-          Adaugă tabel
+          {{ $t('addTable') }}
         </router-link>
       </template>
 
@@ -41,25 +41,25 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'filter-table-view', param: 'idTable' },
-            display_name: 'Nume tabel'
+            display_name: this.$t('tableName')
           },
           {
             name: 'creation_date',
             field_type: 'date',
-            display_name: 'Creat la'
+            display_name: this.$t('createdOn'),
           },
           {
             name: 'tables',
-            display_name: 'Date de intrare',
+            display_name: this.$t('inputData'),
             component: 'FieldTagList'
           },
           {
             name: 'owner.username',
-            display_name: 'Creat de'
+            display_name: this.$t('createdBy'),
           },
           {
             name: 'show_dashboard',
-            display_name: 'Publică în dashboard',
+            display_name: this.$t('publishToDashboard'),
             component: 'FieldCheckbox',
             centered: true,
             sortable: false,

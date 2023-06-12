@@ -1,18 +1,18 @@
 <template>
   <div>
-    <h1 class="title is-1">Autentifică-te</h1>
+    <h1 class="title is-1">{{ $t('logIn') }}</h1>
 
     <div class="subtitle">
-      Introdu credențialele mai jos
+      {{ $t('enterCredentials') }}
     </div>
 
     <div class="form">
       <ValidationObserver v-slot="{ passes }" tag="form" @submit.prevent>
-        <VField label="Email" rules="required">
+        <VField :label="$t('emailLabel')" rules="required">
           <b-input v-model="username" />
         </VField>
 
-        <VField label="Parola" rules="required">
+        <VField :label="$t('passwordLabel')" rules="required">
           <b-input v-model="password" type="password" />
         </VField>
         
@@ -22,7 +22,7 @@
             class="button-submit is-primary"
             @click="passes(submit)"
           >
-            Autentificare
+            {{ $t('performLogIn') }}
           </b-button>
         </div>
       </ValidationObserver>

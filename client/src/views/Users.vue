@@ -1,8 +1,8 @@
 <template>
   <div>
-    <BaseTitle title="Utilizatori" :hasBackButton="false" />
+    <BaseTitle :title="$t('users')" :hasBackButton="false" />
 
-    <BaseCard title="Utilizatorii platformei" v-if="users">
+    <BaseCard :title="$t('platformUsers')" v-if="users">
       <template #default>
         <BaseTableAsync
           :table="userTable"
@@ -13,7 +13,7 @@
       </template>
         <template #actions>
             <router-link :to="{ name: 'user-add' }" class="button is-primary">
-                Adaugă utilizator
+                {{ $t('addUser') }}
             </router-link>
         </template>
     </BaseCard>
@@ -35,19 +35,19 @@ export default {
             name: 'username',
             component: 'FieldRouterLink',
             props: { route: 'user-profile', param: 'idUser' },
-            display_name: 'Nume de utilizator'
+            display_name: this.$t('userName')
           },
           {
             name: 'first_name',
-            display_name: 'Prenume'
+            display_name: this.$t('firstName')
           },
           {
             name: 'last_name',
-            display_name: 'Nume'
+            display_name: this.$t('lastName')
           },
           {
             name: 'email',
-            display_name: 'E-mail'
+            display_name: this.$t('email')
           }
         ]
       }

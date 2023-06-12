@@ -29,7 +29,7 @@
           </router-link>
 
           <a href="#" @click="logout()" class="navbar-item"
-            ><b-icon icon="power" class="is-size-3" /> <span>Log out</span></a
+            ><b-icon icon="power" class="is-size-3" /> <span>{{ $t('logout') }}</span></a
           >
         </div>
       </div>

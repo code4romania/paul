@@ -1,6 +1,6 @@
 <template>
   <div v-if="user">
-    <BaseTitle title="Dashboard" :hasBackButton="false" />
+    <BaseTitle :title="$t('dashboard')" :hasBackButton="false" />
 
     <div class="columns is-multiline">
       <template v-for="(card, index) in user.dashboard.cards">
@@ -16,20 +16,20 @@
       </template>
     </div>
 
-    <BaseCard title="Grafice selectate"
+    <BaseCard :title="$t('selectedCharts')"
       ><template #actions>
         <router-link :to="{ name: 'charts-view' }" class="button is-primary">
-          Vezi toate
+          {{ $t('viewAll') }}
         </router-link>
       </template>
 
       <BaseTable :data="user.dashboard.charts" :fields="fields.charts" />
     </BaseCard>
 
-    <BaseCard title="Date procesate selectate"
+    <BaseCard :title="$t('selectedProcessedData')"
       ><template #actions>
         <router-link :to="{ name: 'filter-view' }" class="button is-primary">
-          Vezi toate
+          {{ $t('viewAll') }}
         </router-link>
       </template>
 
@@ -37,11 +37,11 @@
     </BaseCard>
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-      <BaseCard title="Caută înregistrări">
+      <BaseCard :title="$t('searchRecords')">
         <div class="card-container">
           <div class="columns">
             <div class="column is-6">
-              <VField label="Termen căutat" rules="required">
+              <VField :label="$t('searchTermLabel')" rules="required">
                 <b-input v-model="searchTerm" />
               </VField>
             </div>
@@ -51,7 +51,7 @@
         </div>
         <template #footer>
           <b-button class="is-primary" @click="passes(submitSearch)">
-              Caută
+              {{ $t('search') }}
           </b-button>
         </template>
       </BaseCard>
@@ -78,21 +78,21 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'chart-view', param: 'idChart' },
-            display_name: 'Nume grafic'
+            display_name: this.$t('chartName'),
           },
           {
             name: 'creation_date',
             field_type: 'date',
-            display_name: 'Creat la'
+            display_name: this.$t('createdOn')
           },
           {
             name: 'table',
-            display_name: 'Date de intrare',
+            display_name: this.$t('inputData'),
             component: 'FieldTagList'
           },
           {
             name: 'owner.username',
-            display_name: 'Creat de'
+            display_name: this.$t('createdBy')
           },
           {
             name: 'actions',
@@ -108,21 +108,21 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'filter-table-view', param: 'idTable' },
-            display_name: 'Nume tabel'
+            display_name: this.$t('tableName'),
           },
           {
             name: 'creation_date',
             field_type: 'date',
-            display_name: 'Creat la'
+            display_name: this.$t('createdOn')
           },
           {
             name: 'tables',
-            display_name: 'Date de intrare',
+            display_name: this.$t('inputData'),
             component: 'FieldTagList'
           },
           {
             name: 'owner.username',
-            display_name: 'Creat de'
+            display_name: this.$t('createdBy')
           },
           {
             name: 'actions',

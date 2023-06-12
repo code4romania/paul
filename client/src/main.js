@@ -12,6 +12,8 @@ import './components/'
 import './utils/form-validation'
 import './utils/filters'
 
+import i18n from './plugins/i18n'
+
 // Styles
 import './assets/style/base.scss'
 
@@ -24,6 +26,7 @@ Vue.use(Meta)
 Vue.config.productionTip = false
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)

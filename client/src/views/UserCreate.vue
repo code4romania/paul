@@ -1,10 +1,10 @@
 <template>
     <div>
-        <BaseTitle title="Adaugare utilizator" />
-        <BaseCard title="Date utilizator">
+        <BaseTitle :title="$t('userAdd')" />
+        <BaseCard :title="$t('userData')">
             <div class="card-container">
                 <ValidationObserver v-slot="{ passes }" tag="form" @submit.prevent>
-                    <VField label="Email" rules="required">
+                    <VField :label="$t('emailLabel')" rules="required">
                         <b-input v-model="email" />
                     </VField>
 
@@ -13,7 +13,7 @@
                         class="button-submit is-primary"
                         @click="passes(submit)"
                     >
-                        Creează cont
+                        {{ $t('createAccount') }}
                     </b-button>
                 </ValidationObserver>
             </div>
@@ -44,7 +44,7 @@ export default {
         },
         resend() {
             UserService.resend(this.$route.query.confirmation).then(() => {
-                ToastService.open('E-mail has been sent')
+                ToastService.open(this.$t('emailSent'))
             })
         }
     }

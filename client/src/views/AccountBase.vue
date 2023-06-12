@@ -10,12 +10,12 @@
       <div class="navbar-menu">
         <div class="navbar-end">
           <router-link :to="{ name: 'forgot-password' }" class="navbar-item"
-            >Ai uitat parola?</router-link
+            >{{ $t('forgotPassword') }}</router-link
           >
 
           <div class="navbar-item">
             <router-link :to="{ name: 'login' }" class="button is-primary"
-              >Autentifică-te</router-link
+              >{{ $t('logIn') }}</router-link
             >
           </div>
         </div>

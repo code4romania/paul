@@ -1,8 +1,8 @@
 <template>
   <div>
-    <BaseTitle title="Utilizatori" />
+    <BaseTitle :title="$t('users')" />
 
-    <BaseCard title="Setări cont" v-if="user && activeUser">
+    <BaseCard :title="$t('accountSettings')" v-if="user && activeUser">
       <template #actions>
         <div class="buttons">
           <router-link
@@ -10,7 +10,7 @@
             class="button is-dark"
             :to="{ name: 'change-password' }"
           >
-            Change password
+            {{ $t('changePassword') }}
           </router-link>
 
           <b-button
@@ -18,15 +18,14 @@
             type="is-dark"
             @click="toggleUserActive"
           >
-            <span v-if="user.is_active">Dezactivează</span>
-            <span v-else>Activează</span>
-            user
+            <span v-if="user.is_active">{{ $t('disableUser') }}</span>
+            <span v-else>{{ $t('activateUser') }}</span>
           </b-button>
         </div>
       </template>
 
       <template #footer>
-        <b-button type="is-primary" @click="save(false)">Save changes</b-button>
+        <b-button type="is-primary" @click="save(false)">{{ $t('saveChanges') }}</b-button>
       </template>
 
       <template #default>
@@ -49,26 +48,26 @@
 
             <div class="column is-8-widescreen">
               <fieldset>
-                <VField label="Nume și prenume" grouped>
+                <VField :label="$t('firstAndLastNameLabel')" grouped>
                   <b-input
-                    placeholder="Prenume"
+                    :placeholder="$t('firstName')"
                     v-model="userModel.first_name"
                   />
                   <b-input
-                    placeholder="Nume"
+                    :placeholder="$t('lastName')"
                     v-model="userModel.last_name"
                   />
                 </VField>
 
-                <VField label="E-mail" rules="required">
+                <VField :label="$t('emailLabel')" rules="required">
                   <b-input v-model="userModel.email" />
                 </VField>
 
-                <VField label="Schimbă avatar">
+                <VField :label="$t('changeAvatarLabel')">
                   <div class="file is-right is-dark is-fullwidth">
                     <b-upload v-model="userModel.file" expanded>
                       <span class="file-cta">
-                        <span class="file-label">Caută</span>
+                        <span class="file-label">{{ $t('search') }}</span>
                       </span>
                       <span class="file-name">
                         <span v-if="userModel.file">{{
@@ -86,12 +85,12 @@
     </BaseCard>
 
     <BaseCard
-      title="Listă de permisiuni"
+      :title="$t('permissionsList')"
       v-if="user && activeUser && activeUser.is_admin && notCurrentUser"
       style="width: 100%;"
     >
       <template #footer>
-        <b-button type="is-primary" @click="save(true)">Salvează</b-button>
+        <b-button type="is-primary" @click="save(true)">{{ $t('save') }}</b-button>
       </template>
       <template #default>
         <b-loading :is-full-page="false" v-model="loading.permissions" />
@@ -175,8 +174,8 @@ export default {
 
     toggleUserActive() {
       this.$buefy.dialog.confirm({
-        title: 'Status utilizator',
-        message: 'Ești sigur?',
+        title: this.$t('userStatus'),
+        message: this.$t('areYouSure'),
         type: this.user.is_active ? 'is-danger' : 'is-success',
         onConfirm: () => {
           this.loading.profile = true
@@ -185,13 +184,15 @@ export default {
             this.user = response
             this.loading.profile = false
 
-            ToastService.open(
-              'User account has been ' +
-                (this.user.is_active ? 'activated' : 'deactivated')
-            )
+            if (this.user.is_active) {
+              ToastService.open(this.$t('userAccountActivated'))
+            } else {
+              ToastService.open(this.$t('userAccountDeactivated'))
+            }
+
           })
         },
-        confirmText: this.user.is_active ? 'Dezactivează' : 'Activează'
+        confirmText: this.user.is_active ?this.$t('deactivate') : this.$t('activate')
       })
     },
 
@@ -204,7 +205,7 @@ export default {
         })
           .then(() => {
             this.loading.permissions = false
-            ToastService.open('User permissions have been updated')
+            ToastService.open(this.$t('userPermissionsUpdated'))
           })
           .catch(() => {
             this.loading.permissions = false
@@ -222,7 +223,7 @@ export default {
         UserService.putUser(this.userModel.id, formData)
           .then(response => {
             this.loading.profile = false
-            ToastService.open('User profile has been updated')
+            ToastService.open(this.$t('userProfileUpdated'))
             this.userModel.avatar = response.avatar
             this.$store.dispatch('getActiveUser')
           })

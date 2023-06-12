@@ -8,14 +8,14 @@
           style="vertical-align: middle; margin-right: 20px"
         />
         <span
-          >O soluție
+          >{{ $t('madeBy') }}
           <a
             href="https://code4.ro/ro"
             style="text-decoration: underline; color: black"
           >
             Code for Romania</a
           >
-          și
+          {{ $t('and') }}
           <a
             href="https://dor.ro"
             style="text-decoration: underline; color: black"
@@ -24,7 +24,7 @@
           <a
             href="https://code4.ro/ro/putem"
             style="text-decoration: underline;color: blue"
-            >Află mai multe.</a
+            >{{ $t('findOutMore') }}</a
           ></span
         >
       </div>

@@ -1,11 +1,11 @@
 <template>
   <div v-if="database">
-    <BaseTitle title="Manage database" :hasBackButton="false" />
+    <BaseTitle :title="$t('manageDatabase')" :hasBackButton="false" />
 
-    <BaseCard title="Tabele active"
+    <BaseCard :title="$t('activeTables')"
       ><template #actions>
         <router-link :to="{ name: 'table-add' }" class="button is-primary">
-          Adaugă tabel
+          {{ $t('addTable') }}
         </router-link>
       </template>
 
@@ -15,7 +15,7 @@
       />
     </BaseCard>
 
-    <BaseCard title="Tabele arhivate">
+    <BaseCard :title="$t('archivedTables')">
       <BaseTable
         :data="database.archived_tables"
         :fields="fields.archived_tables"
@@ -38,21 +38,21 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'table-view', param: 'idTable' },
-            display_name: 'Nume tabel'
+            display_name: this.$t('tableName'),
           },
           {
             name: 'last_edit_date',
             field_type: 'datetime',
-            display_name: 'Actualizat la'
+            display_name: this.$t('updatedOn'),
           },
           {
             name: 'entries',
-            display_name: 'Intrări',
+            display_name: this.$t('entries'),
             field_type: 'int'
           },
           {
             name: 'last_edit_user.username',
-            display_name: 'Actualizat de'
+            display_name: this.$t('updatedBy'),
           },
           {
             name: 'actions',
@@ -68,20 +68,20 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'table-view', param: 'idTable' },
-            display_name: 'Nume tabel'
+            display_name: this.$t('tableName')
           },
           {
             name: 'last_edit_date',
             field_type: 'datetime',
-            display_name: 'Data arhivării'
+            display_name: this.$t('archivalDate'),
           },
           {
             name: 'entries',
-            display_name: 'Intrări'
+            display_name: this.$t('entries')
           },
           {
             name: 'owner.username',
-            display_name: 'Arhivat de',
+            display_name: this.$t('archivedBy'),
             component: 'FieldOwnerLink'
           },
           {

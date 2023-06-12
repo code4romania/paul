@@ -1,8 +1,8 @@
 <template>
   <div>
-    <BaseTitle :title="`Plug-in task ${$route.params.plugin}`" />
+    <BaseTitle :title="`$t('pluginTask') ${$route.params.plugin}`" />
 
-    <BaseCard :title="`Task: ${task.name}`" v-if="task">
+    <BaseCard :title="`$t('task'): ${task.name}`" v-if="task">
       <b-loading :is-full-page="false" v-model="loading" />
 
       <template #actions>
@@ -11,10 +11,10 @@
             :to="{ name: 'plugin-task-edit', params: { idTask: task.id } }"
             class="button is-primary"
           >
-            Edit task
+            {{ $t('editTask') }}
           </router-link>
-          <p v-if="showText">Task-ul a fost adaugat reincarcati pagina dupa cateva minute</p>
-          <b-button v-else type="is-dark" @click="runTask">Run</b-button>
+          <p v-if="showText">{{ $t('taskAdded') }}</p>
+          <b-button v-else type="is-dark" @click="runTask">{{ $t('run') }}</b-button>
           <b-button type="" class="is-size-4" @click="getLog()"
             ><b-icon icon="refresh"></b-icon
           ></b-button>
@@ -58,31 +58,31 @@ export default {
         fields: [
           {
             name: 'details',
-            display_name: 'Details',
+            display_name: this.$t('details'),
             component: 'FieldPluginTaskDetail',
             props: { idTask: this.idTask },
             sortable: false
           },
           {
             name: 'date_start',
-            display_name: 'Run date',
+            display_name: this.$t('runDate'),
             field_type: 'datetime'
           },
           {
             name: 'duration',
-            display_name: 'Duration'
+            display_name: this.$t('duration'),
           },
           {
             name: 'user.username',
-            display_name: 'User'
+            display_name: this.$t('user'),
           },
           {
             name: 'status',
-            display_name: 'Status'
+            display_name: this.$t('status'),
           },
           {
             name: 'success',
-            display_name: 'Result',
+            display_name: this.$t('result'),
             component: 'FieldStatusTag'
           }
         ]

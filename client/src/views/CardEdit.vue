@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseTitle title="Editează card" />
+    <BaseTitle :title="$t('editCard')" />
 
     <ValidationObserver
       v-slot="{ passes }"
@@ -8,16 +8,16 @@
       slim
       v-if="cardConfig"
     >
-      <BaseCard title="Configurare">
+      <BaseCard :title="$t('configuration')">
         <div class="card-container card-form">
           <div class="columns is-multiline">
             <div class="column is-6">
-              <VField label="Nume" rules="required">
+              <VField :label="$t('nameLabel')" rules="required">
                 <b-input v-model="cardConfig.name" />
               </VField>
 
               <VField
-                label="Alege o sursă de date pe care deja le-ai încărcat în platformă"
+                :label="$t('uploadedSourceLabel')"
                 v-if="database"
                 rules="required"
               >
@@ -32,7 +32,7 @@
               </VField>
 
               <VField
-                label="Funcția de agregare"
+                :label="$t('aggregationFunction')"
                 rules="required"
                 v-if="table"
               >
@@ -47,7 +47,7 @@
               </VField>
 
               <VField
-                label="Alege sursa de date pe care vrei să le calculezi"
+                :label="$t('chooseComputeDataSource')"
                 rules="required"
                 v-if="table && cardConfig.data_column_function != 'Count'"
               >
@@ -66,7 +66,7 @@
 
         <template #footer>
           <b-button class="is-primary" @click="passes(save)">
-            Salvează modificările
+            {{ $t('saveChanges') }}
           </b-button>
         </template>
       </BaseCard>

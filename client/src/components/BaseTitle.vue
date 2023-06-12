@@ -2,7 +2,7 @@
   <header class="main-header">
     <div class="back-button" v-if="hasBackButton">
       <b-button @click="goBack" iconLeft="arrow-left">
-        Înapoi
+        {{ $t('back') }}
       </b-button>
     </div>
     <h1 class="title">{{ title }}</h1>

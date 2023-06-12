@@ -1,13 +1,13 @@
 <template>
   <div>
     <BaseTitle
-      :title="`Manage ${$route.params.plugin} plug-in`"
+      :title="`$t('managePlugin'): ${$route.params.plugin}`"
       :hasBackButton="false"
     />
 
     <BaseForm
       v-if="active.settings && options && settings"
-      title="Settings"
+      :title="$t('settings')"
       :options="options"
       v-bind:entity.sync="settings"
       @save="saveSettings"
@@ -21,7 +21,7 @@
             :to="{ name: 'plugin-task-edit' }"
             class="button is-primary"
           >
-            Add new task
+            {{ $t('addNewTask') }}
           </router-link>
 
           <b-button
@@ -75,34 +75,34 @@ export default {
             name: 'name',
             component: 'FieldRouterLink',
             props: { route: 'plugin-task-view', param: 'idTask' },
-            display_name: 'Task name'
+            display_name: this.$t('taskName'),
           },
           {
             name: 'task_type',
-            display_name: 'Type'
+            display_name: this.$t('type')
           },
           {
             name: 'schedule',
-            display_name: 'Schedule',
+            display_name: this.$t('schedule'),
             component: 'FieldCronInfo'
           },
           {
             name: 'last_run_date',
-            display_name: 'Last run date',
+            display_name: this.$t('lastRunDate'),
             field_type: 'datetime'
           },
           {
             name: 'last_edit_date',
-            display_name: 'Last edit date',
+            display_name: this.$t('lastEditDate'),
             field_type: 'datetime'
           },
           {
             name: 'last_edit_user.username',
-            display_name: 'Last edit made by'
+            display_name: this.$t('lastEditBy'),
           },
           {
             name: 'schedule_enabled',
-            display_name: 'Status',
+            display_name: this.$t('status'),
             component: 'FieldLiveTag'
           }
         ]
@@ -143,7 +143,7 @@ export default {
     saveSettings() {
       this.PluginService.saveSettings(this.settings).then(() => {
         this.active.settings = false
-        ToastService.open('Plug-in settings have been saved')
+        ToastService.open(this.$t('pluginSettingsSaved'))
       })
     },
     getTasks(query) {

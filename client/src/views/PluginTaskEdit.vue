@@ -1,12 +1,12 @@
 <template>
   <div v-if="taskOptions">
-    <BaseTitle :title="`Task editor`" />
+    <BaseTitle :title="`$t('taskEditor')`" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-      <BaseCard title="Task settings"
+      <BaseCard title="$t('taskSettings')"
         ><template #footer>
           <b-button class="is-primary" @click="passes(save)">
-            Save changes
+            {{ $t('saveChanges') }}
           </b-button>
         </template>
 
@@ -14,11 +14,11 @@
           <div class="card-container card-form">
             <div class="columns is-multiline">
               <div class="column is-6">
-                <VField label="Name" rules="required">
+                <VField :label="$t('nameLabel')" rules="required">
                   <b-input v-model="model.name" />
                 </VField>
 
-                <VField label="Task type" rules="required">
+                <VField :label="$t('taskTypeLabel')" rules="required">
                   <b-select
                     v-model="model.task_type"
                     expanded
@@ -34,7 +34,7 @@
                 </VField>
 
                 <template v-if="model.task_type == 'segmentation'">
-                  <VField label="Filtered view" rules="required">
+                  <VField :label="$t('filteredView')" rules="required">
                     <b-select
                       v-model="model.segmentation_task.filtered_view"
                       expanded
@@ -48,7 +48,7 @@
                     </b-select>
                   </VField>
 
-                  <VField label="Tag">
+                  <VField :label="$t('tag')">
                     <b-input v-model="model.segmentation_task.tag" />
                   </VField>
                 </template>
@@ -57,7 +57,7 @@
               <div class="column is-12">
                 <VField>
                   <b-checkbox v-model="model.schedule_enabled"
-                    >Periodic task</b-checkbox
+                    >{{ $t('periodicTask') }}</b-checkbox
                   >
                 </VField>
 
@@ -131,12 +131,12 @@ export default {
     save() {
       if (this.idTask)
         this.PluginService.putTask(this.idTask, this.model).then(() => {
-          ToastService.open('Task updated')
+          ToastService.open(this.$t('taskUpdated'))
           this.$router.go(-1)
         })
       else
         this.PluginService.postTask(this.model).then(() => {
-          ToastService.open('Task created')
+          ToastService.open(this.$t('taskCreated'))
           this.$router.go(-1)
         })
     }
