@@ -51,7 +51,7 @@
 
       <template slot="bottom-left" v-if="customPerPage">
         <div class="pagination-per-page">
-          Listează
+          {{ $t('listing') }}
           <div class="control">
             <input
               class="input"
@@ -61,24 +61,24 @@
               @blur="onPerPageChange"
             />
           </div>
-          intrări pe pagină.
+          {{ $t('entriesPerPage') }}
 
           <span>
-            Listare {{ (page - 1) * perPage + 1 }} din
+            {{ $t('listing') }} {{ (page - 1) * perPage + 1 }} {{ $t('outOf') }}
             {{ Math.min(page * perPage, tableEntries.count) }}
           </span>
         </div>
 
         <div class="delete-items">
           <a class="button is-primary" :disabled="bulkDeleteDisabled" @click.prevent="onBulkDelete">
-            Șterge elementele selectate
+            {{ $t('deleteSelectedItems') }}
           </a>
         </div>
 
         <div class="pagination-jump" v-if="tableEntries.count / perPage > 4">
           <div class="control">
             <input
-              placeholder="Mergi la pagina"
+              :placeholder="$t('goToPage')"
               class="input"
               type="number"
               @keyup.enter="$event.target.blur()"
@@ -90,7 +90,7 @@
 
       <template slot="empty">
         <p>
-          No data to display.
+          {{ $t('noDataToDisplay') }}
         </p>
       </template>
     </b-table>
@@ -294,7 +294,7 @@ export default {
       TableService.bulkDeleteEntities(this.idTable, data).then(() => {
         return this.$store.dispatch('data/getDatabase').then(() => {
             this.$store.commit('data/clearBulkDeleteItems')
-            ToastService.open('Tabelul a fost actualizat')
+            ToastService.open(this.$t('tableUpdated'))
           }
         )
       })

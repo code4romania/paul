@@ -2,10 +2,10 @@
   <div class="modal-card">
     <header class="modal-card-head">
       <p class="modal-card-title">
-        Filter options
+        {{ $t('filterOptions') }}
 
         <span class="info">
-          Always click on <b>Set filters</b> after you made your selection.
+          {{ $t('filterSelectionInfo') }}
         </span>
       </p>
       <button type="button" class="delete" @click="$emit('close')" />
@@ -39,7 +39,7 @@
 
         <div class="column is-3 is-scrollable">
           <p class="has-text-weight-semibold is-size-6 cell cell-title">
-            Selected filters
+            {{ $t('selectedFilters') }}
           </p>
 
           <FilterDisplay
@@ -55,9 +55,9 @@
     
     <footer class="modal-card-foot">
       <b-button class="is-dark is-outlined" @click="$emit('close')">
-        Cancel
+        {{ $t('cancel') }}
       </b-button>
-      <b-button class="is-dark" @click="submit">Apply</b-button>
+      <b-button class="is-dark" @click="submit">{{ $t('apply') }}</b-button>
     </footer>
   </div>
 </template>

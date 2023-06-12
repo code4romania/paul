@@ -1,15 +1,15 @@
 <template>
   <div>
-    <BaseTitle title="Actualizare date" :hasBackButton="!isManualImport" />
+    <BaseTitle :title="$t('dataUpdate')" :hasBackButton="!isManualImport" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
       <BaseCard v-bind="{ title, loading }">
         <div class="card-container">
           <div class="columns">
             <div class="column is-5" v-if="isManualImport && database">
-              <VField label="Tabelul în care dorești să imporți" rules="required">
+              <VField :label="$t('destinationTable')" rules="required">
                 <b-select
-                  placeholder="Alege un tabel"
+                  :placeholder="$t('chooseATable')"
                   v-model="idTable"
                   expanded
                 >
@@ -17,7 +17,7 @@
                     v-for="table in database.active_tables"
                     :value="table.id"
                     :key="table.id"
-                    v-text="`Table – ${table.data.name}`"
+                    v-text="`${$t('table')} – ${table.data.name}`"
                   />
                 </b-select>
               </VField>
@@ -29,7 +29,7 @@
 
         <template #footer>
           <b-button type="is-primary" @click="passes(submit)"
-            >Continuă</b-button
+            >{{ $t('continue') }}</b-button
           >
         </template>
       </BaseCard>
@@ -63,7 +63,7 @@ export default {
     checkIfManual() {
       this.isManualImport = this.$route.query.manual
 
-      this.title = `Importă date și creează tabelul ${JSON.stringify(
+      this.title = `${this.$t('importAndCreateTable')} ${JSON.stringify(
         this.$route.query.name
       )}`
 

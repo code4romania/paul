@@ -41,7 +41,7 @@
 
       <template slot="empty">
         <p class="has-text-centered">
-          No data to display.
+          {{ $t('noDataToDisplay') }}
         </p>
       </template>
     </b-table>

@@ -11,8 +11,8 @@
     />
 
     <ActionButtonDelete
-      dialogTitle="Do you wish to delete this table?"
-      dialogMessage="This operation permanently removes all the entries of this table. Please check the data before proceeding."
+      :dialogTitle="$t('tableDeleteTitle')"
+      :dialogMessage="$t('tableDeleteMessage')"
       @on-confirm="$store.dispatch('data/deleteTableView', props.id)"
     />
   </div>

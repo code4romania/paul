@@ -1,19 +1,16 @@
 <template>
   <div v-if="table">
-    <BaseTitle :title="`Actualizare date în ${table.name}`" />
+    <BaseTitle :title="`${$t('dataUpdateIn')} ${table.name}`" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
       <BaseCard
-        title="Selectează corespondența între coloane"
+        :title="$t('chooseColumnMappingTitle')"
         v-bind="{ loading }"
       >
         <template #title>
           <div class="info">
             <div>
-              Pentru a putea importa date noi într-un tabel existent trebuie să
-              indici care este corespondenta dintre coloanele din tabelul
-              existent și cel nou. Această operațiune va ajuta platforma să
-              încarce corect datele pentru a preveni orice eroare.
+              {{ $t('columnMappingHelp') }}
             </div>
           </div>
         </template>
@@ -23,11 +20,10 @@
             <br />
             <div class="columns is-size-6">
               <div class="column is-6">
-                Coloanele de mai jos sunt extrase din tabelul pe care vrei să îl
-                imporți.
+                {{ $t('columnFromImportedTable') }}
               </div>
               <div class="column is-6">
-                Alege coloanele corespondente din tabelul existent in platformă.
+                {{ $t('chooseColumnMapping') }}
               </div>
             </div>
 
@@ -37,14 +33,14 @@
               :key="`cname-${index}`"
             >
               <div class="column is-6">
-                <VField :label="`Coloana #${index + 1}`" rules="required">
+                <VField :label="`${$t('column')} #${index + 1}`" rules="required">
                   <b-input :value="field.original_name" readonly />
                 </VField>
               </div>
               <div class="column is-6">
                 <VField
                   :label="
-                    `Coloana #${index + 1} ${getFieldType(
+                    `${$t('column')} #${index + 1} ${getFieldType(
                       getTableField(field.table_field).field_type
                     )}`
                   "
@@ -64,13 +60,13 @@
                   <b-button class="is-white" :disabled="fields.length == 1">
                     <ActionButtonDelete
                       :dialogTitle="
-                        `Șterge coloana ${
+                        `${$t('deleteColumn')} ${
                           field.display_name != null
                             ? JSON.stringify(field.display_name)
                             : ''
                         }`
                       "
-                      dialogMessage="Ești sigur?"
+                      :dialogMessage="$t('areYouSure')"
                       :bypassDialog="!field.original_name.length"
                       @on-confirm="deleteColumn(index)"
                   /></b-button>
@@ -78,16 +74,16 @@
                 </VField>
                 <div class="checkbox-list">
                   <b-checkbox v-model="field.unique">
-                    Valoare unică
+                    {{ $t('uniqueValue') }}
                   </b-checkbox>
                   <b-checkbox v-model="field.required">
-                    Valoare obligatorie
+                    {{ $t('requiredValue') }}
                   </b-checkbox>
                 </div>
 
                 <VField
                   v-if="isFormatted(field.table_field)"
-                  :label="`Formatul coloanei #${index + 1}`"
+                  :label="`${$t('formatForColumn')} #${index + 1}`"
                   rules="required"
                 >
                   <VDateformat v-model="field.field_format" />
@@ -99,7 +95,7 @@
 
         <template #footer>
           <b-button class="is-primary" @click="passes(submit)">
-            Continuă
+            {{ $t('continue') }}
           </b-button>
         </template>
       </BaseCard>

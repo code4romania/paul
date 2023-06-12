@@ -11,8 +11,8 @@
     />
 
     <ActionButtonDelete
-      dialogTitle="Do you wish to delete this chart?"
-      dialogMessage="This operation permanently removes this chart. Please check the data before proceeding."
+      :dialogTitle="$t('chartDeleteTitle')"
+      :dialogMessage="$t('chartDeleteMessage')"
       @on-confirm="$store.dispatch('data/deleteChart', props.id)"
     />
   </div>

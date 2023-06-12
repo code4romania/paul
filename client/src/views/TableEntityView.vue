@@ -1,14 +1,14 @@
 <template>
   <div v-if="table && entity">
-    <BaseTitle :title="'Entity view'" />
+    <BaseTitle :title="$t('entityView')" />
 
-    <BaseCard :title="`Table – ${table.name}`">
+    <BaseCard :title="`${$t('table')} – ${table.name}`">
       <BaseTable :data="[entity]" :fields="table.fields" />
     </BaseCard>
 
     <template v-if="tableLinks">
       <BaseCard
-        :title="`Table – ${link.table.name}`"
+        :title="`${$t('table')} – ${link.table.name}`"
         v-for="(link, index) in tableLinks"
         :key="`tableLink${link.table.id}`"
       >
@@ -28,7 +28,7 @@
         <template #title v-if="link.tableEntries">
           <span class="entries">
             {{ link.tableEntries.count }}
-            {{ link.tableEntries.count > 1 ? 'entries' : 'entry' }}
+            {{ link.tableEntries.count > 1 ? $t('entries') : $t('entry') }}
           </span>
         </template>
       </BaseCard>

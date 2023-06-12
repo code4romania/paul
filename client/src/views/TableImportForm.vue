@@ -1,15 +1,15 @@
 <template>
   <div>
-    <BaseTitle title="Actualizare date" :hasBackButton="!isManualImport" />
+    <BaseTitle :title="$t('dataUpdate')" :hasBackButton="!isManualImport" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
       <BaseCard v-bind="{ title, loading }">
         <div class="card-container">
           <div class="columns">
             <div class="column is-5" v-if="isManualImport && database">
-              <VField label="Tabelul în care dorești să imporți" rules="required">
+              <VField :label="$t('destinationTable')" rules="required">
                 <b-select
-                  placeholder="Alege un tabel"
+                  :placeholder="$t('chooseATable')"
                   v-model="idTable"
                   expanded
                 >
@@ -17,7 +17,7 @@
                     v-for="table in database.active_tables"
                     :value="table.id"
                     :key="table.id"
-                    v-text="`Table – ${table.data.name}`"
+                    v-text="`${$t('table')} – ${table.data.name}`"
                   />
                 </b-select>
               </VField>
@@ -31,8 +31,8 @@
             </div> -->
             <div class="column is-2">
               <VField
-                label="Delimitator"
-                labelInfo="Lasă liber pentru autocompletare."
+                :label="$t('delimiterLabel')"
+                :labelInfo="$t('leaveEmptyForAutocomplete')"
               >
                 <b-input v-model="delimiter" />
               </VField>
@@ -42,7 +42,7 @@
                 <div class="file is-right is-dark is-fullwidth">
                   <b-upload v-model="file" expanded>
                     <span class="file-cta">
-                      <span class="file-label">Caută</span>
+                      <span class="file-label">{{ $t('') }}Caută</span>
                     </span>
                     <span class="file-name">
                       <span v-if="file">{{ file.name }}</span>
@@ -56,7 +56,7 @@
 
         <template #footer>
           <b-button type="is-primary" @click="passes(submit)"
-            >Continuă</b-button
+            >{{ $t('continue') }}</b-button
           >
         </template>
       </BaseCard>
@@ -97,9 +97,9 @@ export default {
             this.loading = false
           })
         }
-        this.title = 'Încarcă date într-un tabel existent'
+        this.title = this.$t('loadDataToExistingTable')
       } else {
-        this.title = `Importă date și creează tabelul ${JSON.stringify(
+        this.title = `${this.$t('importAndCreateTable')} ${JSON.stringify(
           this.$route.query.name
         )}`
       }

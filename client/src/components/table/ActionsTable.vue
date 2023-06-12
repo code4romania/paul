@@ -12,8 +12,8 @@
     />
 
     <ActionButtonDelete
-      dialogTitle="Do you wish to delete this entity?"
-      dialogMessage="This operation permanently removes all the fields of this entry. Please check the data before proceeding."
+      :dialogTitle="$t('entryDeleteTitle')"
+      :dialogMessage="$t('entryDeleteMessage')"
       @on-confirm="
         $store.dispatch('data/deleteEntity', {
           idTable,

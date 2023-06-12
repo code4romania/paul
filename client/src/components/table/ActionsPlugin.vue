@@ -11,8 +11,8 @@
     />
 
     <ActionButtonDelete
-      dialogTitle="Do you wish to delete this plug-in task?"
-      dialogMessage="This operation permanently removes this plug-in task. Please check the data before proceeding."
+      :dialogTitle="$t('pluginTaskDeleteTitle')"
+      :dialogMessage="$t('pluginTaskDeleteMessage')"
       @on-confirm="
         $store
           .dispatch('plugin/deleteTask', {

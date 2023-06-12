@@ -6,8 +6,8 @@
     />
 
     <ActionButtonDelete
-      dialogTitle="Do you wish to delete this profile?"
-      dialogMessage="This operation permanently removes this profile. Please check the data before proceeding."
+      :dialogTitle="$t('profileDeleteTitle')"
+      :dialogMessage="$t('profileDeleteMessage')"
       @on-confirm="$store.dispatch('data/deleteUser', props.id)"
     />
   </div>

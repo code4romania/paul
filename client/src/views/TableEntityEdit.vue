@@ -8,7 +8,7 @@
       slim
       v-if="table && entity"
     >
-      <BaseCard :title="`Tabel – ${table.name}: ${pageTitle}`">
+      <BaseCard :title="`{$t('table')} – ${table.name}: ${pageTitle}`">
         <div class="card-container card-form">
           <div class="columns is-multiline">
             <div
@@ -29,7 +29,7 @@
 
         <template #footer>
           <b-button class="is-primary" @click="passes(save)">
-            Salvează modificările
+            {{ $t('saveChanges') }}
           </b-button>
         </template>
       </BaseCard>
@@ -59,7 +59,7 @@ export default {
       }
     }),
     pageTitle() {
-      return this.$route.params.idEntity ? 'Editează intrarea' : 'Adaugă intrare nouă'
+      return this.$route.params.idEntity ? this.$t('editEntry') : this.$t('addNewEntry')
     }
   },
   mounted() {
@@ -92,12 +92,12 @@ export default {
           this.$route.params.idEntity,
           this.entity
         ).then(() => {
-          ToastService.open('Update successful')
+          ToastService.open(this.$t('updateSuccessful'))
           this.$router.go(-1)
         })
       else
         TableService.postEntity(this.idTable, this.entity).then(() => {
-          ToastService.open('Add successful')
+          ToastService.open(this.$t('addSuccessful'))
           this.$router.go(-1)
         })
     }

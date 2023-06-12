@@ -4,7 +4,7 @@
       <b-loading :is-full-page="false" v-model="loading" />
 
       <header class="modal-card-head">
-        <p class="modal-card-title">Choose which columns to display</p>
+        <p class="modal-card-title">{{ $t('chooseDisplayColumns') }}</p>
         <button type="button" class="delete" @click="$emit('close')" />
       </header>
 
@@ -20,8 +20,8 @@
         <VField label="Column list" rules="required">
           <div>
             <div class="is-size-6">
-              <a @click.prevent="selectAll">Select all</a> |
-              <a @click.prevent="selectNone">Select none</a>
+              <a @click.prevent="selectAll">{{ $t('selectAll') }}</a> |
+              <a @click.prevent="selectNone">{{ $t('selectNone') }}</a>
             </div>
             <br />
 
@@ -40,10 +40,10 @@
       </section>
       <footer class="modal-card-foot">
         <b-button type="is-dark is-outlined" @click="$emit('close')">
-          Cancel
+          {{ $t('cancel') }}
         </b-button>
-        <b-button type="is-primary" @click="passes(save)">Save</b-button>
-        <b-button type="is-dark" @click="passes(submit)">Apply</b-button>
+        <b-button type="is-primary" @click="passes(save)">{{ $t('save') }}</b-button>
+        <b-button type="is-dark" @click="passes(submit)">{{ $t('apply') }}</b-button>
       </footer>
     </div>
   </ValidationObserver>

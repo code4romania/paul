@@ -1,12 +1,12 @@
 <template>
   <div>
-    <BaseTitle title="Rezultate import tabel" :hasBackButton="false" />
+    <BaseTitle :title="$t('importTableResults')" :hasBackButton="false" />
 
     <template v-if="importData">
       <BaseCard
         :title="
-          `Tabelul ${name && JSON.stringify(name)} a fost ${
-            name ? 'creat' : 'actualizat'
+          `$t('theTable')Tabelul ${name && JSON.stringify(name)} $t('was') ${
+            name ? $t('created') : $t('updated')
           }`
         "
       >
@@ -14,20 +14,20 @@
           <router-link
             class="button is-dark"
             :to="{ name: 'table-view', params: { idTable: importData.table } }"
-            >Vezi tabel</router-link
+            >{{ $t('viewTable') }}</router-link
           >
         </template>
 
         <div class="card-container">
-          {{ importData.import_count_created }} intrări au fost create <br>
-          {{ importData.import_count_updated }} intrări au fost actualizate
+          {{ importData.import_count_created }} {{ $t('entriesCreated') }} <br>
+          {{ importData.import_count_updated }} {{ $t('entriesUpdated') }}
         </div>
       </BaseCard>
 
       <BaseCard v-if="importData.errors_count">
         <template #title>
           <span class="has-text-danger"
-            >{{ importData.errors_count }} intrări au eroare</span
+            >{{ importData.errors_count }} {{ $t('entriesWithError') }}</span
           >
         </template>
         <template #default>
@@ -64,7 +64,7 @@
 
         <template #actions>
           <a class="button is-primary" target="_blank" :href="exportPath()"
-            >Descarcă aceste intrări</a
+            >{{ $t('downloadTheseEntries') }}</a
           >
         </template>
       </BaseCard>

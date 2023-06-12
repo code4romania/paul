@@ -7,21 +7,15 @@
         <template #title>
           <div class="info" v-if="idImport">
             <div>
-              The table you want to import contains multiple columns. Please
-              name the columns and select the column type for each. The column
-              type refers to the type of data present in a specific column (eg:
-              Column name: Age will have a Column type: Integer (whole number))
-              . The system provides you with five default column types. If you
-              are not sure of the data type in a column, we recommend you to
-              select the Text type.
+              {{ $t('importColumnHelp') }}
             </div>
-            <div><br>File: {{ importData.filename }}</div>
+            <div><br>{{ $t('file') }} {{ importData.filename }}</div>
           </div>
         </template>
         <div class="card-container">
           <div class="columns">
             <div class="column is-4">
-              <VField label="Nume tabel">
+              <VField :label="$t('tableName')">
                 <b-input v-model="name" />
               </VField>
             </div>
@@ -32,7 +26,7 @@
                 :key="`cname-${index}`"
               >
                 <div class="column is-7">
-                  <VField :label="`Nume coloană #${index + 1}`" rules="required">
+                  <VField :label="`${$t('columnName')} #${index + 1}`" rules="required">
                     <div class="field-container">
                       <b-input v-model="field.display_name" placeholder="" />
                     </div>
@@ -40,7 +34,7 @@
                 </div>
                 <div class="column is-5">
                   <VField
-                    :label="`Tip coloană #${index + 1}`"
+                    :label="`${$t('columnType')} #${index + 1}`"
                     rules="required"
                     grouped
                   >
@@ -61,39 +55,39 @@
                     <b-button class="is-white" :disabled="fields.length == 1">
                       <ActionButtonDelete
                         :dialogTitle="
-                          `Șterge coloană ${
+                          `${$t('deleteColumn')} ${
                             field.display_name != null
                               ? JSON.stringify(field.display_name)
                               : ''
                           }`
                         "
-                        dialogMessage="Ești sigur?"
+                        dialogMessage="$t('areYouSure')"
                         :bypassDialog="!idTable"
                         @on-confirm="deleteColumn(index)"
                     /></b-button>
                   </VField>
                   <div class="enum-values" v-if="field.field_type=='enum'">
-                    Adaugă valorile separate de virgulă
+                    {{ $t('addCommaSeparatedValues') }}
                     <b-taginput
                         v-model="field.choices"
                         ellipsis
                         icon="label"
-                        placeholder="valoare nouă"
-                        aria-close-label="Șterge">
+                        :placeholder="$t('newValue')"
+                        :aria-close-label="$t('delete')">
                     </b-taginput>
                     
                   </div>
                   <div class="checkbox-list">
                   <b-checkbox v-model="field.unique">
-                    Valoare unică
+                    {{ $t('uniqueValue') }}
                   </b-checkbox>
                   <b-checkbox v-model="field.required">
-                    Valoare obligatorie
+                    {{ $t('requiredValue') }}
                   </b-checkbox>
                 </div>
                   <VField
                     v-if="idImport && field.field_type == 'date'"
-                    :label="`Column format #${index + 1}`"
+                    :label="`${$t('formatForColumn')} #${index + 1}`"
                     rules="required"
                   >
                     <VDateformat v-model="field.field_format" />
@@ -105,7 +99,7 @@
                 <div class="column is-7">
                   <br />
                   <b-button class="is-dark" @click="addColumn" expanded
-                    >Adaugă o coloană nouă</b-button
+                    >{{ $t('addNewColumn') }}</b-button
                   >
                 </div>
               </div>
@@ -115,7 +109,7 @@
 
         <template #footer>
           <b-button class="is-primary" @click="passes(submit)">
-            {{ idTable ? 'Salvează modificările' : 'Continuă' }}
+            {{ idTable ? $t('saveChanges') : $t('continue') }}
           </b-button>
         </template>
       </BaseCard>
@@ -151,8 +145,8 @@ export default {
     }),
     title() {
       return this.idTable && !this.idImport
-        ? `Editează tabel — ${this.table.name}`
-        : `Construiește un tabel`
+        ? `${this.$t('editTable')} — ${this.table.name}`
+        : this.$t('buildTable')
     }
   },
   mounted() {

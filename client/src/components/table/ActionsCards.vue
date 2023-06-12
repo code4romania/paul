@@ -11,8 +11,8 @@
     />
 
     <ActionButtonDelete
-      dialogTitle="Do you wish to delete this card?"
-      dialogMessage="This operation permanently removes this card. Please check the data before proceeding."
+      :dialogTitle="$t('cardDeleteTitle')"
+      :dialogMessage="$t('cardDeleteMessage')"
       @on-confirm="$store.dispatch('data/deleteCard', props.id)"
     />
   </div>

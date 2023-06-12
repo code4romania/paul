@@ -1,13 +1,13 @@
 <template>
   <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-    <BaseCard title="Add a table view">
+    <BaseCard :title="$t('addATableView')">
       <div class="card-container" v-if="database">
         <div class="columns">
           <div class="column">
-            <VField label="Source field" rules="required">
+            <VField :label="$t('sourceFieldLabel')" rules="required">
               <b-select
                 v-if="table"
-                placeholder="Select a field"
+                :placeholder="$t('selectAField')"
                 v-model="sourceField"
                 @input="linkField = null"
                 expanded
@@ -23,9 +23,9 @@
             </VField>
           </div>
           <div class="column">
-            <VField label="Tabel" rules="required">
+            <VField :label="$t('tableLabel')" rules="required">
               <b-select
-                placeholder="Selectează un tabel"
+                :placeholder="$t('selectATable')"
                 v-model="idTable"
                 @input="getTableFields"
                 expanded
@@ -35,7 +35,7 @@
                   :value="table.id"
                   :key="table.id"
                 >
-                  Table – {{ table.data.name }}
+                  {{ $t('table') }} – {{ table.data.name }}
                 </option>
               </b-select>
             </VField>
@@ -43,12 +43,12 @@
 
           <div class="column">
             <VField
-              label="Linked field"
-              labelInfo="Tipurile de câmpuri trebuie sa fie identice"
+              :label="$t('linkedFieldLabel')"
+              :labelInfo="$t('linkedFieldInfo')"
               rules="required"
             >
               <b-select
-                placeholder="Selectează un câmp"
+                :placeholder="$t('selectAField')"
                 v-model="linkField"
                 :loading="loading"
                 expanded
@@ -69,7 +69,7 @@
 
       <template #footer>
         <b-button class="is-dark" @click="passes(addTableView)">
-          Add view
+          {{ $t('addView') }}
         </b-button>
       </template>
     </BaseCard>

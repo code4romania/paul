@@ -19,7 +19,7 @@ export default {
     onChange() {
       ApiService.get(`${this.type}/${this.props.id}/${this.action}/`).then(
         () => {
-          ToastService.open('Property updated')
+          ToastService.open(this.$t('propertyUpdated'))
         }
       )
     }

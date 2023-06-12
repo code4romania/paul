@@ -1,33 +1,33 @@
 <template>
   <div>
-    <BaseTitle title="Add table" />
+    <BaseTitle :title="$t('addTable')" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-      <BaseCard title="Creează un nou tabel">
+      <BaseCard :title="$t('createNewTable')">
         <div class="card-container">
           <div class="columns">
             <div class="column is-6">
-              <VField label="Table name" rules="required">
+              <VField :label="$t('tableNameLabel')" rules="required">
                 <b-input v-model="name" />
               </VField>
             </div>
             <div class="column is-6">
               <VField
-                label="Cum dorești să creezi noul tabel?"
+                :label="$t('howToCreateNewTable')"
                 name="Table creation type"
                 rules="required"
                 class="radio-list"
               >
                 <b-radio v-model="type" native-value="table-import">
-                  Importă fișier CSV
+                  {{ $t('importCSVFile') }}
                 </b-radio>
 
                 <b-radio v-model="type" native-value="table-edit">
-                  Creează în platformă
+                  {{ $t('createInPlatform') }}
                 </b-radio>
 
                 <b-radio v-model="type" native-value="table-contacts">
-                  Creează tabel contacte gol
+                  {{ $t('createEmptyContactsTable') }}
                 </b-radio>
               </VField>
             </div>
@@ -36,7 +36,7 @@
 
         <template #footer>
           <b-button class="is-primary" @click="passes(submit)"
-            >Continuă</b-button
+            >{{ $t('continue') }}</b-button
           >
         </template>
       </BaseCard>
