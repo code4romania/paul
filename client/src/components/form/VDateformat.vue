@@ -22,7 +22,7 @@
       </template>
     </VField>
 
-    <VField label="Drag the elements to match the order of the data you're importing">
+    <VField :label="$t('dateListLabel')">
       <draggable
         v-model="dateList"
         @change="update"
@@ -57,28 +57,28 @@ export default {
       // 0 - day, 2 - month, 4 - year
       options: {
         0: {
-          '': 'None',
+          '': this.$t('noneOption'),
           '%d': '01',
           '%w': '1'
         },
         2: {
-          '': 'None',
-          '%b': 'Jan',
-          '%B': 'January',
+          '': this.$t('noneOption'),
+          '%b': this.$t('janOption'),
+          '%B': this.$t('januaryOption'),
           '%m': '01'
         },
         4: {
-          '': 'None',
+          '': this.$t('noneOption'),
           '%y': '70',
           '%Y': '1970'
         }
       },
       tooltips: [
-        'Day format',
-        'The separator can be a symbol, such as / or .',
-        'Month format',
-        'The separator can be a symbol, such as / or .',
-        'Year format'
+        this.$t('dayFormatTooltip'),
+        this.$t('dateSeparatorTooltip'),
+        this.$t('monthFormatTooltip'),
+        this.$t('dateSeparatorTooltip'),
+        this.$t('yearFormatTooltip'),
       ],
       innerValue: this.value,
       dateList: [0, 1, 2, 3, 4],

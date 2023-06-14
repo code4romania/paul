@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseTitle
-      :title="`$t('managePlugin'): ${$route.params.plugin}`"
+      :title="`${$t('managePlugin')}: ${$route.params.plugin}`"
       :hasBackButton="false"
     />
 

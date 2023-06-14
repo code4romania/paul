@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VField label="Choose filter mode" v-bind="{ rules }">
+    <VField :label="$t('chooseFilterModeLabel')" v-bind="{ rules }">
       <b-select v-model="innerValue.type" @input="reset">
         <option
           v-for="(choice, index) in choices"
@@ -15,7 +15,7 @@
     <template v-if="!isRelative">
       <VField
         :disabled="innerValue.blank"
-        label="Enter date"
+        :label="$t('enterDateLabel')"
         v-bind="{ rules }"
       >
         <VDate v-model="innerValue.values[0]" @input="update" />
@@ -23,7 +23,7 @@
 
       <VField
         :disabled="innerValue.blank"
-        label="Enter end date"
+        :label="$t('enterEndDateLabel')"
         v-if="innerValue.type == 'interval'"
         @input="update"
         v-bind="{ rules }"
@@ -32,7 +32,7 @@
       </VField>
     </template>
 
-    <VField label="Time frame" v-if="isRelative">
+    <VField :label="$t('timeFrameLabel')" v-if="isRelative">
       <b-select v-model="innerValue.values[0]" @input="update">
         <option
           v-for="(type, key) in relativeDate"

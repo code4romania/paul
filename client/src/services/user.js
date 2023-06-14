@@ -1,6 +1,7 @@
 import ApiService from './api'
 import TokenService from './storage'
 
+import i18n from '../plugins/i18n'
 import { QueryString } from '@/utils/helpers'
 
 const UserService = {
@@ -88,10 +89,10 @@ const UserService = {
 
   getRights() {
     return [
-      {"name":'Fara permisiuni','permission':''}, 
-      {"name":"Vizualizare",'permission':'view_table'},
-      {"name":"Actualizare/editare date",'permission':'update_content'},
-      {"name":"Actualizare/editare tabel",'permission':'change_table'}
+      {'name': i18n.t('noPermission'), 'permission':''}, 
+      {'name': i18n.t('viewPermission'),'permission':'view_table'},
+      {'name': i18n.t('updateDataPermission'), 'permission':'update_content'},
+      {'name': i18n.t('updateTablePermission'), 'permission':'change_table'}
       ]
   }
 }

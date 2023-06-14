@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VField label="Choose filter mode" v-bind="{ rules }">
+    <VField :label="$t('chooseFilterModeLabel')" v-bind="{ rules }">
       <b-select v-model="innerValue.type" @input="update">
         <option
           v-for="(choice, index) in choices"
@@ -12,7 +12,7 @@
       </b-select>
     </VField>
 
-    <VField label="Enter value" v-bind="{ rules }">
+    <VField :label="$t('enterValueLabel')" v-bind="{ rules }">
       <b-input
         type="number"
         v-model.number="innerValue.values[0]"
@@ -21,7 +21,7 @@
     </VField>
 
     <VField
-      label="Enter end value"
+      :label="$t('enterEndValueLabel')"
       v-bind="{ rules }"
       v-if="innerValue.type == 'interval'"
     >

@@ -26,7 +26,7 @@
 
       <template #footer>
         <b-button class="is-primary" @click="passes(save)">
-          Save changes
+          {{ $t('saveChanges') }}
         </b-button>
       </template>
     </BaseCard>

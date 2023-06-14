@@ -1,6 +1,7 @@
 import axios from 'axios'
 import TokenService from './storage'
 import { ToastService } from './buefy'
+import i18n from '../plugins/i18n'
 
 // import { QueryString } from '@/utils/helpers'
 
@@ -21,10 +22,10 @@ const ApiService = {
           switch (err.response.status) {
             case 500:
             case 404:
-              msg = err.response.data.detail || 'Something went wrong'
+              msg = err.response.data.detail || i18n.t('somethingWentWrong')
               break
             case null:
-              msg = 'Please check your internet connection'
+              msg = i18n.t('pleaseCheckConnection')
               break
             default:
               for (let e in err.response.data) {
@@ -35,10 +36,10 @@ const ApiService = {
               break
           }
         } catch {
-          if (err.response == null) msg = 'Unable to connect to database'
+          if (err.response == null) msg = i18n.t('unableToConnect')
         }
 
-        msg = 'Error<br> ' + msg
+        msg = i18n.t('error') + '<br>' + msg
 
         ToastService.open(`${msg}`, {
           type: 'is-danger'

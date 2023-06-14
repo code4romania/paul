@@ -1,17 +1,17 @@
 <template>
   <div v-if="table">
-    <BaseCard title="Filtrare">
+    <BaseCard :title="$t('filtering')">
       <template #actions>
         <div class="buttons">
           <b-button class="is-light" @click="resetFilters">
-            Resetează filtre
+            {{ $t('resetFilters') }}
           </b-button>
           <b-button class="is-dark" @click="openModalFilters">
-            {{ filtersNotEmpty ? 'Editează filtre' : 'Adaugă filtre' }}
+            {{ filtersNotEmpty ? $t('editFilters') : $t('addFilters') }}
           </b-button>
 
           <template v-if="filterMode">
-            <b-button class="is-primary" @click="saveFilters">Salvează</b-button>
+            <b-button class="is-primary" @click="saveFilters">{{ $t('save') }}</b-button>
           </template>
         </div>
       </template>
@@ -97,7 +97,7 @@ export default {
       ApiService.patch(`${this.viewType}/${id}/`, {
         filters: this.filters
       }).then(() => {
-        ToastService.open('Filters have been saved')
+        ToastService.open(this.$t('filtersSaved'))
       })
     },
 

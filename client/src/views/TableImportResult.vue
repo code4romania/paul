@@ -5,7 +5,7 @@
     <template v-if="importData">
       <BaseCard
         :title="
-          `$t('theTable')Tabelul ${name && JSON.stringify(name)} $t('was') ${
+          `${$t('theTable')} ${name && JSON.stringify(name)} ${$t('was')} ${
             name ? $t('created') : $t('updated')
           }`
         "

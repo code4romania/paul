@@ -1,8 +1,8 @@
 <template>
   <div>
-    <BaseTitle :title="`$t('pluginTask') ${$route.params.plugin}`" />
+    <BaseTitle :title="`${$t('pluginTask')} ${$route.params.plugin}`" />
 
-    <BaseCard :title="`$t('task'): ${task.name}`" v-if="task">
+    <BaseCard :title="`${$t('task')}: ${task.name}`" v-if="task">
       <b-loading :is-full-page="false" v-model="loading" />
 
       <template #actions>

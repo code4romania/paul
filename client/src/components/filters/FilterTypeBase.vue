@@ -12,7 +12,7 @@
       <div class="filter-buttons">
         <b-field>
           <b-checkbox :value="innerValue.blank" @input="toggleBlank">
-            Show only empty or "blank" values.
+            {{ $t('showOnlyEmptyOrBlank') }}
           </b-checkbox>
         </b-field>
 
@@ -22,11 +22,11 @@
             :disabled="checkDisabled(field)"
             @click="$emit('remove', field.name, null, reset)"
           >
-            Clear filter
+            {{ $t('clearFilter') }}
           </b-button>
 
           <b-button type="is-dark" @click="passes(update)">
-            Set filter
+            {{ $t('setFilter') }}
           </b-button>
         </div>
       </div>

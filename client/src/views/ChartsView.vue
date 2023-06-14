@@ -5,7 +5,7 @@
     <BaseCard :title="$t('charts')" v-if="charts"
       ><template #actions>
         <router-link :to="{ name: 'chart-edit' }" class="button is-primary">
-          $t('addNewChart')
+          {{ $t('addNewChart') }}
         </router-link>
       </template>
 

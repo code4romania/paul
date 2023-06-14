@@ -22,7 +22,7 @@
       <template #actions>
         <div class="buttons">
           <b-button class="is-dark" @click="openModalColumns">
-            {{ $t('changeTable') }}Schimbă tabel
+            {{ $t('changeTable') }}
           </b-button>
 
           <router-link
@@ -58,7 +58,7 @@
           <span
             v-if="table.last_edit_user"
             v-text="
-              `$t('by') ${table.last_edit_user.first_name} ${table.last_edit_user.last_name}`
+              `${$t('by')} ${table.last_edit_user.first_name} ${table.last_edit_user.last_name}`
             "
           />
         </div>

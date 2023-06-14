@@ -9,6 +9,7 @@ import {
   DataService
 } from '@/services/data'
 import { ToastService } from '@/services/buefy'
+import i18n from '../../plugins/i18n'
 
 export default {
   namespaced: true,
@@ -146,7 +147,7 @@ export default {
     putTable({ dispatch }, { idTable, data }) {
       return TableService.putTable(idTable, data).then(() => {
         dispatch('getDatabase').then(
-          ToastService.open('Tabelul a fost actualizat')
+          ToastService.open(i18n.t('tableUpdated'))
         )
       })
     },
@@ -154,7 +155,7 @@ export default {
     patchTable({ dispatch }, { idTable, data }) {
       return TableService.patchTable(idTable, data).then(() => {
         return dispatch('getDatabase').then(
-          ToastService.open('Tabelul a fost actualizat')
+          ToastService.open(i18n.t('tableUpdate'))
         )
       })
     },
@@ -162,7 +163,7 @@ export default {
     postTable({ dispatch }, data) {
       return TableService.postTable(data).then(response => {
         dispatch('getDatabase').then(() => {
-          ToastService.open('Tabelul a fost creat cu success.')
+          ToastService.open(i18n.t('tableCreated'))
         })
 
         return response
@@ -172,7 +173,7 @@ export default {
     deleteTable({ dispatch }, idTable) {
       return TableService.deleteTable(idTable).then(() => {
         dispatch('getDatabase').then(
-          ToastService.open('Tabelul a fost șters.')
+          ToastService.open(i18n.t('tableDeleted'))
         )
       })
     },
@@ -180,7 +181,7 @@ export default {
     deleteEntity({ dispatch }, { idTable, idEntity, query }) {
       return TableService.deleteEntity(idTable, idEntity).then(() => {
         dispatch('getTableEntries', { idTable, query }).then(() => {
-          ToastService.open('Intrarea a fost ștearsă')
+          ToastService.open(i18n.t('entryDeleted'))
         })
       })
     },
@@ -236,7 +237,7 @@ export default {
     patchTableView({ dispatch }, { idTable, data }) {
       return TableViewService.patchTableView(idTable, data).then(() => {
         dispatch('getTableView', idTable)
-        ToastService.open('The view has been updated')
+        ToastService.open(i18n.t('viewUpdated'))
       })
     },
 
@@ -251,7 +252,7 @@ export default {
     deleteTableView({ dispatch }, idTable) {
       return TableViewService.deleteTableView(idTable).then(() => {
         dispatch('getTableViews', { query: null }).then(() => {
-          ToastService.open('The view has been deleted')
+          ToastService.open(i18n.t('viewDeleted'))
         })
       })
     },
@@ -274,7 +275,7 @@ export default {
     createChart({ dispatch }, id) {
       return ChartService.createChart(id).then(response => {
         return dispatch('getCharts').then(() => {
-          ToastService.open('The chart has been created')
+          ToastService.open(i18n.t('chartCreated'))
           return response
         })
       })
@@ -283,7 +284,7 @@ export default {
     patchChart({ dispatch }, { id, data }) {
       return ChartService.patchChart(id, data).then(() => {
         dispatch('getCharts').then(() => {
-          ToastService.open('The chart property has been changed')
+          ToastService.open(i18n.t('chartPropertyChanged'))
         })
       })
     },
@@ -291,7 +292,7 @@ export default {
     updateChart({ dispatch }, { id, data }) {
       return ChartService.updateChart(id, data).then(response => {
         return dispatch('getCharts').then(() => {
-          ToastService.open('The chart has been updated')
+          ToastService.open(i18n.t('chartUpdated'))
           return response
         })
       })
@@ -300,7 +301,7 @@ export default {
     deleteChart({ dispatch }, id) {
       return ChartService.deleteChart(id).then(() => {
         dispatch('getCharts').then(
-          ToastService.open('The chart has been deleted')
+          ToastService.open(i18n.t('chartDeleted'))
         )
       })
     },
@@ -324,7 +325,7 @@ export default {
     createCard({ dispatch }, id) {
       return DataService.post('cards', id).then(response => {
         return dispatch('getCards').then(() => {
-          ToastService.open('The card has been created')
+          ToastService.open(i18n.t('cardCreated'))
           return response
         })
       })
@@ -333,7 +334,7 @@ export default {
     patchCard({ dispatch }, { id, data }) {
       return DataService.patch('cards', id, data).then(() => {
         dispatch('getCards').then(() => {
-          ToastService.open('The card property has been changed')
+          ToastService.open(i18n.t('cardPropertyChanged'))
         })
       })
     },
@@ -341,7 +342,7 @@ export default {
     updateCard({ dispatch }, { id, data }) {
       return DataService.put('cards', id, data).then(response => {
         return dispatch('getCards').then(() => {
-          ToastService.open('The chart has been updated')
+          ToastService.open(i18n.t('cardUpdated'))
           return response
         })
       })
@@ -350,7 +351,7 @@ export default {
     deleteCard({ dispatch }, id) {
       return DataService.delete('cards', id).then(() => {
         dispatch('getCards').then(
-          ToastService.open('The chart has been deleted')
+          ToastService.open(i18n.t('cardDeleted'))
         )
       })
     },
@@ -366,7 +367,7 @@ export default {
     deleteUser({ dispatch }, id) {
       return DataService.delete('users', id).then(() => {
         dispatch('getUsers').then(() => {
-          ToastService.open('The user has been deleted')
+          ToastService.open(i18n.t('userDeleted'))
         })
       })
     },

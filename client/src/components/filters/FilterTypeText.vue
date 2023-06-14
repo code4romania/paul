@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VField label="Enter value" v-bind="{ rules }">
+    <VField :label="$t('enterValue')" v-bind="{ rules }">
       <b-input
         v-model="innerValue.values[0]"
         @input="$emit('input', innerValue)"

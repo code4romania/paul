@@ -3,13 +3,13 @@
     <div class="is-size-6">
       <b-input
         v-model="search"
-        placeholder="Search"
+        :placeholder="$t('search')"
         icon-right="close"
         icon-right-clickable
         @icon-right-click="search = null"
       />
-      <a @click.prevent="selectAll">Select all</a> |
-      <a @click.prevent="selectNone">Select none</a>
+      <a @click.prevent="selectAll">{{ $t('selectAll') }}</a> |
+      <a @click.prevent="selectNone">{{ $t('selectNone') }}</a>
     </div>
 
     <div class="checkbox-list is-4">

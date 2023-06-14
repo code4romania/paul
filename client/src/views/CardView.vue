@@ -9,7 +9,7 @@
       filterMode
     />
 
-    <BaseCard :title="`$t('card') — ${card.name}`">
+    <BaseCard :title="`${$t('card')} — ${card.name}`">
       <template #actions>
         <div class="buttons">
           <router-link

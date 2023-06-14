@@ -1,9 +1,9 @@
 <template>
   <div v-if="taskOptions">
-    <BaseTitle :title="`$t('taskEditor')`" />
+    <BaseTitle :title="$t('taskEditor')" />
 
     <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-      <BaseCard title="$t('taskSettings')"
+      <BaseCard :title="$t('taskSettings')"
         ><template #footer>
           <b-button class="is-primary" @click="passes(save)">
             {{ $t('saveChanges') }}

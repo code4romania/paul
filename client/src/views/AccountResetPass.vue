@@ -14,7 +14,7 @@
 
         <VField
           rules="required|confirmed:new_password"
-          label="$t('confirmPasswordLabel')"
+          :label="$t('confirmPasswordLabel')"
         >
           <b-input type="password" v-model="re_new_password"
         /></VField>
