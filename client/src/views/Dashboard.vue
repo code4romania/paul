@@ -62,7 +62,7 @@
 
 <script>
 import { FilterQuery } from '@/utils/helpers'
-import { DataService } from '@/services/data'
+import { DataService, SearchService } from '@/services/data'
 import { mapState } from 'vuex'
 import BaseCardChart from '@/components/charts/BaseCardChart'
 
@@ -71,6 +71,7 @@ export default {
   components: { BaseCardChart },
   data() {
     return {
+      searchTerm: '',
       cards: [],
       fields: {
         charts: [
@@ -157,8 +158,11 @@ export default {
       })
     },
     submitSearch() {
-      // TODO
-      console.log("");
+      SearchService.searchEntries({
+        query: this.searchTerm
+      }).then(response => {
+        console.log(response)
+      })
     }
   }
 }

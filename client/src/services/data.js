@@ -109,7 +109,7 @@ const ImportService = {
 }
 
 const SearchService = {
-  searchEntries(id, query) {
+  searchEntries(query) {
     // TODO
     console.log("SearchService")
     const queryString = query != null ? '?' + QueryString(query) : ''
