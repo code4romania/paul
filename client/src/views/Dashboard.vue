@@ -46,14 +46,15 @@
               </VField>
             </div>
             <div class="column is-6">
+              <br>
+              <b-button class="is-primary" @click="passes(submitSearch)">
+                  {{ $t('search') }}
+              </b-button>
             </div>
           </div>
         </div>
-        <template #footer>
-          <b-button class="is-primary" @click="passes(submitSearch)">
-              {{ $t('search') }}
-          </b-button>
-        </template>
+
+        <BaseTable :data="searchResults" :fields="fields.results" />
       </BaseCard>
     </ValidationObserver>
 
@@ -72,6 +73,7 @@ export default {
   data() {
     return {
       searchTerm: '',
+      searchResults: null,
       cards: [],
       fields: {
         charts: [
@@ -133,6 +135,20 @@ export default {
             sortable: false,
             sticky: true
           }
+        ],
+        results: [
+          {
+            name: 'context',
+            display_name: 'Context'
+          },
+          {
+            name: 'actions',
+            display_name: 'Actions',
+            // component: 'ActionsTableView',
+            custom_class: 'actions',
+            sortable: false,
+            sticky: true
+          }
         ]
       }
     }
@@ -161,7 +177,16 @@ export default {
       SearchService.searchEntries({
         query: this.searchTerm
       }).then(response => {
-        console.log(response)
+        let results = []
+        for (const item of response.results) {
+          results.push({
+            data: {
+              context: JSON.stringify(item.data)
+            }
+          })
+        }
+        this.searchResults = results
+        console.log(this.searchResults)
       })
     }
   }
