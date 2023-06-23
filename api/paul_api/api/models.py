@@ -395,6 +395,26 @@ class FilterJoinTable(models.Model):
         )
 
 
+class TableLink(models.Model):
+    entry = models.ForeignKey(
+        Entry, null=False, on_delete=models.CASCADE,
+        verbose_name=_("entry"))
+    entry_field = models.ForeignKey(
+        TableColumn, null=False, on_delete=models.CASCADE,
+        related_name="+",
+        verbose_name=_("entry field"))
+    target_field = models.ForeignKey(
+        TableColumn, null=False, on_delete=models.CASCADE,
+        related_name="+",
+        verbose_name=_("target field"))
+    created_on = models.DateTimeField(
+        auto_now_add=timezone.now, editable=False,
+        verbose_name=_("created on"))
+
+    class Meta:
+        pass
+
+
 class Filter(models.Model):
     """
     Description: Model Description

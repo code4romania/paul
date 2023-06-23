@@ -11,6 +11,7 @@
       icon="square-edit-outline"
       :path="{ name: 'entity-edit', params: { idTable, idEntity: props.id } }"
     />
+    <!-- TODO: user_permissions doesn't exist when displaying LinkedTables -->
 
     <ActionButtonDelete
       :dialogTitle="$t('entryDeleteTitle')"

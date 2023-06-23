@@ -1514,3 +1514,8 @@ class CardViewSet(viewsets.ModelViewSet):
         card = self.get_object()
         data = utils.get_card_data(request, card, card.table)
         return Response(data)
+
+
+class TableLinkViewSet(viewsets.ModelViewSet):
+    queryset = models.TableLink.objects.order_by('pk').all()
+    serializer_class = serializers.tablelinks.TableLinkSerializer

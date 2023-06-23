@@ -6,6 +6,7 @@ from . import (
     users,
     databases,
     tables,
+    tablelinks,
     filters,
     entries,
     charts,
