@@ -108,12 +108,11 @@ const ImportService = {
   }
 }
 
+
 const SearchService = {
   searchEntries(query) {
-    // TODO
-    console.log("SearchService")
     const queryString = query != null ? '?' + QueryString(query) : ''
-    return ApiService.get(`entries/search/${queryString}`)
+    return ApiService.get(`tables/search/${queryString}`)
   }
 }
 

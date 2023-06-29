@@ -53,6 +53,7 @@ import ActionsCharts from './ActionsCharts'
 import ActionsDatabaseArchived from './ActionsDatabaseArchived'
 import ActionsDatabaseActive from './ActionsDatabaseActive'
 import ActionsTableView from './ActionsTableView'
+import ActionsTableSearch from './ActionsTableSearch'
 import ActionsTable from './ActionsTable'
 
 import FieldOwnerLink from './FieldOwnerLink'
@@ -69,6 +70,7 @@ export default {
     ActionsDatabaseArchived,
     ActionsDatabaseActive,
     ActionsTableView,
+    ActionsTableSearch,
     ActionsTable,
     FieldOwnerLink,
     FieldTagList,

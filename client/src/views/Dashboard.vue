@@ -42,7 +42,7 @@
           <div class="columns">
             <div class="column is-6">
               <VField :label="$t('searchTermLabel')" rules="required">
-                <b-input v-model="searchTerm" />
+                <b-input v-model="searchInput" />
               </VField>
             </div>
             <div class="column is-6">
@@ -54,7 +54,16 @@
           </div>
         </div>
 
-        <BaseTable :data="searchResults" :fields="fields.results" />
+        <BaseCard v-for="searchTable in searchTables" :title="searchTable.name" :key="'searchResults'+searchTable.id">
+          <!-- <div>{{ searchTableResults[searchTable.id] }}</div> -->
+          <BaseTableAsync
+            :table="searchTable"
+            :tableEntries="searchTableResults[searchTable.id] || {}"
+            @update="updateTableEntries(searchTable.id)"
+            tableActionsComponent="ActionsTableSearch"
+          />
+        </BaseCard>
+
       </BaseCard>
     </ValidationObserver>
 
@@ -63,7 +72,7 @@
 
 <script>
 import { FilterQuery } from '@/utils/helpers'
-import { DataService, SearchService } from '@/services/data'
+import { DataService, SearchService, TableService } from '@/services/data'
 import { mapState } from 'vuex'
 import BaseCardChart from '@/components/charts/BaseCardChart'
 
@@ -72,8 +81,12 @@ export default {
   components: { BaseCardChart },
   data() {
     return {
+      searchInput: '',
       searchTerm: '',
-      searchResults: null,
+      searchTables: [],
+      searchTableIds: [],
+      searchTableResults: {},
+      searchFilterMode: false,
       cards: [],
       fields: {
         charts: [
@@ -173,20 +186,41 @@ export default {
         })
       })
     },
+    updateTableEntries(tableId) {
+      TableService.getEntries(tableId, {search: this.searchTerm}).then(response => {
+        this.searchTableResults[tableId] = response
+      })
+    },
     submitSearch() {
+      this.searchTables = []
+      this.searchTableIds = []
+      this.searchTableResults = {}
+      this.searchTerm = this.searchInput
+
       SearchService.searchEntries({
         query: this.searchTerm
       }).then(response => {
-        let results = []
-        for (const item of response.results) {
-          results.push({
-            data: {
-              context: JSON.stringify(item.data)
-            }
-          })
+        let resultTableIds = []
+        for (const item of response) {
+          resultTableIds.push(item.table)
         }
-        this.searchResults = results
-        console.log(this.searchResults)
+        this.searchTableIds = resultTableIds
+
+        let resultTables = []
+        // let results = {}
+        this.searchTableIds.forEach(tableId => {
+          TableService.getTable(tableId).then(response => {
+            resultTables.push(response)
+          })
+          // TableService.getEntries(tableId, {search: this.searchTerm}).then(response => {
+          //   results[tableId] = response
+          // })
+          this.updateTableEntries(tableId)
+        })
+        // this.searchTableResults = results
+        // console.log('Search table results', this.searchTableResults)
+        this.searchTables = resultTables
+        console.log('Search tables', this.searchTables)
       })
     }
   }

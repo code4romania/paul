@@ -104,6 +104,7 @@ import ActionsPlugin from './ActionsPlugin'
 import ActionsTable from './ActionsTable'
 import ActionsTableEntity from './ActionsTableEntity'
 import ActionsTableView from './ActionsTableView'
+import ActionsTableSearch from './ActionsTableSearch'
 import ActionsUser from './ActionsUser'
 
 import FieldCheckbox from './FieldCheckbox'
@@ -132,6 +133,7 @@ export default {
     ActionsTable,
     ActionsTableEntity,
     ActionsTableView,
+    ActionsTableSearch,
     ActionsUser,
 
     FieldCronInfo,
