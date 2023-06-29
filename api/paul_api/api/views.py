@@ -5,7 +5,7 @@ from datetime import datetime
 from django.core.paginator import Paginator
 from django.contrib.auth.models import Group, User
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
@@ -176,6 +176,8 @@ class TableViewSet(viewsets.ModelViewSet):
         base_permissions = super(self.__class__, self).get_permissions()
         if self.action in ["csv_export", "xlsx_export"]:
             base_permissions = (TableCustomActionPermissions(),)
+        elif self.action in ["search"]:
+            base_permissions = ()
         return base_permissions
 
     def create(self, request):
@@ -279,6 +281,27 @@ class TableViewSet(viewsets.ModelViewSet):
             "id": contact_table_id
         }
         return Response(response_data)
+
+    @action(
+        detail=False,
+        methods=["get"],
+        name=_("Find tables containing text"),
+        url_path="search",
+    )
+    def search(self, request):
+        needle = request.GET.get("query").strip()
+        tables = models.Table.objects.all()
+        table_ids = []
+        for table in tables:
+            # TODO: check table view permissions
+            table_ids.append(table.id)
+
+        queryset = models.Entry.objects.filter(
+            table__id__in=table_ids, data__icontains=needle
+        ).all().values("table").annotate(total=Count("table")).order_by("table")
+
+        serializer = serializers.tables.TableSearchCountSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(
         detail=True,
@@ -1046,78 +1069,6 @@ class FilterViewSet(viewsets.ModelViewSet):
         return response
 
 
-class EntryGlobalViewSet(viewsets.ModelViewSet):
-    queryset = models.Entry.objects.all().order_by("id")
-    pagination_class = EntriesPagination
-    serializer_class = serializers.entries.EntryReadSerializer
-    # filter_backends = (drf_filters.SearchFilter, )
-    # search_fields = ("data", )
-    # # permission_classes = (TableEntryPermissions, )
-
-    # def list(self, request):
-    #     page = self.paginate_queryset(self.queryset)
-
-    #     if page is not None:
-    #         serializer = serializers.entries.EntryReadSerializer(
-    #             page,
-    #             many=True,
-    #             context={"request": request},
-    #         )
-    #         return self.get_paginated_response(serializer.data)
-    #     serializer = serializers.entries.EntryReadSerializer(self.queryset, many=True)
-    #     return Response(serializer.data)
-
-    def list(self, request):
-        return Http404
-
-    def create(self, request):
-        return Http404
-
-    def retrieve(self, request, pk=None):
-        return Http404
-
-    def update(self, request, pk=None):
-        return Http404
-
-    def partial_update(self, request, pk=None):
-        return Http404
-
-    def destroy(self, request, pk=None):
-        return Http404
-
-    @action(
-        detail=False,
-        methods=["get"],
-        url_name="search",
-        url_path="search",
-    )
-    def search(self, request):
-        """ Text search over the entries """
-        
-        needle = request.GET.get("query")
-
-        tables = models.Table.objects.all()
-        table_ids = []
-        for table in tables:
-            # TODO: apply permissions
-            table_ids.append(table.id)
-
-        queryset = models.Entry.objects.filter(
-            table__id__in=table_ids, data__icontains=needle).order_by("id")
-        page = self.paginate_queryset(queryset)
-
-        if page is not None:
-            serializer = serializers.entries.EntryReadSerializer(
-                page,
-                many=True,
-                context={"request": request},
-            )
-            return self.get_paginated_response(serializer.data)
-
-        serializer = serializers.entries.EntryReadSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
 class EntryViewSet(viewsets.ModelViewSet):
     pagination_class = EntriesPagination
     serializer_class = serializers.entries.EntrySerializer
@@ -1133,6 +1084,7 @@ class EntryViewSet(viewsets.ModelViewSet):
 
         str_fields = request.GET.get("__fields", "") if request else None
         str_order = request.GET.get("__order", "") if request else None
+        str_search = request.GET.get("search", "").strip() if request else None
         table_fields = {x.name: x.field_type for x in table.fields.all().order_by("id")}
         default_fields = {x.name: x for x in table.default_fields.all().order_by("id")}
 
@@ -1157,6 +1109,10 @@ class EntryViewSet(viewsets.ModelViewSet):
         else:
             queryset = table.entries.filter(filter_dict).order_by("id")
             # queryset = table.entries.annotate(date_field=Cast(KeyTextTransform('data_iesire', "data"), DateField())).filter(date_field__exact='2020-07-21').order_by("id")
+
+        # simple text search over the entire data field
+        if str_search:
+            queryset = queryset.filter(data__icontains=str_search)
 
         page = self.paginate_queryset(queryset)
 

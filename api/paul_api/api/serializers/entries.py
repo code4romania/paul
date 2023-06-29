@@ -54,20 +54,6 @@ class EntryDataSerializer(serializers.ModelSerializer):
                     self.fields[field_name] = MappedField(source="data.{}".format(field_name), required=False)
 
 
-class EntryReadSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Entry
-        fields = ["url", "id", "table", "date_created", "data"]
-
-    def get_url(self, obj):
-        return self.context["request"].build_absolute_uri(
-            reverse(
-                "table-entries-detail",
-                kwargs={"pk": obj.pk, "table_pk": obj.table.pk},
-            )
-        )
-
-
 class EntrySerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     data = serializers.SerializerMethodField()

@@ -235,3 +235,7 @@ class TableSerializer(serializers.ModelSerializer):
             table_permissions.append("")
         return table_permissions
 
+
+class TableSearchCountSerializer(serializers.Serializer):
+    table = serializers.IntegerField()
+    total = serializers.IntegerField()

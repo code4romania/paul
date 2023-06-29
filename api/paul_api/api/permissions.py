@@ -105,9 +105,9 @@ class TableCustomActionPermissions(IsAuthenticatedOrGetToken):
         checker = ObjectPermissionChecker(user)
         user_perms = checker.get_perms(table)
         
-        READ_ACTIONS = ['csv_export', 'xlsx_export']
+        READ_ACTIONS = ["csv_export", "xlsx_export", "search"]
 
-        if view.action in READ_ACTIONS and 'view_table' in user_perms:
+        if view.action in READ_ACTIONS and "view_table" in user_perms:
             return True
 
         return False
