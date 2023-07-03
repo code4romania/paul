@@ -36,13 +36,13 @@
       <BaseTable :data="user.dashboard.filters" :fields="fields.tableViews" />
     </BaseCard>
 
-    <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
-      <BaseCard :title="$t('searchRecords')">
+    <BaseCard :title="$t('searchRecords')">
+      <ValidationObserver v-slot="{ passes }" @submit.prevent slim>
         <div class="card-container">
           <div class="columns">
             <div class="column is-6">
               <VField :label="$t('searchTermLabel')" rules="required">
-                <b-input v-model="searchInput" />
+                <b-input v-model.lazy="searchInput" />
               </VField>
             </div>
             <div class="column is-6">
@@ -53,19 +53,19 @@
             </div>
           </div>
         </div>
+      </ValidationObserver>
 
-        <BaseCard v-for="searchTable in searchTables" :title="searchTable.name" :key="'searchResults'+searchTable.id">
-          <!-- <div>{{ searchTableResults[searchTable.id] }}</div> -->
-          <BaseTableAsync
-            :table="searchTable"
-            :tableEntries="searchTableResults[searchTable.id] || {}"
-            @update="updateTableEntries(searchTable.id)"
-            tableActionsComponent="ActionsTableSearch"
-          />
-        </BaseCard>
-
+      <BaseCard v-for="searchTable in searchTables" :title="searchTable.name" :key="'searchResultCard'+searchTable.id">
+        <BaseTableAsync
+          :key="'searchResultTable'+searchTable.id"
+          :table="searchTable"
+          :tableEntries="searchTableResults[searchTable.id] || {}"
+          @update="updateTableEntries(searchTable.id)"
+          tableActionsComponent="ActionsTableSearch"
+        />
       </BaseCard>
-    </ValidationObserver>
+
+    </BaseCard>
 
 </div>
 </template>
@@ -188,7 +188,7 @@ export default {
     },
     updateTableEntries(tableId) {
       TableService.getEntries(tableId, {search: this.searchTerm}).then(response => {
-        this.searchTableResults[tableId] = response
+        this.$set(this.searchTableResults, tableId, response)
       })
     },
     submitSearch() {
@@ -207,20 +207,13 @@ export default {
         this.searchTableIds = resultTableIds
 
         let resultTables = []
-        // let results = {}
         this.searchTableIds.forEach(tableId => {
           TableService.getTable(tableId).then(response => {
             resultTables.push(response)
           })
-          // TableService.getEntries(tableId, {search: this.searchTerm}).then(response => {
-          //   results[tableId] = response
-          // })
           this.updateTableEntries(tableId)
         })
-        // this.searchTableResults = results
-        // console.log('Search table results', this.searchTableResults)
         this.searchTables = resultTables
-        console.log('Search tables', this.searchTables)
       })
     }
   }
