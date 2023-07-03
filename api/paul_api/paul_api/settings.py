@@ -247,7 +247,7 @@ USE_TZ = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 LANGUAGES = [
-    ("ro", _("Romanian")),
+    ("ro", _("Română")),
     ("en", _("English")),
 ]
 

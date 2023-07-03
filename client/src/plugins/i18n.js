@@ -157,7 +157,7 @@ const messages = {
         findOutMore: 'Find out more.',
         firstAndLastNameLabel: 'Name and surname',
         firstName: 'Name',
-        forgotPassword: 'Did your forgot your password?',
+        forgotPassword: 'Did you forget your password?',
         forgotPasswordInsertEmail: 'Enter the e-mail address and you will receive a message with the instructions.',
         forgotPasswordInstructionsConfirmation: 'You will receive an e-mail with a password reset link. If you dont find it, please check "spam" folder.',
         forgotPasswordSendInstructions: 'Send the instructions',
@@ -625,8 +625,9 @@ const messages = {
 
 
 const i18n = new VueI18n({
-    locale: 'ro',
-    fallbackLocale: 'en',
+    locale: navigator.language.split('-')[0],
+    // locale: process.env.LANGUAGE_CODE,
+    fallbackLocale: 'ro',
     messages,
 })
 
