@@ -178,6 +178,7 @@ export default {
   methods: {
     addColumn() {
       this.fields.push({
+        original_name: null,
         display_name: null,
         field_type: null,
         field_format: null

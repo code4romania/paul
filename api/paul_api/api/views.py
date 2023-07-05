@@ -208,7 +208,7 @@ class TableViewSet(viewsets.ModelViewSet):
             )
             csv_field_map = models.CsvFieldMap.objects.create(
                 table=table,
-                original_name=field["original_name"],
+                original_name=field["original_name"] or field["display_name"],
                 display_name=field["display_name"],
                 field_type=field["field_type"],
                 field_format=field["field_format"],
