@@ -94,7 +94,7 @@ def import_csv(reader, table, csv_import=None):
                     field_name = snake_case(field.display_name)
                     field_type = field.field_type
                 try:
-                    if row[key]:
+                    if (key in row) and row[key]:
                         if field_type == "int":
                             entry_dict[field_name] = int(row[key])
                         elif field_type == "float":
