@@ -123,6 +123,7 @@ class UserView(APIView):
         response = {
             "username": user.username,
             "id": user.id,
+            "language": userprofile.language,
             "dashboard": dashboard,
             "is_admin": admin_group in user.groups.all(),
             "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None

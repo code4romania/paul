@@ -59,7 +59,11 @@ export default {
     user: state => state.user
   }),
   mounted() {
-    this.$store.dispatch('getActiveUser')
+    this.$store.dispatch('getActiveUser').then(() => {
+      if (this.user.language) {
+        this.$i18n.locale = this.user.language
+      }
+    })
   },
   methods: {
     logout() {

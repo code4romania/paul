@@ -77,6 +77,11 @@
                     </b-upload>
                   </div>
                 </VField>
+
+                <VField :label="$t('languageLabel')" rules="required">
+                  <b-input v-model="userModel.language" />
+                </VField>
+
               </fieldset>
             </div>
           </div>
@@ -219,13 +224,18 @@ export default {
         formData.append('first_name', this.userModel.first_name)
         formData.append('last_name', this.userModel.last_name)
         formData.append('email', this.userModel.email)
+        formData.append('language', this.userModel.language)
 
         UserService.putUser(this.userModel.id, formData)
           .then(response => {
             this.loading.profile = false
             ToastService.open(this.$t('userProfileUpdated'))
             this.userModel.avatar = response.avatar
-            this.$store.dispatch('getActiveUser')
+            this.$store.dispatch('getActiveUser').then(() => {
+              if (this.user.language) {
+                this.$i18n.locale = this.user.language
+              }
+            })
           })
           .catch(() => {
             this.loading.profile = false

@@ -171,6 +171,9 @@ export default {
   }),
   mounted() {
     this.$store.dispatch('getActiveUser').then(() => {
+      if (this.user.language) {
+        this.$i18n.locale = this.user.language
+      }
       this.getCards()
     })
   },
