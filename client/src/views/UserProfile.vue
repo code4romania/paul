@@ -78,8 +78,15 @@
                   </div>
                 </VField>
 
-                <VField :label="$t('languageLabel')" rules="required">
-                  <b-input v-model="userModel.language" />
+                <VField :label="$t('languageLabel')">
+                  <b-select v-model="userModel.language">
+                    <option
+                      v-for="(option, key) in languageOptions"
+                      :key="key"
+                      :value="option.value"
+                      v-text="option.text"
+                    />
+                  </b-select>
                 </VField>
 
               </fieldset>
@@ -145,6 +152,11 @@ export default {
         file: null,
         tables_permissions: []
       },
+      languageOptions: [
+        {value: '', text: ''},
+        {value: 'ro', text: 'RO'},
+        {value: 'en', text: 'EN'},
+      ],
       permissions: UserService.getRights(),
       loading: {
         profile: false,
@@ -167,7 +179,7 @@ export default {
   },
   mounted() {
     this.getUser()
-    console.log(this.permissions)
+    // console.log(this.permissions)
   },
   methods: {
     getUser() {
