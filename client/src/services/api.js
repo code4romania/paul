@@ -52,12 +52,26 @@ const ApiService = {
 
   getPath(path, appendToken) {
     const newPath = axios.defaults.baseURL.slice(-1) == '/' ? path : '/' + path
-    // console.log(appendToken)
+    
+    // No token must be appended
+    if (!appendToken) {
+      return axios.defaults.baseURL + newPath
+    }
 
+    // The token must be appended, but the path has no query params
+    if (newPath.indexOf("?") < 0) {
+      return (
+        axios.defaults.baseURL +
+        newPath +
+        `?token=${TokenService.getToken()}`
+      )
+    } 
+    
+    // The token must be appended, but the path has some query params
     return (
       axios.defaults.baseURL +
       newPath +
-      (appendToken && `&token=${TokenService.getToken()}`)
+      `&token=${TokenService.getToken()}`
     )
   },
 
