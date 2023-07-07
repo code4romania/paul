@@ -94,7 +94,7 @@ export default {
     exportPath() {
       return ApiService.getPath(
         `csv-imports/${this.idImport}/export-errors/`,
-        true, false
+        true
       )
     }
   }
