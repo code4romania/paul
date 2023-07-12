@@ -8,7 +8,7 @@
       slim
       v-if="table && entity"
     >
-      <BaseCard :title="`{$t('table')} – ${table.name}: ${pageTitle}`">
+      <BaseCard :title="`${$t('table')} – ${table.name}: ${pageTitle}`">
         <div class="card-container card-form">
           <div class="columns is-multiline">
             <div
