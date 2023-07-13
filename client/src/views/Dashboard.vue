@@ -55,15 +55,17 @@
         </div>
       </ValidationObserver>
 
-      <BaseCard v-for="searchTable in searchTables" :title="searchTable.name" :key="'searchResultCard'+searchTable.id">
-        <BaseTableAsync
-          :key="'searchResultTable'+searchTable.id"
-          :table="searchTable"
-          :tableEntries="searchTableResults[searchTable.id] || {}"
-          @update="updateTableEntries(searchTable.id)"
-          tableActionsComponent="ActionsTableSearch"
-        />
-      </BaseCard>
+      <template v-if="searchTables">
+        <BaseCard v-for="searchTable in searchTables" :title="searchTable.name" :key="`searchResultCard${searchTable.id}`">
+          <BaseTableAsync
+            :key="'searchResultTable'+searchTable.id"
+            :table="searchTable"
+            :tableEntries="searchTableResults[searchTable.id] || {}"
+            @update="updateTableEntries(searchTable.id, $event)"
+            tableActionsComponent="ActionsTableSearch"
+          />
+        </BaseCard>
+      </template>
 
     </BaseCard>
 
@@ -189,8 +191,15 @@ export default {
         })
       })
     },
-    updateTableEntries(tableId) {
-      TableService.getEntries(tableId, {search: this.searchTerm}).then(response => {
+    updateTableEntries(tableId, queryPagination) {
+      let query = {}
+      if (queryPagination) {
+        query = {search: this.searchTerm, page: queryPagination.page}
+      } else {
+        query = {search: this.searchTerm}
+      }
+
+      TableService.getEntries(tableId, query).then(response => {
         this.$set(this.searchTableResults, tableId, response)
       })
     },

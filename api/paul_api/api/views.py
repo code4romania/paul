@@ -299,7 +299,7 @@ class TableViewSet(viewsets.ModelViewSet):
 
         queryset = models.Entry.objects.filter(
             table__id__in=table_ids, data__icontains=needle
-        ).all().values("table").annotate(total=Count("table")).order_by("table")
+        ).all().values("table").annotate(count=Count("table")).order_by("table")
 
         serializer = serializers.tables.TableSearchCountSerializer(queryset, many=True)
         return Response(serializer.data)

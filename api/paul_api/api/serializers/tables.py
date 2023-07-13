@@ -238,4 +238,4 @@ class TableSerializer(serializers.ModelSerializer):
 
 class TableSearchCountSerializer(serializers.Serializer):
     table = serializers.IntegerField()
-    total = serializers.IntegerField()
+    count = serializers.IntegerField()
