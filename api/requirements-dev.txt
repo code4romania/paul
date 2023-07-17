@@ -18,13 +18,13 @@ azure-storage-blob==12.13.1
     # via
     #   -r requirements.txt
     #   django-storages
-black==23.3.0
+black==23.7.0
     # via -r requirements-dev.in
 blessed==1.20.0
     # via -r requirements.txt
-boto3==1.26.135
+boto3==1.28.3
     # via -r requirements.txt
-botocore==1.29.135
+botocore==1.31.3
     # via
     #   -r requirements.txt
     #   boto3
@@ -57,7 +57,7 @@ coreschema==0.0.4
     # via
     #   -r requirements.txt
     #   coreapi
-croniter==1.3.14
+croniter==1.3.15
     # via -r requirements.txt
 cryptography==37.0.4
     # via
@@ -69,7 +69,7 @@ defusedxml==0.7.1
     #   -r requirements.txt
     #   python3-openid
     #   social-auth-core
-django==4.2.1
+django==4.2.3
     # via
     #   -r requirements.txt
     #   django-cors-headers
@@ -83,11 +83,11 @@ django==4.2.1
     #   djangorestframework-guardian2
     #   djangorestframework-simplejwt
     #   drf-nested-routers
-django-cors-headers==4.0.0
+django-cors-headers==4.2.0
     # via -r requirements.txt
 django-environ==0.10.0
     # via -r requirements.txt
-django-filter==2.4.0
+django-filter==23.2
     # via -r requirements.txt
 django-guardian==2.4.0
     # via
@@ -97,7 +97,7 @@ django-picklefield==3.1
     # via
     #   -r requirements.txt
     #   django-q2
-django-q2==1.5.3
+django-q2==1.5.4
     # via -r requirements.txt
 django-rest-framework-tricks==0.2.14
     # via -r requirements.txt
@@ -130,9 +130,9 @@ et-xmlfile==1.1.0
     # via
     #   -r requirements.txt
     #   openpyxl
-faker==18.9.0
+faker==19.1.0
     # via -r requirements.txt
-gevent==22.10.2
+gevent==23.7.0
     # via -r requirements.txt
 greenlet==2.0.2
     # via
@@ -167,9 +167,9 @@ jmespath==1.0.1
     #   -r requirements.txt
     #   boto3
     #   botocore
-mailchimp3==3.0.18
+mailchimp3==3.0.21
     # via -r requirements.txt
-markupsafe==2.1.1
+markupsafe==2.1.3
     # via
     #   -r requirements.txt
     #   jinja2
@@ -194,9 +194,9 @@ pathspec==0.9.0
     # via black
 pep517==0.13.0
     # via build
-pillow==9.5.0
+pillow==10.0.0
     # via -r requirements.txt
-pip-tools==6.13.0
+pip-tools==7.0.0
     # via -r requirements-dev.in
 platformdirs==2.5.2
     # via black
@@ -234,7 +234,7 @@ pytz==2022.1
     #   djangorestframework
 pyyaml==6.0
     # via -r requirements.txt
-requests==2.30.0
+requests==2.31.0
     # via
     #   -r requirements.txt
     #   azure-core
@@ -256,7 +256,7 @@ sendgrid==6.9.7
     # via
     #   -r requirements.txt
     #   django-sendgrid-v5
-sentry-sdk==1.19.1
+sentry-sdk==1.28.1
     # via -r requirements.txt
 six==1.16.0
     # via
@@ -302,7 +302,7 @@ wcwidth==0.2.5
     #   blessed
 wheel==0.37.1
     # via pip-tools
-whitenoise==6.4.0
+whitenoise==6.5.0
     # via -r requirements.txt
 zope-event==4.5.0
     # via
