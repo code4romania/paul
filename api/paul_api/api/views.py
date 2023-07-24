@@ -201,11 +201,9 @@ class TableViewSet(viewsets.ModelViewSet):
         csv_import = models.CsvImport.objects.get(pk=csv_import_pk)
 
         for field in fields:
-            table_column, _ = models.TableColumn.objects.get_or_create(
+            table_column = models.TableColumn.objects.get(
                 table=table,
                 name=utils.snake_case(field["display_name"]),
-                display_name=field["display_name"],
-                field_type=field["field_type"],
             )
             csv_field_map = models.CsvFieldMap.objects.create(
                 table=table,
@@ -215,6 +213,7 @@ class TableViewSet(viewsets.ModelViewSet):
                 field_format=field["field_format"],
                 table_column=table_column
             )
+            table_column.field_type = field["field_type"]
             table_column.required = field.get('required', False)
             table_column.unique = field.get('unique', False)
             table_column.save()
