@@ -9,6 +9,7 @@ from django.db.models import Q, Count
 from django.http import HttpResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django_filters import rest_framework as filters
+from guardian.core import ObjectPermissionChecker
 from guardian.shortcuts import get_objects_for_user
 from openpyxl import Workbook
 from rest_framework import filters as drf_filters
@@ -292,9 +293,12 @@ class TableViewSet(viewsets.ModelViewSet):
         needle = request.GET.get("query").strip()
         tables = models.Table.objects.all()
         table_ids = []
+
+        # Only search in tables for which the user has view permissions
+        checker = ObjectPermissionChecker(request.user)
         for table in tables:
-            # TODO: check table view permissions
-            table_ids.append(table.id)
+            if 'view_table' in checker.get_perms(table):
+                table_ids.append(table.id)
 
         queryset = models.Entry.objects.filter(
             table__id__in=table_ids, data__icontains=needle
