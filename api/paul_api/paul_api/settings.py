@@ -57,10 +57,12 @@ env = environ.Env(
     SENTRY_DSN=(str, ""),
     SENTRY_ENVIRONMENT=(str, ""),
     SENTRY_TRACES_SAMPLE_RATE=(float, 0.0),
-    BACKGROUND_WORKERS=(int, 3),
     ADMIN_SITE_TITLE=(str, "PAUL Admin"),
     ADMIN_SITE_HEADER=(str, "PAUL"),
     MAILCHIMP_KEY=(str, ""),
+    # django-q2 settings
+    BACKGROUND_WORKERS=(int, 3),
+    WORKER_TIMEOUT=(int, 20 * 60),  # All tasks must finish in less than 20 minutes
 )
 environ.Env.read_env(f"{root}/.env")  # reading .env file
 
@@ -196,10 +198,10 @@ Q_CLUSTER = {
     "name": "paul",
     "workers": env("BACKGROUND_WORKERS"),
     "recycle": 100,
-    "timeout": 300,  # All tasks must finish in less than 5 minutes
-    "retry": 600,  # Retry unfinished tasks after 10 minutes
+    "timeout": env("WORKER_TIMEOUT"),
+    "retry": env("WORKER_TIMEOUT") + 120,  # Retry unfinished tasks after 2 more minutes
     "ack_failures": True,
-    "max_attempts": 3,
+    "max_attempts": 2,
     "compress": True,
     "save_limit": 200,
     "queue_limit": 4,

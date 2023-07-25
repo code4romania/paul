@@ -54,12 +54,12 @@ def create_mailchimp_tables(audiences_name: str="") -> int:
     get_or_create_table(mc_settings.audiences_stats_table_name, 'audiences_stats')
     get_or_create_table(mc_settings.audience_segments_table_name, 'audience_segments')
     get_or_create_table(mc_settings.audience_tags_table_name, 'audience_tags')
-    
+
     contact_table = get_or_create_table(
         audiences_name, 'contact_merge_fields', 'audience_members')
     contact_table.table_type = Table.TYPE_CONTACTS
     contact_table.save()
-    
+
     get_or_create_table(
         mc_settings.segment_members_table_name, 'contact_merge_fields', 'segment_members')
 
@@ -67,7 +67,7 @@ def create_mailchimp_tables(audiences_name: str="") -> int:
 
 
 def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
-    
+
     if not len(table_rulesets):
         raise ValueError(_("No table rulesets provided"))
 
@@ -87,7 +87,7 @@ def get_or_create_table(table_name: str, *table_rulesets: str) -> Table:
         # Combine all required table definitions into a single one
         mappings = [table_fields.TABLE_MAPPING[ruleset] for ruleset in table_rulesets]
         table_fields_defs = functools.reduce(operator.ior, mappings, {})
-        
+
         for field_name, field_details in table_fields_defs.items():
             column, created = TableColumn.objects.get_or_create(
                 table=table,
@@ -214,7 +214,7 @@ def retrieve_lists_data(client: MailChimp):
                     'audience_id': mlist['id'],
                     'audience_name': mlist['name']
                     })
-        
+
         for field in audiences_stats_table_fields_defs:
             field_def = audiences_stats_table_fields_defs[field]
 
@@ -222,7 +222,7 @@ def retrieve_lists_data(client: MailChimp):
                 field_value = get_field_value(field, field_def, mlist)
             except KeyError:
                 continue
-            
+
             if field_def['type'] == 'date':
                 audience_stats_entry.data[field] = field_value[:10]
             else:
@@ -232,10 +232,11 @@ def retrieve_lists_data(client: MailChimp):
 
         # Sync list segments
         list_segments = client.lists.segments.all(list_id=mlist['id'], get_all=True)
-        segment_members_creation_queue = []
-        segment_members_update_queue = []
 
         for segment in list_segments['segments']:
+            segment_members_creation_queue = []
+            segment_members_update_queue = []
+
             audience_segments_exists = Entry.objects.filter(
                 table=audience_segments_table, data__audience_id=segment['list_id'])
             if audience_segments_exists:
@@ -286,7 +287,7 @@ def retrieve_lists_data(client: MailChimp):
                         })
                 for field in segment_members_and_contact_fields_defs:
                     field_def = segment_members_and_contact_fields_defs[field]
-                    
+
                     try:
                         field_value = get_field_value(field, field_def, member)
                     except KeyError:
@@ -294,7 +295,7 @@ def retrieve_lists_data(client: MailChimp):
 
                     if field_def['type'] == 'enum':
                         table_column = TableColumn.objects.get(table=segment_members_table, name=field)
-                        
+
                         if not table_column.choices:
                             table_column.choices = []
                         if is_list_field(field_def):
@@ -318,16 +319,25 @@ def retrieve_lists_data(client: MailChimp):
                     segment_members_update_queue.append(segment_members_entry)
                 else:
                     segment_members_creation_queue.append(segment_members_entry)
-            
-        Entry.objects.bulk_create(segment_members_creation_queue, batch_size=50)
-        Entry.objects.bulk_update(segment_members_update_queue, ["data"], batch_size=50)
+
+                segment_threshold = 1000
+                if len(segment_members_creation_queue) > segment_threshold:
+                    Entry.objects.bulk_create(segment_members_creation_queue, batch_size=50)
+                    segment_members_creation_queue = []
+                if len(segment_members_update_queue) > segment_threshold:
+                    Entry.objects.bulk_update(segment_members_update_queue, ["data"], batch_size=50)
+                    segment_members_update_queue = []
+
+            Entry.objects.bulk_create(segment_members_creation_queue, batch_size=50)
+            Entry.objects.bulk_update(segment_members_update_queue, ["data"], batch_size=50)
 
         # # Sync list members
         list_members = client.lists.members.all(list_id=mlist['id'], get_all=True)
-        list_members_creation_queue = []
-        list_members_update_queue = []
 
         for member in list_members['members']:
+            list_members_creation_queue = []
+            list_members_update_queue = []
+
             member['audience_name'] = mlist['name']
             audience_members_exists = Entry.objects.filter(
                 table=audience_members_table, data__id=member['id'], data__audience_id=mlist['id'])
@@ -354,7 +364,7 @@ def retrieve_lists_data(client: MailChimp):
                 except Exception as e:
                     print(e)
                     raise e
-                
+
                 if field_def['type'] == 'enum':
                     table_column = TableColumn.objects.get(table=audience_members_table, name=field)
                     if not table_column.choices:
@@ -382,14 +392,22 @@ def retrieve_lists_data(client: MailChimp):
                         audience_members_entry.data[field] = field_value[:10]
                     else:
                         audience_members_entry.data[field] = field_value
-          
+
             if audience_members_exists:
                 list_members_update_queue.append(audience_members_entry)
             else:
                 list_members_creation_queue.append(audience_members_entry)
-        
-        Entry.objects.bulk_create(list_members_creation_queue, batch_size=50)
-        Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
+
+            members_threshold = 1000
+            if len(list_members_creation_queue) > members_threshold:
+                Entry.objects.bulk_create(list_members_creation_queue, batch_size=50)
+                list_members_creation_queue = []
+            if len(list_members_update_queue) > members_threshold:
+                Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
+                list_members_update_queue = []
+
+            Entry.objects.bulk_create(list_members_creation_queue, batch_size=50)
+            Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
 
     return success, stats
 
@@ -441,7 +459,7 @@ def get_emails_from_filtered_view(token, filtered_view):
     while continue_request:  # TODO: get rid of web request
         url = 'http://{}/api/filters/{}/entries/?page={}'.format(
             settings.ALLOWED_HOSTS[0],
-            filtered_view.pk, 
+            filtered_view.pk,
             page
         )
         r = requests.get(url, headers=headers).json()
@@ -484,7 +502,7 @@ def update_table_fields(table: Table, column_model: TableColumn, field_defs: dic
     """
     Update table fields with the new field defs
     """
-    
+
     total_updates = 0
     for field_name, field_details in field_defs.items():
         # First, check if a column with the current name already exists
@@ -503,14 +521,14 @@ def update_table_fields(table: Table, column_model: TableColumn, field_defs: dic
         # If the column does not exist with either the current name or the old name, create it
         if not column:
             column = column_model(table=table)
-        
+
         # Update the column details
         column.name = field_name
         column.display_name = field_details['display_name']
         column.field_type = field_details['type']
         column.save()
         total_updates += 1
-    
+
     return total_updates
 
 
@@ -519,17 +537,17 @@ def update_entry_data_keys(table: Table, entry_model: Entry, field_defs: dict) -
     Update table entry data keys from the old key value to the new key value,
     if the new key doesn't already exist
     """
-    
+
     total_updates = 0
     entry_update_queue = []
     entries = entry_model.objects.filter(table=table)
-    
+
     key_mapping = {}
     for field_name, field_details in field_defs.items():
         old_key = field_details.get('old_key')
         if old_key:
             key_mapping[old_key] = field_name
-        
+
     # Rename old keys for each table entry
     for entry in entries:
         if not entry.data:
