@@ -334,10 +334,10 @@ def retrieve_lists_data(client: MailChimp):
         # # Sync list members
         list_members = client.lists.members.all(list_id=mlist['id'], get_all=True)
 
-        for member in list_members['members']:
-            list_members_creation_queue = []
-            list_members_update_queue = []
+        list_members_creation_queue = []
+        list_members_update_queue = []
 
+        for member in list_members['members']:
             member['audience_name'] = mlist['name']
             audience_members_exists = Entry.objects.filter(
                 table=audience_members_table, data__id=member['id'], data__audience_id=mlist['id'])
@@ -406,8 +406,8 @@ def retrieve_lists_data(client: MailChimp):
                 Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
                 list_members_update_queue = []
 
-            Entry.objects.bulk_create(list_members_creation_queue, batch_size=50)
-            Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
+        Entry.objects.bulk_create(list_members_creation_queue, batch_size=50)
+        Entry.objects.bulk_update(list_members_update_queue, ["data"], batch_size=50)
 
     return success, stats
 
