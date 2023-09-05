@@ -8,7 +8,7 @@ COPY ./client .
 RUN npm ci --no-audit --ignore-scripts
 RUN npm run build
 
-FROM python:3.11.4-slim-bullseye as build
+FROM python:3.11.5-slim-bookworm as build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -20,7 +20,7 @@ RUN pip install --upgrade pip setuptools cython
 COPY ./api/requirements.txt .
 RUN pip install --user --no-warn-script-location -r requirements.txt
 
-FROM python:3.11.4-slim-bullseye
+FROM python:3.11.5-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1
 ENV RUN_FEED=no
