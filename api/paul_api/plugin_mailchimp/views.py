@@ -54,7 +54,13 @@ class TaskViewSet(viewsets.ModelViewSet):
             task_name = ""
 
         if task_name:
-            async_task(task_name, request.user.id, task.id)
+            task_result = TaskResult.objects.create(
+                user=request.user,
+                task=task
+            )
+            qtask_id = async_task(
+                task_name, request.user.pk, task.pk, task_result.pk, hook='plugin_mailchimp.tasks.update_result_status')
+
 
         result = {'data': {}}
         return Response(result)

@@ -1,3 +1,4 @@
+import time
 from ast import literal_eval
 
 from django.conf import settings
@@ -155,7 +156,7 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     return task_result.id, task_result.success
 
 
-def run_sync(request_user_id, task_id):
+def run_sync(request_user_id, task_id, task_result_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
@@ -172,33 +173,40 @@ def run_sync(request_user_id, task_id):
     if not user:
         user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
-    task_result = TaskResult.objects.create(
-        user=user,
-        task=task
-    )
+    try:
+        task_result = TaskResult.objects.get(pk=task_result_id)
+    except TaskResult.DoesNotExist:
+        task_result = None
 
     try:
+        print("Starting my task")  # TODO: remove this
         success, stats = utils.retrieve_lists_data(MailChimp(settings.MAILCHIMP_KEY))
-        task_result.success = success
-        task_result.stats = stats
-        task_result.status = TaskResult.FINISHED
+        time.sleep(600)  # TODO: remove this
+        if task_result:
+            task_result.success = success
+            task_result.stats = stats
+            task_result.status = TaskResult.FINISHED
     except Exception as e:
-        task_result.success = False
-        task_result.status = TaskResult.FINISHED
-        task_result.stats = {
-            'details': [str(e)]
-        }
+        if task_result:
+            task_result.success = False
+            task_result.status = TaskResult.FINISHED
+            task_result.stats = {
+                'details': [_("Backend error:") + " " + str(e)]
+            }
 
     stats_details = []
-    if task_result.success:
-        for table, table_stats in task_result.stats.items():
-            for k, v in table_stats.items():
-                stats_details.append(_('<b>{}</b> {} in <b>{}</b>').format(v, k, table))
-        task_result.stats['details'] = stats_details
-    task_result.date_end = timezone.now()
-    task_result.duration = task_result.date_end - task_result.date_start
-    task_result.save()
-    return task_result.id, task_result.success
+    if task_result:
+        if task_result.success:
+            for table, table_stats in task_result.stats.items():
+                for k, v in table_stats.items():
+                    stats_details.append(_('<b>{}</b> {} in <b>{}</b>').format(v, k, table))
+            task_result.stats['details'] = stats_details
+        task_result.date_end = timezone.now()
+        task_result.duration = task_result.date_end - task_result.date_start
+        task_result.save()
+        return task_result.id, task_result.success
+    
+    return 0, False
 
 
 def run_segmentation(request_user_id, task_id):
@@ -272,3 +280,7 @@ def run_segmentation(request_user_id, task_id):
     task_result.save()
 
     return task_result.id, task_result.success
+
+
+def update_result_status(qtask):
+    print("TODO: Updating result for task", qtask)
