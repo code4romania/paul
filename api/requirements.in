@@ -1,6 +1,6 @@
-django~=4.2.3
+django==4.2.6
 
-django-q2~=1.5.4
+django-q2==1.5.5
 blessed~=1.20.0  # optional requirement for django-q2
 psutil~=5.9.5  # optional requirement for django-q2
 croniter~=1.3.15  # optional requirement for django-q2
@@ -12,7 +12,6 @@ django-filter~=23.2.0  #??
 django-guardian~=2.4.0  #??
 # django-jazzmin>~=2.6  # for deletion
 django-sendgrid-v5~=1.2.2
-django-storages~=1.13.2
 django-storages[azure]~=1.13.2
 djoser~=2.1.0
 
@@ -29,7 +28,7 @@ gunicorn~=20.1.0
 inflection~=0.5.1
 # ipython~=8.13  # for deletion
 mailchimp3~=3.0.21
-pillow~=10.0.0
+pillow==10.0.1
 psycopg2-binary~=2.9.6
 pyYAML~=6.0.0
 requests~=2.31.0

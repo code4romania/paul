@@ -16,7 +16,7 @@ services:
       - ./api/paul_api:/opt/paul_api/
     restart: on-failure
     ports:
-      - 8080:80
+      - ${PAUL_API_PORT:-8080}:80
     depends_on:
       - paul-db
 
@@ -24,7 +24,7 @@ services:
     hostname: paul-db
     image: postgres:12
     ports:
-      - 5434:5432
+      - ${PAUL_DB_PORT:-5434}:5432
     env_file:
       - .env
     volumes:

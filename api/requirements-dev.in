@@ -1,4 +1,7 @@
-pip-tools~=7.0.0
-black~=23.7.0
+# tool for managing python dependencies
+pip-tools==7.3.0
+
+# code formatter
+black==23.9.1
 
 -r requirements.txt
