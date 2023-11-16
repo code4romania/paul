@@ -50,7 +50,7 @@ class EntryDataSerializer(serializers.ModelSerializer):
             for field_name in fields:
                 MappedField = DATATYPE_SERIALIZERS[table_fields[field_name].field_type]
 
-                if args[0].data and field_name in args[0].data.keys() and args[0].data[field_name] != '':
+                if args[0].data and field_name in args[0].data.keys() and args[0].data[field_name] != "":
                     self.fields[field_name] = MappedField(source="data.{}".format(field_name), required=False)
 
 
@@ -97,11 +97,7 @@ class EntrySerializer(serializers.ModelSerializer):
                     if field_value not in field.choices:
                         errors[field_name] = _(
                             "{field_name}: {field_value} is not a valid choice ({valid_choices})"
-                        ).format(
-                            field_name=field_name,
-                            field_value=field_value, 
-                            valid_choices=",".join(field.choices)
-                        )
+                        ).format(field_name=field_name, field_value=field_value, valid_choices=",".join(field.choices))
 
         if errors:
             raise serializers.ValidationError(errors)
@@ -121,7 +117,7 @@ class EntrySerializer(serializers.ModelSerializer):
 
     def _set_field_types_and_uniqueness(self, table, data, entry_pk=0):
         fields = {x.name: x for x in table.fields.all()}
-        unique_fields = [x.name for x in table.fields.all() if x.unique==True]
+        unique_fields = [x.name for x in table.fields.all() if x.unique == True]
 
         if unique_fields and settings.USE_COMPOUND_CONSTRAINT:
             data_query = {}
@@ -130,43 +126,45 @@ class EntrySerializer(serializers.ModelSerializer):
                     data_query[field] = data.get(field, None)
             if Entry.objects.filter(table=table, data__contains=data_query).exclude(pk=entry_pk).exists():
                 if len(unique_fields) > 1:
-                    msg = _(
-                        "The {unique_field_names} fields must be unique together"
-                    ).format(unique_field_names=', '.join(unique_fields))
+                    msg = _("The {unique_field_names} fields must be unique together").format(
+                        unique_field_names=", ".join(unique_fields)
+                    )
                 else:
-                    msg = _(
-                        "The {unique_field_name} field must be unique in table"
-                    ).format(unique_field_name=unique_fields[0])
+                    msg = _("The {unique_field_name} field must be unique in table").format(
+                        unique_field_name=unique_fields[0]
+                    )
                 raise serializers.ValidationError(msg)
         elif unique_fields:
             duplicates = []
             for field in unique_fields:
-                if Entry.objects.exclude(pk=entry_pk).filter(table=table, data__contains={field: data.get(field, None)}).exists():
+                if (
+                    Entry.objects.exclude(pk=entry_pk)
+                    .filter(table=table, data__contains={field: data.get(field, None)})
+                    .exists()
+                ):
                     duplicates.append(field)
             if duplicates:
                 if len(duplicates) > 1:
-                    msg = _(
-                        "The {unique_field_names} fields must be unique in table"
-                    ).format(unique_field_names=', '.join(duplicates))
+                    msg = _("The {unique_field_names} fields must be unique in table").format(
+                        unique_field_names=", ".join(duplicates)
+                    )
                 else:
-                    msg = _(
-                        "The {unique_field_name} field must be unique in table"
-                    ).format(unique_field_name=duplicates[0])
-                raise serializers.ValidationError(msg)                
+                    msg = _("The {unique_field_name} field must be unique in table").format(
+                        unique_field_name=duplicates[0]
+                    )
+                raise serializers.ValidationError(msg)
 
         for field, field_obj in fields.items():
             value = data.get(field, None)
             if field_obj.required:
                 if not value or value == "":
-                    raise serializers.ValidationError(
-                        _("The {field_name} field is required").format(field_name=field)
-                    )
+                    raise serializers.ValidationError(_("The {field_name} field is required").format(field_name=field))
             if field_obj.field_type == "enum":
                 if value and value not in field_obj.choices:
                     raise serializers.ValidationError(
-                        _(
-                            "The {field_name} field value must be one of: {field_choices}"
-                        ).format(field_names=field, field_choices=", ".join(field_obj.choices))
+                        _("The {field_name} field value must be one of: {field_choices}").format(
+                            field_names=field, field_choices=", ".join(field_obj.choices)
+                        )
                     )
             elif value and field_obj.field_type == "float":
                 data[field] = float(data[field])
@@ -179,7 +177,7 @@ class EntrySerializer(serializers.ModelSerializer):
         table = self.context["table"]
         validated_data["data"] = self.initial_data
         validated_data["table"] = table
-        data = self._set_field_types_and_uniqueness(table, validated_data["data"])        
+        data = self._set_field_types_and_uniqueness(table, validated_data["data"])
         instance = Entry.objects.create(table=table, data=data)
         instance.clean_fields()
         instance.save()

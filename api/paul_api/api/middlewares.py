@@ -21,7 +21,8 @@ class SqlPrintMiddleware:
             sqltime += float(query["time"])
 
         # len(connection.queries) = total number of queries
-        print(_("Page render: {sqltime:.2f} sec for {num} queries").format(
-            sqltime=sqltime, num=len(connection.queries)))
+        print(
+            _("Page render: {sqltime:.2f} sec for {num} queries").format(sqltime=sqltime, num=len(connection.queries))
+        )
 
         return response

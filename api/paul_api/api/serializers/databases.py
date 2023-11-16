@@ -59,27 +59,27 @@ class DatabaseSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
     def get_active_tables(self, obj):
-        user = self.context['request'].user
+        user = self.context["request"].user
         checker = ObjectPermissionChecker(user)
 
         tables = obj.active_tables()
         queryset = []
         for table in tables:
             user_perms = checker.get_perms(table)
-            if 'view_table' in user_perms:
+            if "view_table" in user_perms:
                 queryset.append(table)
         serializer = DatabaseTableListSerializer(queryset, many=True, read_only=True, context=self.context)
         return serializer.data
 
     def get_archived_tables(self, obj):
-        user = self.context['request'].user
+        user = self.context["request"].user
         checker = ObjectPermissionChecker(user)
 
         tables = obj.archived_tables()
         queryset = []
         for table in tables:
             user_perms = checker.get_perms(table)
-            if 'view_table' in user_perms:
+            if "view_table" in user_perms:
                 queryset.append(table)
         serializer = DatabaseTableListSerializer(queryset, many=True, read_only=True, context=self.context)
         return serializer.data

@@ -24,7 +24,7 @@ from rest_framework_tricks.filters import OrderingFilter
 
 from api import models, serializers, utils
 from api.permissions import (
-    BaseModelPermissions, 
+    BaseModelPermissions,
     TableEntryPermissions,
     TableCustomActionPermissions,
     IsAuthenticatedOrGetToken,
@@ -51,7 +51,7 @@ class EntriesPagination(PageNumberPagination):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.order_by('pk').all()
+    queryset = User.objects.order_by("pk").all()
     serializer_class = serializers.users.UserListSerializer
     pagination_class = EntriesPagination
 
@@ -60,32 +60,26 @@ class UserViewSet(viewsets.ModelViewSet):
             return serializers.users.UserCreateSerializer
         elif self.action == "retrieve":
             return serializers.users.UserDetailSerializer
-        elif self.action in ["update","partial_update"]:
+        elif self.action in ["update", "partial_update"]:
             return serializers.users.UserUpdateSerializer
         return serializers.users.UserListSerializer
 
     def get_queryset(self):
         user = self.request.user
-        ordering = self.request.GET.get('__order', 'pk')
+        ordering = self.request.GET.get("__order", "pk")
 
-        if 'admin' in user.groups.values_list('name', flat=True):
+        if "admin" in user.groups.values_list("name", flat=True):
             return User.objects.order_by(ordering).all()
-        return User.objects.filter(pk=user.pk).order_by('pk')
+        return User.objects.filter(pk=user.pk).order_by("pk")
 
-    @action(
-        detail=True,
-        methods=["get"],
-        name=_("Toggle user activation"),
-        url_path="toggle-activation"
-    )
+    @action(detail=True, methods=["get"], name=_("Toggle user activation"), url_path="toggle-activation")
     def toggle_activation(self, request, pk):
         request_user = request.user
         user = self.get_object()
-        if 'admin' in request_user.groups.values_list('name', flat=True):
+        if "admin" in request_user.groups.values_list("name", flat=True):
             user.is_active = not user.is_active
             user.save()
-        response = serializers.users.UserDetailSerializer(
-            user, context={'request': request})
+        response = serializers.users.UserDetailSerializer(user, context={"request": request})
         return Response(response.data)
 
 
@@ -106,19 +100,20 @@ class UserView(APIView):
         user = request.user
         userprofile, _ = models.Userprofile.objects.get_or_create(user=user)
         profile_cards = [card.card for card in userprofile.dashboard_cards.all()]
-        admin_group = Group.objects.get(name='admin')
+        admin_group = Group.objects.get(name="admin")
 
-        cards_serializer = serializers.cards.ListSerializer(
-            profile_cards, many=True, context={'request': request})
+        cards_serializer = serializers.cards.ListSerializer(profile_cards, many=True, context={"request": request})
         charts_serializer = serializers.charts.ListSerializer(
-            userprofile.dashboard_charts.all(), many=True, context={'request': request})
+            userprofile.dashboard_charts.all(), many=True, context={"request": request}
+        )
         filters_serializer = serializers.filters.FilterListSerializer(
-            userprofile.dashboard_filters.all(), many=True, context={'request': request})
+            userprofile.dashboard_filters.all(), many=True, context={"request": request}
+        )
 
         dashboard = {
             "cards": cards_serializer.data,
             "charts": charts_serializer.data,
-            "filters": filters_serializer.data
+            "filters": filters_serializer.data,
         }
 
         response = {
@@ -127,13 +122,13 @@ class UserView(APIView):
             "language": userprofile.language,
             "dashboard": dashboard,
             "is_admin": admin_group in user.groups.all(),
-            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None
+            "avatar": request.build_absolute_uri(userprofile.avatar.url) if userprofile.avatar else None,
         }
         return Response(response)
 
 
 class DatabaseViewSet(viewsets.ModelViewSet):
-    queryset = models.Database.objects.order_by('id').all()
+    queryset = models.Database.objects.order_by("id").all()
     serializer_class = serializers.databases.DatabaseSerializer
 
 
@@ -212,14 +207,14 @@ class TableViewSet(viewsets.ModelViewSet):
                 display_name=field["display_name"],
                 field_type=field["field_type"],
                 field_format=field["field_format"],
-                table_column=table_column
+                table_column=table_column,
             )
             table_column.field_type = field["field_type"]
-            table_column.required = field.get('required', False)
-            table_column.unique = field.get('unique', False)
+            table_column.required = field.get("required", False)
+            table_column.unique = field.get("unique", False)
             table_column.save()
-            csv_field_map.required = field.get('required', False)
-            csv_field_map.unique = field.get('unique', False)
+            csv_field_map.required = field.get("required", False)
+            csv_field_map.unique = field.get("unique", False)
             csv_field_map.save()
 
         try:
@@ -235,7 +230,9 @@ class TableViewSet(viewsets.ModelViewSet):
         else:
             reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
-        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(reader, table)
+        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(
+            reader, table
+        )
         csv_import.errors = errors
         csv_import.errors_count = errors_count
         csv_import.import_count_created = import_count_created
@@ -266,21 +263,22 @@ class TableViewSet(viewsets.ModelViewSet):
         except IndexError:
             pass
         else:
-            return Response({
-                "detail": _("A contacts table already exists: {}").format(existing_table.name)
-            }, status=status.HTTP_409_CONFLICT)
+            return Response(
+                {"detail": _("A contacts table already exists: {}").format(existing_table.name)},
+                status=status.HTTP_409_CONFLICT,
+            )
 
         if not settings.PLUGIN_MAILCHIMP_ENABLED:
-            return Response({
-                "detail": _("The Mailchimp plugin is not enabled for this installation.")
-            }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response(
+                {"detail": _("The Mailchimp plugin is not enabled for this installation.")},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
 
         from plugin_mailchimp import utils as mailchimp_utils
+
         name = request.data.get("name", "").strip()
         contact_table_id = mailchimp_utils.create_mailchimp_tables(name)
-        response_data = {
-            "id": contact_table_id
-        }
+        response_data = {"id": contact_table_id}
         return Response(response_data)
 
     @action(
@@ -297,12 +295,16 @@ class TableViewSet(viewsets.ModelViewSet):
         # Only search in tables for which the user has view permissions
         checker = ObjectPermissionChecker(request.user)
         for table in tables:
-            if 'view_table' in checker.get_perms(table):
+            if "view_table" in checker.get_perms(table):
                 table_ids.append(table.id)
 
-        queryset = models.Entry.objects.filter(
-            table__id__in=table_ids, data__icontains=needle
-        ).all().values("table").annotate(count=Count("table")).order_by("table")
+        queryset = (
+            models.Entry.objects.filter(table__id__in=table_ids, data__icontains=needle)
+            .all()
+            .values("table")
+            .annotate(count=Count("table"))
+            .order_by("table")
+        )
 
         serializer = serializers.tables.TableSearchCountSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -321,20 +323,16 @@ class TableViewSet(viewsets.ModelViewSet):
         csv_import = models.CsvImport.objects.get(pk=csv_import_pk)
 
         for field in fields:
-            csv_field_map= models.CsvFieldMap.objects.get(
-                csv_import=csv_import,
-                original_name=field["original_name"]
-            )
-            csv_field_map.field_format=field["field_format"]
-            csv_field_map.unique=field["unique"]
+            csv_field_map = models.CsvFieldMap.objects.get(csv_import=csv_import, original_name=field["original_name"])
+            csv_field_map.field_format = field["field_format"]
+            csv_field_map.unique = field["unique"]
 
-            csv_field_map.required=field["required"]
+            csv_field_map.required = field["required"]
 
             if field["table_field"]:
-                csv_field_map.table_column_id=field["table_field"]
+                csv_field_map.table_column_id = field["table_field"]
 
             csv_field_map.save()
-
 
         try:
             file_content = csv_import.file.read().decode("utf-8")
@@ -349,8 +347,9 @@ class TableViewSet(viewsets.ModelViewSet):
         else:
             reader = csv.DictReader(decoded_file, skipinitialspace=True, delimiter=csv_import.delimiter)
 
-
-        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(reader, table, csv_import)
+        errors, errors_count, import_count_created, import_count_updated, import_count_skipped = utils.import_csv(
+            reader, table, csv_import
+        )
 
         csv_import.errors = errors
         csv_import.errors_count = errors_count
@@ -397,7 +396,7 @@ class TableViewSet(viewsets.ModelViewSet):
         with open("/tmp/{}".format(file_name), "rb") as csv_export_file:
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        
+
         try:
             os.remove("/tmp/{}".format(file_name))
         except OSError:
@@ -437,9 +436,11 @@ class TableViewSet(viewsets.ModelViewSet):
         wb.save(filename=file_path)
 
         with open(file_path, "rb") as export_file:
-            response = HttpResponse(export_file.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            response = HttpResponse(
+                export_file.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        
+
         try:
             os.remove(file_path)
         except OSError:
@@ -454,12 +455,11 @@ class TableViewSet(viewsets.ModelViewSet):
         url_path="from-filter",
     )
     def create_from_filter(self, request):
-
-        table_name = request.data.get('table_name')
-        filter_id = request.data.get('filter_id')
+        table_name = request.data.get("table_name")
+        filter_id = request.data.get("filter_id")
 
         serializer = serializers.tables.TableCreateSerializer(
-            data={'database': 1, 'name': table_name},
+            data={"database": 1, "name": table_name},
             context={"request": request},
         )
         serializer.is_valid(raise_exception=True)
@@ -475,7 +475,7 @@ class TableViewSet(viewsets.ModelViewSet):
             for field in join_table.fields.all():
                 table_column, _ = models.TableColumn.objects.get_or_create(
                     table=table,
-                    name='{}_{}'.format(table_slug, field.name),
+                    name="{}_{}".format(table_slug, field.name),
                     display_name=field.display_name,
                     field_type=field.field_type,
                     choices=field.choices,
@@ -565,7 +565,6 @@ class TableViewSet(viewsets.ModelViewSet):
         queryset_count = queryset.count()
         paginator = Paginator(queryset, 1000)  # Show 100 objects per page, you can choose any other value
 
-        
         for i in paginator.page_range:  # A 1-based range iterator of page numbers, e.g. yielding [1, 2, 3, 4].
             data = paginator.get_page(i)
             page = data.object_list
@@ -584,9 +583,7 @@ class TableViewSet(viewsets.ModelViewSet):
                 final_entry = {}
                 final_entry_primary_table_values = {}
 
-                entry_primary_table_values = primary_table_values[
-                    entry["data__{}".format(secondary_table_join_field)]
-                ]
+                entry_primary_table_values = primary_table_values[entry["data__{}".format(secondary_table_join_field)]]
 
                 for key in entry:
                     final_entry[key.replace("data__", "{}_".format(secondary_table_slug))] = entry[key]
@@ -599,22 +596,20 @@ class TableViewSet(viewsets.ModelViewSet):
                 entry = models.Entry(table=table, data=final_entry)
                 entries.append(entry)
             models.Entry.objects.bulk_create(entries)
-        response = {
-            'id': table.id
-        }
+        response = {"id": table.id}
         return Response(response)
 
 
 class FilterViewSet(viewsets.ModelViewSet):
-    queryset = models.Filter.objects.order_by('id').all()
+    queryset = models.Filter.objects.order_by("id").all()
     pagination_class = EntriesPagination
     filter_backends = (OrderingFilter,)
 
     ordering_fields = {
-        'name': 'name',
-        'creation_date': 'creation_date',
-        'table': 'table__name',
-        'owner.username': 'owner__username'
+        "name": "name",
+        "creation_date": "creation_date",
+        "table": "table__name",
+        "owner.username": "owner__username",
     }
 
     def get_queryset(self):
@@ -622,16 +617,12 @@ class FilterViewSet(viewsets.ModelViewSet):
         user = self.request.user
         user_view_tables = []
 
-        for table in get_objects_for_user(user, 'api.view_table'):
-            if user.has_perm('view_table', table):
+        for table in get_objects_for_user(user, "api.view_table"):
+            if user.has_perm("view_table", table):
                 user_view_tables.append(table)
-        q = Q(
-                primary_table__table__in=user_view_tables,
-                join_tables__table__in=user_view_tables) | \
-            Q(
-                primary_table__table__in=user_view_tables,
-                join_tables=None
-                )
+        q = Q(primary_table__table__in=user_view_tables, join_tables__table__in=user_view_tables) | Q(
+            primary_table__table__in=user_view_tables, join_tables=None
+        )
         return queryset.filter(q)
 
     def get_serializer_class(self):
@@ -657,7 +648,7 @@ class FilterViewSet(viewsets.ModelViewSet):
         url_path="all",
     )
     def all(self, request):
-        response = serializers.filters.FilterListSerializer(self.queryset, many=True, context={'request': request})
+        response = serializers.filters.FilterListSerializer(self.queryset, many=True, context={"request": request})
         return Response(response.data)
 
     @action(
@@ -675,8 +666,7 @@ class FilterViewSet(viewsets.ModelViewSet):
         else:
             userprofile.dashboard_filters.add(filter)
         userprofile.save()
-        return Response({'filter_in_dashboard': filter in userprofile.dashboard_filters.all()})
-
+        return Response({"filter_in_dashboard": filter in userprofile.dashboard_filters.all()})
 
     @action(methods=["get"], detail=True, url_path="entries", url_name="entries")
     def entries(self, request, pk):
@@ -787,7 +777,9 @@ class FilterViewSet(viewsets.ModelViewSet):
                         final_entry[key.replace("data__", "{}__".format(primary_table_slug))] = entry[key]
                     final_page.append(final_entry)
 
-                serializer = serializers.filters.FilterEntrySerializer(final_page, many=True, context={"fields": fields})
+                serializer = serializers.filters.FilterEntrySerializer(
+                    final_page, many=True, context={"fields": fields}
+                )
                 return self.get_paginated_response(serializer.data)
         # If filter has secondary table
         else:
@@ -803,7 +795,8 @@ class FilterViewSet(viewsets.ModelViewSet):
 
             # filter_dict[secondary_table_slug]["data__{}__in".format(secondary_table_join_field)] = join_values
             filter_dict[secondary_table_slug] = filter_dict[secondary_table_slug] & Q(
-                **{"data__{}__in".format(secondary_table_join_field) :join_values})
+                **{"data__{}__in".format(secondary_table_join_field): join_values}
+            )
             table_order_by = "id"
             if order_table == secondary_table_slug:
                 table_order_by = order_by
@@ -828,7 +821,8 @@ class FilterViewSet(viewsets.ModelViewSet):
                 page_join_values = [x["data__{}".format(secondary_table_join_field)] for x in page]
 
                 filter_dict[primary_table_slug] = filter_dict[primary_table_slug] & Q(
-                    **{"data__{}__in".format(primary_table_join_field): page_join_values})
+                    **{"data__{}__in".format(primary_table_join_field): page_join_values}
+                )
                 # filter_dict[primary_table_slug]["data__{}__in".format(primary_table_join_field)] = page_join_values
                 primary_table_values = {
                     x.data[primary_table_join_field]: {"data__" + key: value for key, value in x.data.items()}
@@ -841,29 +835,33 @@ class FilterViewSet(viewsets.ModelViewSet):
                     final_entry = {}
                     final_entry_primary_table_values = {}
 
-                    entry_primary_table_values = primary_table_values[entry["data__{}".format(secondary_table_join_field)]]
+                    entry_primary_table_values = primary_table_values[
+                        entry["data__{}".format(secondary_table_join_field)]
+                    ]
                     for key in entry:
                         final_entry[key.replace("data__", "{}__".format(secondary_table_slug))] = entry.get(key, None)
-                    final_primary_table_fields = [x.replace('{}__'.format(primary_table_slug), '') for x in fields if not x.startswith('{}_'.format(secondary_table_slug))]
+                    final_primary_table_fields = [
+                        x.replace("{}__".format(primary_table_slug), "")
+                        for x in fields
+                        if not x.startswith("{}_".format(secondary_table_slug))
+                    ]
                     # for key in entry_primary_table_values:
 
                     for key in final_primary_table_fields:
                         final_entry_primary_table_values[
                             "{}__{}".format(primary_table_slug, key)
-                        ] = entry_primary_table_values.get('data__' + key, None)
+                        ] = entry_primary_table_values.get("data__" + key, None)
 
                     final_entry.update(final_entry_primary_table_values)
                     final_page.append(final_entry)
-                serializer = serializers.filters.FilterEntrySerializer(final_page, many=True, context={"fields": fields})
+                serializer = serializers.filters.FilterEntrySerializer(
+                    final_page, many=True, context={"fields": fields}
+                )
                 return self.get_paginated_response(serializer.data)
 
         return Response(serializer.data)
 
-    @action(
-        methods=["get"],
-        detail=True,
-        url_path="csv-export",
-        url_name="csv-export")
+    @action(methods=["get"], detail=True, url_path="csv-export", url_name="csv-export")
     def csv_export(self, request, pk):
         obj = models.Filter.objects.filter(pk=pk).prefetch_related("primary_table", "join_tables")[0]
         str_fields = request.GET.get("__fields", "") if request else None
@@ -986,7 +984,7 @@ class FilterViewSet(viewsets.ModelViewSet):
 
                         for key in entry:
                             final_entry[key.replace("data__", "{}__".format(primary_table_slug))] = entry[key]
-                        
+
                         writer.writerow({k: v for k, v in final_entry.items() if k in fields})
 
         else:
@@ -998,7 +996,8 @@ class FilterViewSet(viewsets.ModelViewSet):
             )
 
             filter_dict[secondary_table_slug] = filter_dict[secondary_table_slug] & Q(
-                **{"data__{}__in".format(secondary_table_join_field): join_values})
+                **{"data__{}__in".format(secondary_table_join_field): join_values}
+            )
             # filter_dict[secondary_table_slug]["data__{}__in".format(secondary_table_join_field)] = join_values
 
             table_order_by = "id"
@@ -1034,7 +1033,8 @@ class FilterViewSet(viewsets.ModelViewSet):
 
                     page_join_values = [x["data__{}".format(secondary_table_join_field)] for x in page]
                     filter_dict[primary_table_slug] = filter_dict[primary_table_slug] & Q(
-                        **{"data__{}__in".format(primary_table_join_field): page_join_values})
+                        **{"data__{}__in".format(primary_table_join_field): page_join_values}
+                    )
                     # filter_dict[primary_table_slug]["data__{}__in".format(primary_table_join_field)] = page_join_values
                     primary_table_values = {
                         x.data[primary_table_join_field]: {"data__" + key: value for key, value in x.data.items()}
@@ -1076,12 +1076,12 @@ class FilterViewSet(viewsets.ModelViewSet):
 class EntryViewSet(viewsets.ModelViewSet):
     pagination_class = EntriesPagination
     serializer_class = serializers.entries.EntrySerializer
-    permission_classes = (TableEntryPermissions, )
-    filter_backends = (drf_filters.SearchFilter, )
-    search_fields = ("data", )
+    permission_classes = (TableEntryPermissions,)
+    filter_backends = (drf_filters.SearchFilter,)
+    search_fields = ("data",)
 
     def get_queryset(self):
-        return models.Entry.objects.order_by('id').filter(table=self.kwargs["table_pk"])
+        return models.Entry.objects.order_by("id").filter(table=self.kwargs["table_pk"])
 
     def list(self, request, table_pk):
         table = models.Table.objects.get(pk=table_pk)
@@ -1101,7 +1101,6 @@ class EntryViewSet(viewsets.ModelViewSet):
                     fields = [x for x in default_fields.keys()]
                 else:
                     fields = [x for x in table_fields.keys()]
-
 
         filter_dict = utils.request_get_to_filter(request.GET, table_fields, Q(), False)
 
@@ -1184,9 +1183,9 @@ class EntryViewSet(viewsets.ModelViewSet):
         url_path="bulk-delete",
     )
     def bulk_delete(self, request, table_pk):
-        """ Bulk delete up to 100 entries from the same table """
-        
-        entry_ids = request.data.get('entries', [])
+        """Bulk delete up to 100 entries from the same table"""
+
+        entry_ids = request.data.get("entries", [])
         if not isinstance(entry_ids, list) or len(entry_ids) > 100:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -1197,7 +1196,7 @@ class EntryViewSet(viewsets.ModelViewSet):
 
 
 class CsvImportViewSet(viewsets.ModelViewSet):
-    queryset = models.CsvImport.objects.order_by('id').all()
+    queryset = models.CsvImport.objects.order_by("id").all()
     # permission_classes = (BaseModelPermissions,)
 
     def get_serializer_class(self):
@@ -1236,12 +1235,12 @@ class CsvImportViewSet(viewsets.ModelViewSet):
             # response = HttpResponse(FileWrapper(csv_export_file), content_type='application/vnd.ms-excel')
             response = HttpResponse(csv_export_file.read(), content_type="application/vnd.ms-excel")
             response["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
-        
+
         try:
             os.remove("/tmp/{}".format(file_name))
         except OSError:
             pass
-        
+
         return response
 
     def create(self, request):
@@ -1262,12 +1261,12 @@ class CsvImportViewSet(viewsets.ModelViewSet):
             except:
                 response = {
                     "success": False,
-                    "error_msg": 'Could not decode file',
+                    "error_msg": "Could not decode file",
                 }
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         decoded_file = file_content.splitlines()
 
-        if delimiter == 'null':
+        if delimiter == "null":
             delimiter = None
         if not delimiter:
             file.seek(0)
@@ -1287,8 +1286,7 @@ class CsvImportViewSet(viewsets.ModelViewSet):
 
             if table_id:
                 if table.csv_field_mapping.all():
-                    field_maps = table.csv_field_mapping.filter(
-                        original_name=field)
+                    field_maps = table.csv_field_mapping.filter(original_name=field)
                     if field_maps:
                         try:
                             existing_table_field = field_maps[0].table_column.pk
@@ -1324,16 +1322,16 @@ class CsvImportViewSet(viewsets.ModelViewSet):
 
 
 class ChartViewSet(viewsets.ModelViewSet):
-    queryset = models.Chart.objects.order_by('id').all()
+    queryset = models.Chart.objects.order_by("id").all()
     pagination_class = EntriesPagination
 
     filter_backends = (OrderingFilter,)
 
     ordering_fields = {
-        'name': 'name',
-        'creation_date': 'creation_date',
-        'table': 'table__name',
-        'owner.username': 'owner__username'
+        "name": "name",
+        "creation_date": "creation_date",
+        "table": "table__name",
+        "owner.username": "owner__username",
     }
 
     def get_queryset(self):
@@ -1341,8 +1339,8 @@ class ChartViewSet(viewsets.ModelViewSet):
         user = self.request.user
         user_view_tables = []
 
-        for table in get_objects_for_user(user, 'api.view_table'):
-            if user.has_perm('view_table', table) or 'admin' in user.groups.values_list('name', flat=True):
+        for table in get_objects_for_user(user, "api.view_table"):
+            if user.has_perm("view_table", table) or "admin" in user.groups.values_list("name", flat=True):
                 user_view_tables.append(table)
         return queryset.filter(table__in=user_view_tables)
 
@@ -1369,8 +1367,7 @@ class ChartViewSet(viewsets.ModelViewSet):
         else:
             userprofile.dashboard_charts.add(chart)
         userprofile.save()
-        return Response(
-            {'chart_in_dashboard': chart in userprofile.dashboard_charts.all()})
+        return Response({"chart_in_dashboard": chart in userprofile.dashboard_charts.all()})
 
     @action(
         detail=True,
@@ -1391,19 +1388,31 @@ class ChartViewSet(viewsets.ModelViewSet):
     )
     def get_preview(self, request):
         chart = models.Chart()
-        table = models.Table.objects.get(pk=request.GET.get('table', None))
-        timeline_field = models.TableColumn.objects.get(pk=int(request.GET.get('timeline_field', None))) if request.GET.get('timeline_field', None) else None
-        x_axis_field = models.TableColumn.objects.get(pk=int(request.GET.get('x_axis_field', None))) if request.GET.get('x_axis_field', None) else None
-        y_axis_field = models.TableColumn.objects.get(pk=int(request.GET.get('y_axis_field', None))) if request.GET.get('y_axis_field', None) else None
+        table = models.Table.objects.get(pk=request.GET.get("table", None))
+        timeline_field = (
+            models.TableColumn.objects.get(pk=int(request.GET.get("timeline_field", None)))
+            if request.GET.get("timeline_field", None)
+            else None
+        )
+        x_axis_field = (
+            models.TableColumn.objects.get(pk=int(request.GET.get("x_axis_field", None)))
+            if request.GET.get("x_axis_field", None)
+            else None
+        )
+        y_axis_field = (
+            models.TableColumn.objects.get(pk=int(request.GET.get("y_axis_field", None)))
+            if request.GET.get("y_axis_field", None)
+            else None
+        )
         chart.table = table
         chart.timeline_field = timeline_field
         chart.x_axis_field = x_axis_field
         chart.y_axis_field = y_axis_field
 
-        chart.chart_type = request.GET.get('chart_type', None)
-        chart.timeline_period = request.GET.get('timeline_period', None)
-        chart.timeline_include_nulls = True if request.GET.get('timeline_include_nulls', None) == 'true' else False
-        chart.y_axis_function = request.GET.get('y_axis_function', None)
+        chart.chart_type = request.GET.get("chart_type", None)
+        chart.timeline_period = request.GET.get("timeline_period", None)
+        chart.timeline_include_nulls = True if request.GET.get("timeline_include_nulls", None) == "true" else False
+        chart.y_axis_function = request.GET.get("y_axis_function", None)
 
         data = utils.get_chart_data(request, chart, table, preview=True)
 
@@ -1411,23 +1420,24 @@ class ChartViewSet(viewsets.ModelViewSet):
 
 
 class CardViewSet(viewsets.ModelViewSet):
-    queryset = models.Card.objects.order_by('id').all()
+    queryset = models.Card.objects.order_by("id").all()
     pagination_class = EntriesPagination
     filter_backends = (OrderingFilter,)
 
     ordering_fields = {
-        'name': 'name',
-        'creation_date': 'creation_date',
-        'table': 'table__name',
-        'owner.username': 'owner__username'
+        "name": "name",
+        "creation_date": "creation_date",
+        "table": "table__name",
+        "owner.username": "owner__username",
     }
+
     def get_queryset(self):
         queryset = self.queryset
         user = self.request.user
         user_view_tables = []
 
-        for table in get_objects_for_user(user, 'api.view_table'):
-            if user.has_perm('view_table', table) or 'admin' in user.groups.values_list('name', flat=True):
+        for table in get_objects_for_user(user, "api.view_table"):
+            if user.has_perm("view_table", table) or "admin" in user.groups.values_list("name", flat=True):
                 user_view_tables.append(table)
         return queryset.filter(table__in=user_view_tables)
 
@@ -1449,10 +1459,7 @@ class CardViewSet(viewsets.ModelViewSet):
         card = self.get_object()
         userprofile = request.user.userprofile
 
-        profile_card, created = models.UserCard.objects.get_or_create(
-            profile=userprofile,
-            card=card
-            )
+        profile_card, created = models.UserCard.objects.get_or_create(profile=userprofile, card=card)
 
         if created:
             profile_card.order = userprofile.cards.count() + 1
@@ -1460,9 +1467,7 @@ class CardViewSet(viewsets.ModelViewSet):
         else:
             profile_card.delete()
 
-        return Response(
-            {'card_in_dashboard': created})
-
+        return Response({"card_in_dashboard": created})
 
     @action(
         detail=True,
@@ -1477,5 +1482,5 @@ class CardViewSet(viewsets.ModelViewSet):
 
 
 class TableLinkViewSet(viewsets.ModelViewSet):
-    queryset = models.TableLink.objects.order_by('pk').all()
+    queryset = models.TableLink.objects.order_by("pk").all()
     serializer_class = serializers.tablelinks.TableLinkSerializer

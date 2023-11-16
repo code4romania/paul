@@ -9,14 +9,15 @@ class BaseModelPermissions(permissions.DjangoObjectPermissions):
     """
     Similar to `DjangoObjectPermissions`, but adding 'view' permissions.
     """
+
     perms_map = {
-        'GET': ['%(app_label)s.view_%(model_name)s'],
-        'OPTIONS': ['%(app_label)s.view_%(model_name)s'],
-        'HEAD': ['%(app_label)s.view_%(model_name)s'],
-        'POST': ['%(app_label)s.add_%(model_name)s'],
-        'PUT': ['%(app_label)s.change_%(model_name)s'],
-        'PATCH': ['%(app_label)s.change_%(model_name)s'],
-        'DELETE': ['%(app_label)s.delete_%(model_name)s'],
+        "GET": ["%(app_label)s.view_%(model_name)s"],
+        "OPTIONS": ["%(app_label)s.view_%(model_name)s"],
+        "HEAD": ["%(app_label)s.view_%(model_name)s"],
+        "POST": ["%(app_label)s.add_%(model_name)s"],
+        "PUT": ["%(app_label)s.change_%(model_name)s"],
+        "PATCH": ["%(app_label)s.change_%(model_name)s"],
+        "DELETE": ["%(app_label)s.delete_%(model_name)s"],
     }
 
 
@@ -42,6 +43,7 @@ class NoPermission(permissions.BasePermission):
     """
     Deny everybody
     """
+
     def has_permission(self, request, view):
         return False
 
@@ -63,13 +65,13 @@ class TableEntryPermissions(IsAuthenticatedOrGetToken):
 
         checker = ObjectPermissionChecker(request.user)
         user_perms = checker.get_perms(table)
-        
-        READ_ACTIONS = ['list', 'retrieve']
-        WRITE_ACTIONS = ['create', 'update', 'partial_update', 'destroy', 'bulk_delete']
 
-        if view.action in READ_ACTIONS and 'view_table' in user_perms:
+        READ_ACTIONS = ["list", "retrieve"]
+        WRITE_ACTIONS = ["create", "update", "partial_update", "destroy", "bulk_delete"]
+
+        if view.action in READ_ACTIONS and "view_table" in user_perms:
             return True
-        elif view.action in WRITE_ACTIONS and 'update_content' in user_perms:
+        elif view.action in WRITE_ACTIONS and "update_content" in user_perms:
             return True
 
         return False
@@ -83,7 +85,6 @@ class TableCustomActionPermissions(IsAuthenticatedOrGetToken):
     """
 
     def has_permission(self, request, view):
-        
         # Check if a valid token or session was provided
         if not super().has_permission(request, view):
             return False
@@ -104,7 +105,7 @@ class TableCustomActionPermissions(IsAuthenticatedOrGetToken):
 
         checker = ObjectPermissionChecker(user)
         user_perms = checker.get_perms(table)
-        
+
         READ_ACTIONS = ["csv_export", "xlsx_export", "search"]
 
         if view.action in READ_ACTIONS and "view_table" in user_perms:

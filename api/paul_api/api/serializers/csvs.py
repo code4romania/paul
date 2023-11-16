@@ -6,8 +6,7 @@ from api import models
 class CsvImportListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CsvImport
-        fields = ["url", "table", "id",
-                  "file", "errors_count", "import_count_created", "import_count_updated"]
+        fields = ["url", "table", "id", "file", "errors_count", "import_count_created", "import_count_updated"]
 
 
 class CsvFieldMapSerializer(serializers.ModelSerializer):
@@ -44,4 +43,4 @@ class CsvImportSerializer(serializers.ModelSerializer):
         ]
 
     def get_filename(self, obj):
-        return obj.file.name.split('/')[-1]
+        return obj.file.name.split("/")[-1]

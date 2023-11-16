@@ -83,14 +83,9 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 USE_S3 = (
-    env.bool("USE_S3")
-    and env("AWS_ACCESS_KEY_ID")
-    and env("AWS_SECRET_ACCESS_KEY")
-    and env("AWS_STORAGE_BUCKET_NAME")
+    env.bool("USE_S3") and env("AWS_ACCESS_KEY_ID") and env("AWS_SECRET_ACCESS_KEY") and env("AWS_STORAGE_BUCKET_NAME")
 )
-USE_AZURE = (
-    env.bool("USE_AZURE") and env("AZURE_ACCOUNT_NAME") and env("AZURE_ACCOUNT_KEY")
-)
+USE_AZURE = env.bool("USE_AZURE") and env("AZURE_ACCOUNT_NAME") and env("AZURE_ACCOUNT_KEY")
 
 
 TASK_DEFAULT_USERNAME = "paul-sync"
@@ -143,7 +138,7 @@ sentry_sdk.init(
         DjangoIntegration(),
     ],
     traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE"),
-    environment=env("SENTRY_ENVIRONMENT")
+    environment=env("SENTRY_ENVIRONMENT"),
 )
 
 SITE_ID = 1
@@ -347,7 +342,7 @@ DJOSER = {
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
     "PERMISSIONS": {
         "user_create": ["api.permissions.NoPermission"],  # Basically disable user creation through Djoser
-    }
+    },
 }
 
 
@@ -379,30 +374,25 @@ ADMIN_SITE_HEADER = env("ADMIN_SITE_HEADER")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-LOGIN_URL='/api/admin/login/'
+LOGIN_URL = "/api/admin/login/"
 
 
 LOGGING = {
-   'version': 1,
-   'disable_existing_loggers': False,
-   'formatters': {
-       'verbose': {
-           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-       },
-   },
-   'handlers': {
-       'console': {
-           'level': 'DEBUG',
-           'class': 'logging.StreamHandler',
-           'stream': sys.stdout,
-           'formatter': 'verbose'
-       },
-   },
-   'loggers': {
-       '': {
-           'handlers': ['console'],
-           'level': 'WARNING',
-           'propagate': True,
-       },
-   },
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {"level": "DEBUG", "class": "logging.StreamHandler", "stream": sys.stdout, "formatter": "verbose"},
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+    },
 }

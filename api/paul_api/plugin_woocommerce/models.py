@@ -67,7 +67,6 @@ class TaskResult(api_models.PluginTaskResult):
 
 @receiver(post_save, sender=TaskResult)
 def update_task_run_date(sender, instance, **kwargs):
-
     created = kwargs.get("created")
     if created:
         task = instance.task

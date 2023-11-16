@@ -6,16 +6,10 @@ from rest_framework import serializers
 from api import utils as api_utils
 from api.serializers.users import OwnerSerializer
 from api.serializers import TaskScheduleSerializer
-from plugin_mailchimp.models import (
-    Settings as MailchimpSettings,
-    Task,
-    SegmentationTask,
-    TaskResult
-)
+from plugin_mailchimp.models import Settings as MailchimpSettings, Task, SegmentationTask, TaskResult
 
 
 class SettingsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = MailchimpSettings
         fields = [
@@ -32,8 +26,7 @@ class SettingsSerializer(serializers.ModelSerializer):
 class TaskListSerializer(serializers.ModelSerializer):
     last_edit_user = OwnerSerializer(read_only=True)
     crontab = serializers.SerializerMethodField()
-    url = serializers.HyperlinkedIdentityField(
-        view_name="plugin_mailchimp:task-detail")
+    url = serializers.HyperlinkedIdentityField(view_name="plugin_mailchimp:task-detail")
 
     class Meta:
         model = Task
@@ -56,7 +49,6 @@ class TaskListSerializer(serializers.ModelSerializer):
 
 
 class SegmentationTaskSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = SegmentationTask
         fields = [
@@ -96,17 +88,14 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def get_task_results(self, obj):
         return self.context["request"].build_absolute_uri(
-            reverse(
-                "plugin_mailchimp:task-results-list",
-                kwargs={"task_pk": obj.pk}))
+            reverse("plugin_mailchimp:task-results-list", kwargs={"task_pk": obj.pk})
+        )
 
 
 class TaskCreateSerializer(serializers.ModelSerializer):
-    last_edit_user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault())
+    last_edit_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_edit_date = serializers.HiddenField(default=timezone.now)
-    segmentation_task = SegmentationTaskSerializer(
-        required=False, allow_null=True)
+    segmentation_task = SegmentationTaskSerializer(required=False, allow_null=True)
     schedule = TaskScheduleSerializer(required=False, allow_null=True)
     schedule_enabled = serializers.BooleanField(required=False, allow_null=True)
 
@@ -130,33 +119,31 @@ class TaskCreateSerializer(serializers.ModelSerializer):
             return bool(value)
 
     def create(self, validated_data):
-        task_type = validated_data['task_type']
-        segment_data = validated_data.pop('segmentation_task')
+        task_type = validated_data["task_type"]
+        segment_data = validated_data.pop("segmentation_task")
         schedule = None
 
-        if validated_data.get('schedule'):
-            schedule = validated_data.pop('schedule')
+        if validated_data.get("schedule"):
+            schedule = validated_data.pop("schedule")
 
         task = Task.objects.create(**validated_data)
 
         if task_type == Task.SEGMENTATION_TASK:
-            segmentation_task = SegmentationTask.objects.create(
-                **segment_data
-            )
+            segmentation_task = SegmentationTask.objects.create(**segment_data)
             task.segmentation_task = segmentation_task
 
-        if schedule and validated_data.get('schedule_enabled'):
+        if schedule and validated_data.get("schedule_enabled"):
             task_args = "{},{}".format(0, task.pk)
 
             if task.task_type == Task.SEGMENTATION_TASK:
-                task_name = 'plugin_mailchimp.tasks.run_segmentation'
+                task_name = "plugin_mailchimp.tasks.run_segmentation"
             elif task.task_type == Task.UPLOAD_TASK:
-                task_name = 'plugin_mailchimp.tasks.run_contacts_to_mailchimp'
+                task_name = "plugin_mailchimp.tasks.run_contacts_to_mailchimp"
             else:
-                task_name = 'plugin_mailchimp.tasks.run_sync'
-                
+                task_name = "plugin_mailchimp.tasks.run_sync"
+
             task_schedule = Schedule.objects.create(
-                name='[Task] {}'.format(task.name),
+                name="[Task] {}".format(task.name),
                 cron=schedule.get("cron"),
                 schedule_type=Schedule.CRON,
                 func=task_name,
@@ -169,25 +156,24 @@ class TaskCreateSerializer(serializers.ModelSerializer):
         return task
 
     def update(self, instance, validated_data):
-        segmentation_task_data = validated_data.pop('segmentation_task')
-        schedule = validated_data.pop('schedule')
+        segmentation_task_data = validated_data.pop("segmentation_task")
+        schedule = validated_data.pop("schedule")
 
-        if validated_data['task_type'] == Task.SEGMENTATION_TASK:
+        if validated_data["task_type"] == Task.SEGMENTATION_TASK:
             segmentation_task = instance.segmentation_task
-            SegmentationTask.objects.filter(
-                pk=segmentation_task.pk).update(**segmentation_task_data)
+            SegmentationTask.objects.filter(pk=segmentation_task.pk).update(**segmentation_task_data)
 
         Task.objects.filter(pk=instance.pk).update(**validated_data)
 
         if validated_data.get("schedule_enabled"):
-            crontab_str = schedule.get('cron', None)
+            crontab_str = schedule.get("cron", None)
 
             if instance.task_type == Task.SEGMENTATION_TASK:
-                task_name = 'plugin_mailchimp.tasks.run_segmentation'
+                task_name = "plugin_mailchimp.tasks.run_segmentation"
             elif instance.task_type == Task.UPLOAD_TASK:
-                task_name = 'plugin_mailchimp.tasks.run_contacts_to_mailchimp'
+                task_name = "plugin_mailchimp.tasks.run_contacts_to_mailchimp"
             else:
-                task_name = 'plugin_mailchimp.tasks.run_sync'
+                task_name = "plugin_mailchimp.tasks.run_sync"
 
             task_args = "{},{}".format(0, instance.pk)
 
@@ -199,7 +185,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
                 task_schedule.save()
             else:
                 task_schedule = Schedule.objects.create(
-                    name='[Task] {}'.format(instance.name),
+                    name="[Task] {}".format(instance.name),
                     cron=crontab_str,
                     schedule_type=Schedule.CRON,
                     func=task_name,
@@ -218,7 +204,7 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
 class TaskResultListSerializer(serializers.ModelSerializer):
     user = OwnerSerializer(read_only=True)
-    task = serializers.ReadOnlyField(source='task.name')
+    task = serializers.ReadOnlyField(source="task.name")
     url = serializers.SerializerMethodField()
     duration = serializers.SerializerMethodField()
 
@@ -247,7 +233,7 @@ class TaskResultListSerializer(serializers.ModelSerializer):
     def get_duration(self, obj):
         if obj.duration:
             return api_utils.pretty_time_delta(obj.duration.seconds)
-        return ''
+        return ""
 
 
 class TaskResultSerializer(serializers.ModelSerializer):

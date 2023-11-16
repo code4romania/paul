@@ -106,16 +106,16 @@ class FilterDetailSerializer(serializers.ModelSerializer):
 
         for field in primary_table.fields.all():
             field_dict = {
-                    "id": field.id,
-                    "table_id": primary_table.id,
-                    "name": "{}__{}".format(primary_table.table.slug, field.name),
-                    "display_name": field.display_name,
-                    "field_type": field.field_type,
-                    "choices": field.choices,
-                    "sortable": False
-                }
+                "id": field.id,
+                "table_id": primary_table.id,
+                "name": "{}__{}".format(primary_table.table.slug, field.name),
+                "display_name": field.display_name,
+                "field_type": field.field_type,
+                "choices": field.choices,
+                "sortable": False,
+            }
             if not obj.join_tables.all():
-                field_dict['sortable'] = True
+                field_dict["sortable"] = True
             fields.append(field_dict)
         if obj.join_tables.all():
             secondary_table = obj.join_tables.all()[0]
@@ -128,7 +128,7 @@ class FilterDetailSerializer(serializers.ModelSerializer):
                         "display_name": field.display_name,
                         "field_type": field.field_type,
                         "choices": field.choices,
-                        "sortable": True
+                        "sortable": True,
                     }
                 )
         return fields
@@ -138,7 +138,7 @@ class FilterDetailSerializer(serializers.ModelSerializer):
         all_fields = []
         if obj.default_fields.all():
             for field in obj.default_fields.all():
-                all_fields.append('{}__{}'.format(field.table.slug, field.name))
+                all_fields.append("{}__{}".format(field.table.slug, field.name))
         else:
             all_fields = [
                 "{}__{}".format(primary_table.table.slug, x.name) for x in primary_table.fields.all().order_by("id")
@@ -146,7 +146,8 @@ class FilterDetailSerializer(serializers.ModelSerializer):
             if obj.join_tables.all():
                 secondary_table = obj.join_tables.all()[0]
                 all_fields += [
-                    "{}__{}".format(secondary_table.table.slug, x.name) for x in secondary_table.fields.all().order_by("id")
+                    "{}__{}".format(secondary_table.table.slug, x.name)
+                    for x in secondary_table.fields.all().order_by("id")
                 ]
         return all_fields
 
@@ -173,7 +174,17 @@ class FilterCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Filter
-        fields = ["id", "name", "owner", "last_edit_user", "last_edit_date", "primary_table", "join_tables", "filters", "default_fields"]
+        fields = [
+            "id",
+            "name",
+            "owner",
+            "last_edit_user",
+            "last_edit_date",
+            "primary_table",
+            "join_tables",
+            "filters",
+            "default_fields",
+        ]
 
     def create(self, validated_data):
         primary_table = validated_data.pop("primary_table")
@@ -198,13 +209,12 @@ class FilterCreateSerializer(serializers.ModelSerializer):
         return new_filter
 
     def update(self, instance, validated_data):
-
         if self.partial:
-            if validated_data.get('filters'):
-                filters = validated_data.pop('filters')
-                models.Filter.objects.filter(pk=instance.pk).update(**{'filters': filters})
-            if validated_data.get('default_fields'):
-                default_fields = validated_data.pop('default_fields')
+            if validated_data.get("filters"):
+                filters = validated_data.pop("filters")
+                models.Filter.objects.filter(pk=instance.pk).update(**{"filters": filters})
+            if validated_data.get("default_fields"):
+                default_fields = validated_data.pop("default_fields")
                 if default_fields:
                     instance.default_fields.set([])
                     for field in default_fields:
@@ -212,7 +222,7 @@ class FilterCreateSerializer(serializers.ModelSerializer):
             instance.refresh_from_db()
         else:
             instance.name = validated_data.get("name")
-            instance.last_edit_user = self.context['request'].user
+            instance.last_edit_user = self.context["request"].user
 
             instance.filters = validated_data.get("filters")
             primary_table_data = validated_data.pop("primary_table")

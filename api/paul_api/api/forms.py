@@ -1,12 +1,10 @@
 from copy import deepcopy
 from datetime import datetime
 
-from django.forms import (BooleanField, CharField, ChoiceField, DateTimeField,
-                          FloatField, IntegerField, ModelForm)
+from django.forms import BooleanField, CharField, ChoiceField, DateTimeField, FloatField, IntegerField, ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from .validators import (validate_bool, validate_date, validate_enum,
-                         validate_float, validate_int, validate_text)
+from .validators import validate_bool, validate_date, validate_enum, validate_float, validate_int, validate_text
 
 
 class BaseDynamicEntityForm(ModelForm):
@@ -96,9 +94,9 @@ class BaseDynamicEntityForm(ModelForm):
         """
         if self.errors:
             raise ValueError(
-                _(
-                    "The {object_name} could not be saved because the data did not validate."
-                ).format(object_name=self.instance._meta.object_name)
+                _("The {object_name} could not be saved because the data did not validate.").format(
+                    object_name=self.instance._meta.object_name
+                )
             )
 
         # Create entity instance, don't save yet.

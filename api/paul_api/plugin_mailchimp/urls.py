@@ -4,7 +4,7 @@ from rest_framework_nested import routers
 from plugin_mailchimp import views
 
 
-app_name = 'plugin_mailchimp'
+app_name = "plugin_mailchimp"
 
 router = routers.DefaultRouter()
 router.register(r"settings", views.SettingsViewSet)

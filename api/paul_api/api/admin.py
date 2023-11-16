@@ -34,8 +34,7 @@ class DatabaseAdmin(admin.ModelAdmin):
 
 class CsvFieldMapInline(admin.TabularInline):
     model = models.CsvFieldMap
-    fields = (
-        "original_name", "display_name", "field_type", "field_format", "table_column")
+    fields = ("original_name", "display_name", "field_type", "field_format", "table_column")
     can_delete = True
     can_add = False
     verbose_name_plural = _("CSV File Fields Map")
@@ -105,7 +104,7 @@ class EntryAdmin(admin.ModelAdmin):
     # readonly_fields = ('table', )
     # form = EntryAdminForm
     list_filter = ("table__name",)
-    search_fields = ['data']
+    search_fields = ["data"]
     # def get_form(self, request, obj=None, **kwargs):
     #     # By passing 'fields', we prevent ModelAdmin.get_form from
     #     # looking up the fields itself by calling self.get_fieldsets()
@@ -181,7 +180,7 @@ class FilterAdmin(admin.ModelAdmin):
         # "join_field",
         "get_join_tables",
         "last_edit_date",
-        "last_edit_user"
+        "last_edit_user",
     )
     list_filter = ()
     search_fields = ()
@@ -202,7 +201,15 @@ class FilterAdmin(admin.ModelAdmin):
 
 @admin.register(models.CsvImport)
 class CsvImportAdmin(admin.ModelAdmin):
-    list_display = ("table", "file", "import_count_created", "import_count_updated", "import_count_skipped", "errors_count", "errors")
+    list_display = (
+        "table",
+        "file",
+        "import_count_created",
+        "import_count_updated",
+        "import_count_skipped",
+        "errors_count",
+        "errors",
+    )
     list_filter = ()
     search_fields = ("table__name",)
     inlines = (CsvFieldMapInline,)

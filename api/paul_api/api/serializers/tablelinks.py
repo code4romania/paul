@@ -8,4 +8,3 @@ class TableLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableLink
         fields = ["entry", "entry_field", "target_field"]
-

@@ -1,10 +1,6 @@
 from django.contrib import admin
 
-from plugin_mailchimp.models import (
-    Settings as MailchimpSettings,
-    Task,
-    TaskResult
-)
+from plugin_mailchimp.models import Settings as MailchimpSettings, Task, TaskResult
 
 
 @admin.register(MailchimpSettings)
@@ -14,7 +10,8 @@ class SettingsAdmin(admin.ModelAdmin):
         "audiences_table_name",
         "audiences_stats_table_name",
         "audience_segments_table_name",
-        "audience_members_table_name")
+        "audience_members_table_name",
+    )
 
 
 @admin.register(TaskResult)

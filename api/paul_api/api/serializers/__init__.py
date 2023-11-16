@@ -2,17 +2,7 @@ from rest_framework import serializers
 
 from django_q.models import Schedule
 
-from . import (
-    users,
-    databases,
-    tables,
-    tablelinks,
-    filters,
-    entries,
-    charts,
-    csvs,
-    cards
-)
+from . import users, databases, tables, tablelinks, filters, entries, charts, csvs, cards
 
 
 class WritableSerializerMethodField(serializers.SerializerMethodField):
@@ -24,9 +14,7 @@ class WritableSerializerMethodField(serializers.SerializerMethodField):
     def get_default(self):
         default = super().get_default()
 
-        return {
-            self.field_name: default
-        }
+        return {self.field_name: default}
 
     def to_internal_value(self, data):
         return {self.field_name: data}
@@ -35,6 +23,4 @@ class WritableSerializerMethodField(serializers.SerializerMethodField):
 class TaskScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = (
-            "cron",
-        )
+        fields = ("cron",)

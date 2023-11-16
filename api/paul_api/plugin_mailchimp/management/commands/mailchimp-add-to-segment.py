@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from pprint import pprint
 
 
-
 from rest_framework.request import Request
 from rest_framework.test import force_authenticate, APIRequestFactory
 
@@ -26,7 +25,7 @@ from rest_framework.authtoken.models import Token
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # print('add to segment mailchimp')
-        url = 'http://api:8000/api/filters/58/'
+        url = "http://api:8000/api/filters/58/"
         # r = requests.get(url)
         # print(r.json())
         print(tasks.run_segmentation(None, 22))

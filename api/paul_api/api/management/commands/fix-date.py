@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         for table in models.Table.objects.all():
             date_fields = []
-            print('---', table)
+            print("---", table)
 
             for field in table.fields.filter(field_type="date"):
                 print(field.name)
@@ -21,5 +21,5 @@ class Command(BaseCommand):
                     try:
                         entry.data[field] = entry.data[field][:10]
                     except:
-                        print('****errr:', entry.data)
+                        print("****errr:", entry.data)
                 entry.save()

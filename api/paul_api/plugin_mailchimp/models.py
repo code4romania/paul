@@ -22,7 +22,9 @@ class Settings(models.Model):
     audiences_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences")
     audiences_stats_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Stats")
     audience_segments_table_name = models.CharField(max_length=255, default="[mailchimp] Audience Segments")
-    audience_members_table_name = models.CharField(max_length=255, default="[mailchimp] Audiences Members")  # TODO: Remove
+    audience_members_table_name = models.CharField(
+        max_length=255, default="[mailchimp] Audiences Members"
+    )  # TODO: Remove
     segment_members_table_name = models.CharField(max_length=255, default="[mailchimp] Segments Members")
     audience_tags_table_name = models.CharField(max_length=255, default="[mailchimp] Audience Tags")
     created_on = models.DateTimeField(blank=True, null=False, editable=False, auto_now_add=timezone.now)
@@ -54,29 +56,25 @@ class Task(models.Model):
     SEGMENTATION_TASK = "segmentation"
     UPLOAD_TASK = "upload"
     TASK_TYPES = (
-        (SYNC_TASK, _("Import data from Mailchimp")), 
+        (SYNC_TASK, _("Import data from Mailchimp")),
         (SEGMENTATION_TASK, _("Send segmentation to Mailchimp")),
         (UPLOAD_TASK, _("Send contacts to Mailchimp (WIP/TODO)")),
     )
 
     name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
-    task_type = models.CharField(
-        max_length=12, choices=TASK_TYPES, db_index=True)  # TODO: limit this field len
+    task_type = models.CharField(max_length=12, choices=TASK_TYPES, db_index=True)  # TODO: limit this field len
 
-    segmentation_task = models.ForeignKey(
-        SegmentationTask, null=True, blank=True, on_delete=models.CASCADE)
-    schedule_enabled = models.BooleanField(
-        default=False, db_index=True)
+    segmentation_task = models.ForeignKey(SegmentationTask, null=True, blank=True, on_delete=models.CASCADE)
+    schedule_enabled = models.BooleanField(default=False, db_index=True)
     schedule = models.ForeignKey(
         Schedule, null=True, blank=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks"
     )
 
     last_edit_date = models.DateTimeField(
-        auto_now=timezone.now, db_index=True)  # TODO: The last edit is wrongly updated on cron too
-    last_run_date = models.DateTimeField(
-        null=True, db_index=True)
-    last_edit_user = models.ForeignKey(
-        User, null=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks")
+        auto_now=timezone.now, db_index=True
+    )  # TODO: The last edit is wrongly updated on cron too
+    last_run_date = models.DateTimeField(null=True, db_index=True)
+    last_edit_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="mailchimp_tasks")
 
     class Meta:
         verbose_name = _("Task")
@@ -100,8 +98,7 @@ class TaskResult(PluginTaskResult):
     Description: Model Description
     """
 
-    task = models.ForeignKey(
-        Task, null=True, blank=True, on_delete=models.CASCADE, related_name="task_results")
+    task = models.ForeignKey(Task, null=True, blank=True, on_delete=models.CASCADE, related_name="task_results")
 
 
 @receiver(post_save, sender=TaskResult)

@@ -39,12 +39,14 @@ class TablesPermissionsMixin:
             else:
                 table_perm_text = _("No permissions")
                 table_perm = ""
-            tables_permissions.append({
-                "name": table.name, 
-                "id": table.id, 
-                "permissions": table_perm,
-                "permissions_text": table_perm_text,
-            })
+            tables_permissions.append(
+                {
+                    "name": table.name,
+                    "id": table.id,
+                    "permissions": table_perm,
+                    "permissions_text": table_perm_text,
+                }
+            )
         return tables_permissions
 
 
@@ -57,21 +59,19 @@ class UserCreateSerializer(serializers.ModelSerializer):
         # Create a new user with the same username as the email
         username = Userprofile.generate_username(validated_data["email"])
         try:
-            new_user = User.objects.create(
-                email=validated_data["email"], 
-                username=username)
+            new_user = User.objects.create(email=validated_data["email"], username=username)
         except IntegrityError:
             raise serializers.ValidationError(
-                _("An account with the {username} username already exists").format(username=username))
+                _("An account with the {username} username already exists").format(username=username)
+            )
 
         Userprofile.objects.create(user=new_user)
         user_group, created = _get_or_create_user_group()
         new_user.groups.add(user_group)
-        
+
         # Send the initial password reset
         request = self.context.get("request")
-        djsettings.EMAIL.password_reset(
-            request, {"user": new_user, "initial": True}).send([validated_data["email"]])
+        djsettings.EMAIL.password_reset(request, {"user": new_user, "initial": True}).send([validated_data["email"]])
 
         return new_user
 
@@ -83,8 +83,7 @@ class UserUpdateSerializer(TablesPermissionsMixin, serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            "email", "language", "avatar", "first_name", "last_name", "tables_permissions"]
+        fields = ["email", "language", "avatar", "first_name", "last_name", "tables_permissions"]
 
     def partial_update(self, request, *args, **kwargs):
         return Response(1)
@@ -120,9 +119,8 @@ class UserUpdateSerializer(TablesPermissionsMixin, serializers.ModelSerializer):
             duplicate_username = False
             with transaction.atomic():
                 # Update the username to match the email address
-                if User.objects.filter(
-                    username__iexact=username).exclude(pk=instance.pk).count():
-                        duplicate_username = True
+                if User.objects.filter(username__iexact=username).exclude(pk=instance.pk).count():
+                    duplicate_username = True
                 else:
                     validated_data["username"] = username
 
@@ -134,10 +132,11 @@ class UserUpdateSerializer(TablesPermissionsMixin, serializers.ModelSerializer):
                         profile.language = userprofile_data.get("language", "")
                         profile.save()
                     User.objects.filter(pk=instance.pk).update(**validated_data)
-            
+
             if duplicate_username:
                 raise serializers.ValidationError(
-                    _("An account with the {username} username already exists").format(username=username))
+                    _("An account with the {username} username already exists").format(username=username)
+                )
 
         instance.refresh_from_db()
         return instance
@@ -151,9 +150,17 @@ class UserDetailSerializer(AvatarMixin, TablesPermissionsMixin, serializers.Mode
     class Meta:
         model = User
         fields = [
-            "url", "id", "username", "email", "is_active",
-            "language", "avatar", "first_name", "last_name",
-            "tables_permissions"]
+            "url",
+            "id",
+            "username",
+            "email",
+            "is_active",
+            "language",
+            "avatar",
+            "first_name",
+            "last_name",
+            "tables_permissions",
+        ]
 
 
 class UserListDataSerializer(AvatarMixin, serializers.ModelSerializer):
@@ -177,12 +184,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            "url",
-            "id",
-            "is_active",
-            "data"
-        ]
+        fields = ["url", "id", "is_active", "data"]
 
     def get_data(self, obj):
         serializer = UserListDataSerializer(obj, context=self.context)

@@ -43,8 +43,8 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
     client = MailChimp(settings.MAILCHIMP_KEY)
     contacts_table = Table.objects.filter(table_type=Table.TYPE_CONTACTS).last()
 
-    audience_members_table_fields_defs = table_fields.TABLE_MAPPING['audience_members']
-    contact_merge_fields_defs = table_fields.TABLE_MAPPING['contact_merge_fields']
+    audience_members_table_fields_defs = table_fields.TABLE_MAPPING["audience_members"]
+    contact_merge_fields_defs = table_fields.TABLE_MAPPING["contact_merge_fields"]
 
     task_result = TaskResult.objects.create(user=user, task=task)
 
@@ -69,8 +69,8 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                     continue
 
                 field_def = contact_merge_fields_defs[mfield]
-                path = field_def.get("mailchimp_path", (mfield, ))
-                path_len = len(path)    
+                path = field_def.get("mailchimp_path", (mfield,))
+                path_len = len(path)
 
                 # Build Mailchimp data structure like {'aaa': {'bbb': {'ccc': {'ddd': value}}}} for
                 # items which have their path like ('aaa', 'bbb', 'ccc', 'ddd')
@@ -92,7 +92,9 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
                     merge_fields[path[0]] = merge_fields.get(path[0], {})
                     merge_fields[path[0]][path[1]] = merge_fields[path[0]].get(path[1], {})
                     merge_fields[path[0]][path[1]][path[2]] = merge_fields[path[0]][path[1]].get(path[2], {})
-                    merge_fields[path[0]][path[1]][path[2]][path[3]] = merge_fields[path[0]][path[1]][path[2]].get(path[3], {})
+                    merge_fields[path[0]][path[1]][path[2]][path[3]] = merge_fields[path[0]][path[1]][path[2]].get(
+                        path[3], {}
+                    )
                     merge_fields[path[0]][path[1]][path[2]][path[3]][path[4]] = value
                 else:
                     print(_("Mailchimp path too long:"), path)
@@ -114,22 +116,22 @@ def run_contacts_to_mailchimp(request_user_id, task_id):
 
             try:
                 client.lists.members.create_or_update(
-                    contact.get("audience_id"), 
+                    contact.get("audience_id"),
                     contact.get("email_address", ""),  # "subscriber_hash" also accepts the email address
-                    data
+                    data,
                 )
             except MailChimpError as e:
                 print("MAILCHIMP EXCEPTION = ", e)
                 stats["errors"] += 1
                 try:
                     error_message = '"{}" {}'.format(
-                        literal_eval(str(e))["errors"][0]["field"],
-                        literal_eval(str(e))["errors"][0]["message"]
+                        literal_eval(str(e))["errors"][0]["field"], literal_eval(str(e))["errors"][0]["message"]
                     )
                 except (SyntaxError, KeyError):
                     error_message = str(e)
                 stats["error_messages"].append(
-                    _("First error for {}: {}").format(contact.get("email_address", ""), error_message))
+                    _("First error for {}: {}").format(contact.get("email_address", ""), error_message)
+                )
             else:
                 stats["updated"] += 1
 
@@ -172,10 +174,7 @@ def run_sync(request_user_id, task_id):
     if not user:
         user, created = User.objects.get_or_create(username=settings.TASK_DEFAULT_USERNAME)
 
-    task_result = TaskResult.objects.create(
-        user=user,
-        task=task
-    )
+    task_result = TaskResult.objects.create(user=user, task=task)
 
     try:
         success, stats = utils.retrieve_lists_data(MailChimp(settings.MAILCHIMP_KEY))
@@ -185,16 +184,14 @@ def run_sync(request_user_id, task_id):
     except Exception as e:
         task_result.success = False
         task_result.status = TaskResult.FINISHED
-        task_result.stats = {
-            'details': [str(e)]
-        }
+        task_result.stats = {"details": [str(e)]}
 
     stats_details = []
     if task_result.success:
         for table, table_stats in task_result.stats.items():
             for k, v in table_stats.items():
-                stats_details.append(_('<b>{}</b> {} in <b>{}</b>').format(v, k, table))
-        task_result.stats['details'] = stats_details
+                stats_details.append(_("<b>{}</b> {} in <b>{}</b>").format(v, k, table))
+        task_result.stats["details"] = stats_details
     task_result.date_end = timezone.now()
     task_result.duration = task_result.date_end - task_result.date_start
     task_result.save()
@@ -208,11 +205,7 @@ def run_segmentation(request_user_id, task_id):
         raise Exception(_("The segmentation task with id {} does not exist anymore").format(task_id))
 
     success = True
-    stats = {
-        'success': 0,
-        'errors': 0,
-        'details': []
-    }
+    stats = {"success": 0, "errors": 0, "details": []}
 
     if request_user_id:
         try:
@@ -228,9 +221,7 @@ def run_segmentation(request_user_id, task_id):
     token, created = Token.objects.get_or_create(user=user)
     # settings = MailchimpSettings.objects.latest()
 
-    task_result = TaskResult.objects.create(
-        user=user,
-        task=task)
+    task_result = TaskResult.objects.create(user=user, task=task)
 
     filtered_view = task.segmentation_task.filtered_view
     primary_table = filtered_view.primary_table
@@ -239,32 +230,33 @@ def run_segmentation(request_user_id, task_id):
 
     if not audience_members_table:
         success = False
-        stats['errors'] += 1
-        stats['details'].append(_("Contacts' table does not exist"))
+        stats["errors"] += 1
+        stats["details"].append(_("Contacts' table does not exist"))
     else:
         if primary_table.table != audience_members_table:
             success = False
-            stats['errors'] += 1
-            stats['details'].append(
-                _('<b>{}</b> needs to be the primary table in <b>{}</b> filtered view').format(
+            stats["errors"] += 1
+            stats["details"].append(
+                _("<b>{}</b> needs to be the primary table in <b>{}</b> filtered view").format(
                     audience_members_table, filtered_view.name
-                ))
-        primary_table_fields =  primary_table.fields.values_list('name', flat=True)
-        mandatory_fields = ['audience_id', 'id', 'email_address']
+                )
+            )
+        primary_table_fields = primary_table.fields.values_list("name", flat=True)
+        mandatory_fields = ["audience_id", "id", "email_address"]
         for field in mandatory_fields:
             if field not in primary_table_fields:
                 success = False
-                stats['errors'] += 1
-                stats['details'].append(
-                    _('<b>{}</b> field needs to be selected in the primary table in <b>{}</b> filtered view').format(
-                        table_fields.AUDIENCE_MEMBERS_FIELDS[field]['display_name'], filtered_view.name
-                    ))
+                stats["errors"] += 1
+                stats["details"].append(
+                    _("<b>{}</b> field needs to be selected in the primary table in <b>{}</b> filtered view").format(
+                        table_fields.AUDIENCE_MEMBERS_FIELDS[field]["display_name"], filtered_view.name
+                    )
+                )
         if success:
             lists_users = utils.get_emails_from_filtered_view(token, filtered_view)
             success, stats = utils.add_list_to_segment(
-                    MailChimp(settings.MAILCHIMP_KEY),
-                    lists_users,
-                    task.segmentation_task.tag)
+                MailChimp(settings.MAILCHIMP_KEY), lists_users, task.segmentation_task.tag
+            )
 
     task_result.success = success
     task_result.stats = stats

@@ -4,7 +4,7 @@ from rest_framework_nested import routers
 
 from plugin_woocommerce import views
 
-app_name = 'plugin_woocommerce'
+app_name = "plugin_woocommerce"
 
 router = routers.DefaultRouter()
 

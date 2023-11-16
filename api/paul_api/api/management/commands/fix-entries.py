@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         i = 0
         c = models.Entry.objects.count()
-        for entry in models.Entry.objects.all().prefetch_related('table').order_by('-table__id'):
+        for entry in models.Entry.objects.all().prefetch_related("table").order_by("-table__id"):
             i += 1
             try:
                 entry.clean_fields()

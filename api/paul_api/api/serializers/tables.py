@@ -70,8 +70,8 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=model.objects.all(),
-                fields=('name', 'database'),
-                message=_("This table name is already being used.")
+                fields=("name", "database"),
+                message=_("This table name is already being used."),
             )
         ]
 
@@ -86,9 +86,9 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                             if field_obj.field_type != field["field_type"]:
                                 raise serializers.ValidationError(
                                     {
-                                        "fields-{}".format(
-                                            field["id"]
-                                        ): _("Changing field type is not permited on a table with entries")
+                                        "fields-{}".format(field["id"]): _(
+                                            "Changing field type is not permited on a table with entries"
+                                        )
                                     }
                                 )
         return data
@@ -112,20 +112,20 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
 
     def update(self, instance, validated_data):
         if self.partial:
-            if validated_data.get('filters'):
-                filters = validated_data.pop('filters')
+            if validated_data.get("filters"):
+                filters = validated_data.pop("filters")
                 if filters:
-                    Table.objects.filter(pk=instance.pk).update(**{'filters': filters})
-            
-            if validated_data.get('default_fields'):
-                default_fields = validated_data.pop('default_fields')
+                    Table.objects.filter(pk=instance.pk).update(**{"filters": filters})
+
+            if validated_data.get("default_fields"):
+                default_fields = validated_data.pop("default_fields")
                 if default_fields:
                     for field in default_fields:
                         instance.default_fields.add(field)
 
             # Toggle the 'active' field
-            if 'active' in validated_data:
-                Table.objects.filter(pk=instance.pk).update(active=validated_data['active'])
+            if "active" in validated_data:
+                Table.objects.filter(pk=instance.pk).update(active=validated_data["active"])
 
             instance.refresh_from_db()
         else:
@@ -151,7 +151,6 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                         old_name = field_obj.name
                         new_name = field["name"]
                         if old_name != new_name:
-
                             for entry in instance.entries.all():
                                 entry.data[new_name] = entry.data[old_name]
                                 del entry.data[old_name]
@@ -159,7 +158,6 @@ class TableCreateSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelS
                         field_obj.__dict__.update(field)
                         field_obj.save()
                     else:
-
                         field["table"] = instance
                         field["name"] = snake_case(field["display_name"])
                         TableColumn.objects.create(**field)
@@ -218,10 +216,10 @@ class TableSerializer(serializers.ModelSerializer):
         return self.context["request"].build_absolute_uri(reverse("table-entries-list", kwargs={"table_pk": obj.pk}))
 
     def get_current_user_permissions(self, obj: Table) -> List[str]:
-        request = self.context.get('request', None)
+        request = self.context.get("request", None)
         if not request or not request.user:
             return [""]
-        
+
         table_permissions = []
         checker = ObjectPermissionChecker(request.user)
         user_perms = checker.get_perms(obj)

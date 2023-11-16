@@ -46,7 +46,7 @@ urlpatterns = [
     ),
     path("i18n/", include("django.conf.urls.i18n")),
     path("user/", views.UserView.as_view()),
-    path("auth/", include('djoser.urls')),
+    path("auth/", include("djoser.urls")),
     path("", include(router.urls)),
     path("", include(tables_router.urls)),
 ]

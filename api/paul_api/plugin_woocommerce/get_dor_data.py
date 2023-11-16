@@ -95,9 +95,7 @@ def _key(_key_name, default=None):
 ITEM_COLUMNS = {
     "Item ID": _key("id"),
     "Item Name": _key("name"),
-    "Item Price": lambda obj: str(
-        float(obj["price"]) + (float(obj["total_tax"]) / float(obj["quantity"]))
-    ),
+    "Item Price": lambda obj: str(float(obj["price"]) + (float(obj["total_tax"]) / float(obj["quantity"]))),
     "Item Product ID": _key("product_id"),
     "Item Quantity": _key("quantity"),
     "Item SKU": _key("sku"),
@@ -147,9 +145,7 @@ def transform_customers(data):
         entry = {name: get_val(cust) for name, get_val in COLUMNS.items()}
 
         billing = cust["billing"]
-        entry.update(
-            {name: get_val(billing) for name, get_val in BILLING_COLUMNS.items()}
-        )
+        entry.update({name: get_val(billing) for name, get_val in BILLING_COLUMNS.items()})
 
         entry.update(
             get_rename_keys(
@@ -182,9 +178,7 @@ def fetch_items_with_ids(ids, mk_url):
 
 
 def fetch_subscription_notes(subscription_ids):
-    return fetch_items_with_ids(
-        subscription_ids, lambda ID: f"{BASE_URL}v1/subscriptions/{ID}/notes"
-    )
+    return fetch_items_with_ids(subscription_ids, lambda ID: f"{BASE_URL}v1/subscriptions/{ID}/notes")
 
 
 def fetch_customers_by_id(customer_ids):
@@ -202,7 +196,6 @@ def fetch_customers_by_email(emails):
     not_found = []
     customers_by_email = {}
     for email in emails:
-
         api_tries = [email]
         if "(" in email:
             # probably a "Name (email)" string
@@ -276,9 +269,7 @@ def fetch_convoluted_data_stage_2(
     with open(first_file(subs_ep), "r") as f:
         subscriptions_data = json.loads(f.read())
 
-    subscription_notes = fetch_subscription_notes(
-        [sub["id"] for sub in subscriptions_data]
-    )
+    subscription_notes = fetch_subscription_notes([sub["id"] for sub in subscriptions_data])
     with open(notes_fname, "w") as f:
         f.write(json.dumps(subscription_notes, indent=4))
 
@@ -312,9 +303,7 @@ def fetch_convoluted_data_stage_3(
     with open(customers_emails_fname, "r") as f:
         customers_by_email = json.loads(f.read())
 
-    ids_from_email = set(
-        str(entry["id"]) for c in customers_by_email.values() for entry in c
-    )
+    ids_from_email = set(str(entry["id"]) for c in customers_by_email.values() for entry in c)
 
     known_customer_ids = set(known_customers.keys())
 
@@ -333,12 +322,7 @@ def fetch_convoluted_data_stage_3(
     new_ids_from_subs = cust_ids - known_customer_ids
     print("new from subs", list(sorted(new_ids_from_subs)))
 
-    cust_ids = (
-        list(cust_ids)
-        + list(ids_from_email)
-        + list(ids_from_life_members)
-        + list(ids_from_old_members)
-    )
+    cust_ids = list(cust_ids) + list(ids_from_email) + list(ids_from_life_members) + list(ids_from_old_members)
 
     # print("cust_ids :", len(cust_ids))
     # print(cust_ids)
@@ -406,9 +390,7 @@ def transform_convoluted(
     COMMON_COLUMNS = {
         "Data abonarii": lambda obj: fix_date_format(obj["start_date"]),
         "Data expirarii": lambda obj: fix_date_format(obj["end_date"]),
-        "Data urmatoarei plati": lambda obj: fix_date_format(
-            obj.get("next_payment_date")
-        ),
+        "Data urmatoarei plati": lambda obj: fix_date_format(obj.get("next_payment_date")),
         "ID abonament": _key("id"),
         "Metoda de plata": _key("payment_method", ""),
         "Status": status_value,
@@ -424,9 +406,7 @@ def transform_convoluted(
         entry = {}
 
         try:
-            entry.update(
-                {name: get_val(sub) for name, get_val in COMMON_COLUMNS.items()}
-            )
+            entry.update({name: get_val(sub) for name, get_val in COMMON_COLUMNS.items()})
             entry["Creat via"] = sub["created_via"]
             entry["Recurenta"] = compute_recurrence(sub)
 
@@ -453,9 +433,7 @@ def transform_convoluted(
             else:
                 billing = sub["billing"]
 
-            entry.update(
-                {name: get_val(billing) for name, get_val in BILLING_COLUMNS.items()}
-            )
+            entry.update({name: get_val(billing) for name, get_val in BILLING_COLUMNS.items()})
 
             items = sub["line_items"]
 
@@ -491,9 +469,7 @@ def transform_convoluted(
                 assert other_names in EXPECTED_SETS, f"wrong {other_names}"
                 assert other_qty == [quantity] * 4
             else:
-                raise Exception(
-                    f"unrecognized line_items pattern for subscription id {sub['id']}"
-                )
+                raise Exception(f"unrecognized line_items pattern for subscription id {sub['id']}")
 
             entry["Cantitate"] = quantity
             entry["Ce contine"] = item_name
@@ -511,9 +487,7 @@ def transform_convoluted(
                         nume_abonament = "Abonament Digital + Print Anual Cadou"
                         break
                 else:
-                    raise Exception(
-                        f"unmatched gift product id in items for sub id {sub['id']}"
-                    )
+                    raise Exception(f"unmatched gift product id in items for sub id {sub['id']}")
             else:
                 for item in items:
                     if item["product_id"] == 27867:
@@ -526,27 +500,19 @@ def transform_convoluted(
                         nume_abonament = "Abonament Digital + Print Anual"
                         break
                 else:
-                    raise Exception(
-                        f"unmatched product id in items for sub id {sub['id']}"
-                    )
+                    raise Exception(f"unmatched product id in items for sub id {sub['id']}")
 
             entry["Nume abonament"] = nume_abonament
 
             sub_notes = subscription_notes[str(sub["id"])]
 
             delivery_note = next(
-                filter_for_prefix_and_strip(
-                    (note["note"] for note in sub_notes), "delivery: "
-                ),
+                filter_for_prefix_and_strip((note["note"] for note in sub_notes), "delivery: "),
                 "",  # default
             )
             entry["Metoda de livrare"] = delivery_note
 
-            entry["Note"] = " ".join(
-                filter_for_prefix_and_strip(
-                    (note["note"] for note in sub_notes), "note: "
-                )
-            )
+            entry["Note"] = " ".join(filter_for_prefix_and_strip((note["note"] for note in sub_notes), "note: "))
 
             abonamente.append(entry)
 
@@ -558,11 +524,8 @@ def transform_convoluted(
     reference_keys = list(sorted(abonamente[0].keys()))
 
     for old in old_members_data:
-
         try:
-            entry = abonament_entry_for_member_data(
-                old, COMMON_COLUMNS, BILLING_COLUMNS, customers_by_id
-            )
+            entry = abonament_entry_for_member_data(old, COMMON_COLUMNS, BILLING_COLUMNS, customers_by_id)
             entry["Nume abonament"] = "Abonament vechi"
 
             assert list(sorted(entry.keys())) == reference_keys
@@ -574,11 +537,8 @@ def transform_convoluted(
             continue
 
     for life in life_members_data:
-
         try:
-            entry = abonament_entry_for_member_data(
-                life, COMMON_COLUMNS, BILLING_COLUMNS, customers_by_id
-            )
+            entry = abonament_entry_for_member_data(life, COMMON_COLUMNS, BILLING_COLUMNS, customers_by_id)
             entry["Nume abonament"] = "Abonament pe viata"
 
             assert list(sorted(entry.keys())) == reference_keys
@@ -593,9 +553,7 @@ def transform_convoluted(
 
 
 # this would work nicer as an inner function, but python is acting too weird with captures here
-def abonament_entry_for_member_data(
-    mem, COMMON_COLUMNS, BILLING_COLUMNS, customers_by_id
-):
+def abonament_entry_for_member_data(mem, COMMON_COLUMNS, BILLING_COLUMNS, customers_by_id):
     entry = {}
     entry.update({name: get_val(mem) for name, get_val in COMMON_COLUMNS.items()})
     entry["Creat via"] = "admin"
@@ -632,15 +590,9 @@ def transform_orders(data, distribute):
     def infer_tip_comanda(obj):
         if obj["payment_method"] == "braintree_cc" and obj["created_via"] == "checkout":
             return "noua"
-        if (
-            obj["payment_method"] == "braintree_cc"
-            and obj["created_via"] != "subscription"
-        ):
+        if obj["payment_method"] == "braintree_cc" and obj["created_via"] != "subscription":
             return "reinnoire"
-        if (
-            obj["payment_method"] == "sn_wc_mobilpay"
-            and obj["created_via"] == "checkout"
-        ):
+        if obj["payment_method"] == "sn_wc_mobilpay" and obj["created_via"] == "checkout":
             return "produs"
         raise Exception(f"no result for {json.dumps(obj, indent=4)}")
 
@@ -675,35 +627,22 @@ def transform_orders(data, distribute):
 
             billing = order["billing"]
             entry.update(
-                {
-                    name + " (facturare)": get_val(billing)
-                    for name, get_val in BILLING_SHIPPING_COLUMNS.items()
-                }
+                {name + " (facturare)": get_val(billing) for name, get_val in BILLING_SHIPPING_COLUMNS.items()}
             )
 
             shipping = order["shipping"]
-            entry.update(
-                {
-                    name + " (livrare)": get_val(shipping)
-                    for name, get_val in BILLING_SHIPPING_COLUMNS.items()
-                }
-            )
+            entry.update({name + " (livrare)": get_val(shipping) for name, get_val in BILLING_SHIPPING_COLUMNS.items()})
 
             if not distribute:
                 entry["Pret"] = order["total"]
-                entry["Produse"] = ", ".join(
-                    f"{item['quantity']} x {item['name']}"
-                    for item in order["line_items"]
-                )
+                entry["Produse"] = ", ".join(f"{item['quantity']} x {item['name']}" for item in order["line_items"])
                 orders.append(entry)
             else:
                 for item in order["line_items"]:
                     replica = copy.deepcopy(entry)
                     replica["Produs"] = item["name"]
                     replica["Cantitate"] = item["quantity"]
-                    replica["Pret"] = str(
-                        float(item["total"]) + float(item["total_tax"])
-                    )
+                    replica["Pret"] = str(float(item["total"]) + float(item["total_tax"]))
                     orders.append(replica)
         except Exception as e:  # pokemon exception handling
             # print(f"exception for order {order['id']} : {e}")
@@ -742,9 +681,7 @@ def transform_products(data):
         entry = get_rename_keys(product, ENDPOINT_TO_COLUMN)
 
         if len(entry["Categories"]) > 1:
-            entry["Categories"] = ", ".join(
-                [elem["name"] for elem in entry["Categories"]]
-            )
+            entry["Categories"] = ", ".join([elem["name"] for elem in entry["Categories"]])
         else:
             entry["Categories"] = entry["Categories"][0]["name"]
 
@@ -757,9 +694,7 @@ class Fetcher:
     def __init__(self):
         self.http = requests.Session()
 
-        retries = Retry(
-            total=10, backoff_factor=4, status_forcelist=[429, 500, 502, 503, 504]
-        )
+        retries = Retry(total=10, backoff_factor=4, status_forcelist=[429, 500, 502, 503, 504])
 
         # mount timeout adapter so that all calls have the same timeout
         adapter = TimeoutHTTPAdapter(timeout=60, max_retries=retries)
@@ -767,9 +702,7 @@ class Fetcher:
         self.http.mount("http://", adapter)
 
         # the request will raise an exception on 4XX and 5XX
-        assert_status_hook = (
-            lambda response, *args, **kwargs: response.raise_for_status()
-        )
+        assert_status_hook = lambda response, *args, **kwargs: response.raise_for_status()
         self.http.hooks["response"] = [assert_status_hook]
 
     def get(self, url, user_params={}):
@@ -788,9 +721,7 @@ def fetch_all(endpoints):
         page = ep.get("page") or 1
         data = []
         version = ep["version"]
-        mk_url = ep.get("mk_url") or (
-            lambda pg: f"{BASE_URL}{version}/{ep_name}?page={pg}"
-        )
+        mk_url = ep.get("mk_url") or (lambda pg: f"{BASE_URL}{version}/{ep_name}?page={pg}")
         data_filter = ep.get("filter") or (lambda x: True)
 
         print(f"fetching endpoint {ep_name}...")

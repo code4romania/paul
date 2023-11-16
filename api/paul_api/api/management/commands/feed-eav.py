@@ -31,7 +31,6 @@ def gen_slug(value):
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-
         db, _ = models.Database.objects.get_or_create(name="DOR")
         admin, _ = User.objects.get_or_create(username="admin")
         tables = {}

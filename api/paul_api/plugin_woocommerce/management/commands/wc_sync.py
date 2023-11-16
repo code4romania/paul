@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from pprint import pprint
 
 
-
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # print('sync woocommerce')
@@ -59,11 +58,10 @@ class Command(BaseCommand):
         # task_result.status = 'Finished'
         # task_result.save()
 
-
         request = HttpRequest()
-        request.method = 'GET'
-        request.META['SERVER_NAME'] = 'dev.api.paul.ro'
-        request.META['SERVER_PORT'] = '8000'
+        request.method = "GET"
+        request.META["SERVER_NAME"] = "dev.api.paul.ro"
+        request.META["SERVER_PORT"] = "8000"
         last_task = models.Task.objects.last()
         print(last_task)
         response = tasks.sync(request, last_task.id)

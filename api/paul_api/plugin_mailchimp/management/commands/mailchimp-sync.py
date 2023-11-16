@@ -11,13 +11,14 @@ from datetime import datetime, timedelta
 
 from pprint import pprint
 
+
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        print('sync mailchimp')
+        print("sync mailchimp")
         request = HttpRequest()
-        request.method = 'GET'
-        request.META['SERVER_NAME'] = 'dev.api.paul.ro'
-        request.META['SERVER_PORT'] = '8000'
+        request.method = "GET"
+        request.META["SERVER_NAME"] = "dev.api.paul.ro"
+        request.META["SERVER_PORT"] = "8000"
 
         response = tasks.run_sync(request, 7)
         pprint(response)

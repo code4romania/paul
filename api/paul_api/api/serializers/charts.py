@@ -64,25 +64,32 @@ class DetailSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_data(self, obj):
-        return self.context["request"].build_absolute_uri(
-            reverse("chart-data", kwargs={"pk": obj.pk}))
+        return self.context["request"].build_absolute_uri(reverse("chart-data", kwargs={"pk": obj.pk}))
 
 
 class CreateSerializer(serializers.ModelSerializer):
-    owner = serializers.HiddenField(
-        default=serializers.CurrentUserDefault())
-    last_edit_user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault())
-    last_edit_date = serializers.HiddenField(
-        default=timezone.now)
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    last_edit_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    last_edit_date = serializers.HiddenField(default=timezone.now)
 
     class Meta:
         model = models.Chart
         fields = [
-            "id", "name", "owner", "last_edit_user", "last_edit_date",
-            "chart_type", "table", "timeline_field", "timeline_period",
-            "timeline_include_nulls", "x_axis_field", "x_axis_field_2", "y_axis_field",
-            "y_axis_function", "filters",
+            "id",
+            "name",
+            "owner",
+            "last_edit_user",
+            "last_edit_date",
+            "chart_type",
+            "table",
+            "timeline_field",
+            "timeline_period",
+            "timeline_include_nulls",
+            "x_axis_field",
+            "x_axis_field_2",
+            "y_axis_field",
+            "y_axis_function",
+            "filters",
         ]
 
     # def create(self, validated_data):
@@ -94,7 +101,7 @@ class CreateSerializer(serializers.ModelSerializer):
         if self.partial:
             models.Chart.objects.filter(pk=instance.pk).update(**validated_data)
         else:
-            validated_data.pop('filters')
+            validated_data.pop("filters")
             models.Chart.objects.filter(pk=instance.pk).update(**validated_data)
         instance.refresh_from_db()
         return instance
