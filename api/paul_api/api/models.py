@@ -1,9 +1,10 @@
 import os
 import re
 import uuid
+from typing import Tuple
 
 from django.conf import settings
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group, Permission, User
 from django.contrib.postgres.fields import ArrayField
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -16,12 +17,50 @@ from djoser.signals import user_activated
 from api import utils
 
 
+def _get_or_create_user_group() -> Tuple[Group, bool]:
+    """
+    Get or create the "user" group
+    """
+    user_group, created = Group.objects.get_or_create(name="user")
+    if created or not user_group.permissions.exists():
+        # Add the default permissions to the user group
+        user_group_permissions = [
+            "api.update_content",
+            "api.add_table",
+            "api.change_table",
+            "api.delete_table",
+            "api.view_table",
+            "api.add_tablecolumn",
+            "api.change_tablecolumn",
+            "api.delete_tablecolumn",
+            "api.view_tablecolumn",
+        ]
+
+        permission_ids = []
+        for pname in user_group_permissions:
+            try:
+                app_label, permission_label = pname.split(".", 1)
+            except ValueError:
+                continue
+
+            try:
+                permission = Permission.objects.get(content_type__app_label=app_label, codename=permission_label)
+            except Permission.DoesNotExist:
+                continue
+
+            permission_ids.append(permission.pk)
+
+        user_group.permissions.set(permission_ids)
+
+    return user_group, created
+
+
 @receiver(user_activated)
 def user_activated_callback(sender, **kwargs):
     user = kwargs['user']
     Userprofile.objects.get_or_create(user=user)
-    request = kwargs['request']
-    user_group, created = Group.objects.get_or_create(name="user")
+    request = kwargs["request"]
+    user_group, created = _get_or_create_user_group()
     user.groups.add(user_group)
     user.is_active = False
     user.save()
@@ -101,8 +140,8 @@ class Userprofile(models.Model):
 
     @staticmethod
     def generate_username(email: str) -> str:
-        """ 
-        Generate an username from the provided email address by eliminating 
+        """
+        Generate an username from the provided email address by eliminating
         blank spaces before & after it and by using lowercase letters
         """
         return email.lower().strip()
@@ -334,7 +373,7 @@ class CsvImport(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk and self.file:
-            # Delete the previous file when the model instance 
+            # Delete the previous file when the model instance
             # is updated with a new file
             instance = CsvImport.objects.get(pk=self.pk)
             CsvImport.delete_file(instance)
@@ -571,7 +610,7 @@ class PluginTaskResult(models.Model):
     """
     Description: Model Description
     """
-    
+
     RUNNING = "In progress"
     FINISHED = "Finished"
     STATUS_CHOICES = (
@@ -581,9 +620,9 @@ class PluginTaskResult(models.Model):
 
     name = models.CharField(_("name"), max_length=255, null=True, blank=True)
     status = models.CharField(
-        _("status"), 
-        max_length=11, 
-        default=RUNNING, 
+        _("status"),
+        max_length=11,
+        default=RUNNING,
         choices=STATUS_CHOICES,
         db_index=True
     )

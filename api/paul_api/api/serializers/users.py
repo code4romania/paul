@@ -7,7 +7,7 @@ from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework import serializers
 from rest_framework.response import Response
 
-from api.models import Table, Userprofile
+from api.models import Table, Userprofile, _get_or_create_user_group
 
 
 class AvatarMixin:
@@ -65,7 +65,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 _("An account with the {username} username already exists").format(username=username))
 
         Userprofile.objects.create(user=new_user)
-        user_group, created = Group.objects.get_or_create(name="user")
+        user_group, created = _get_or_create_user_group()
         new_user.groups.add(user_group)
         
         # Send the initial password reset
