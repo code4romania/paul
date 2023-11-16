@@ -1,0 +1,19 @@
+# Add all the commits you would like to be omitted from the `git blame` output here.
+# Add one commit per line and a comment with the reason for the omission.
+
+# In order to use this file, you either need to add it to your config:
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+# or pass it as an argument to `git blame`:
+# git blame --ignore-revs-file .git-blame-ignore-revs <file>
+
+# To remove the settings from your config:
+# git config --unset blame.ignoreRevsFile
+# or pass the --ignore-revs-file option with an empty value:
+# git blame --ignore-revs-file="" <file>
+
+# While this setting isn't automatically picked up git, it is used by GitHub based on the file name
+
+######### COMMITS IGNORED FROM BLAME #########
+
+# ignore the "Format with black" commit since it affects many files with no logic impact
+a56b04dd07c31e5d0713bb4eb321212cfab95b27
