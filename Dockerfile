@@ -1,4 +1,8 @@
-FROM node:16-alpine as frontend
+ARG NODE_VERSION=16.20.2
+ARG PYTHON_VERSION=3.11.8
+
+
+FROM node:${NODE_VERSION}-bookworm-slim as frontend
 
 ARG VUE_APP_ROOT_API=/api
 
@@ -8,7 +12,8 @@ COPY ./client .
 RUN npm ci --no-audit --ignore-scripts
 RUN npm run build
 
-FROM python:3.11.4-slim-bullseye as build
+
+FROM python:${PYTHON_VERSION}-slim-bookworm as build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -20,7 +25,8 @@ RUN pip install --upgrade pip setuptools cython
 COPY ./api/requirements.txt .
 RUN pip install --user --no-warn-script-location -r requirements.txt
 
-FROM python:3.11.4-slim-bullseye
+
+FROM python:${PYTHON_VERSION}-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1
 ENV RUN_FEED=no
