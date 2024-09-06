@@ -1,0 +1,7 @@
+pip-tools~=7.4.1
+
+# formatting & linting
+black~=24.8.0
+ruff~=0.6.3
+
+-r requirements.txt

@@ -1,0 +1,32 @@
+services:
+
+  db_base_psql:
+    container_name: paul_db_dev
+    env_file:
+      - .env
+    image: postgres:16.4
+    volumes:
+      - paul_psql:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "${DATABASE_NAME}"
+      POSTGRES_USER: "${DATABASE_USER}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    restart: always
+
+  backend_base:
+    container_name: paul_backend_dev
+    env_file:
+      - .env
+    environment:
+      DATABASE_ENGINE: "postgresql"
+      DATABASE_HOST: "paul_db_dev"
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: "${DATABASE_NAME}"
+      DATABASE_USER: "${DATABASE_USER}"
+      DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "${WEBAPP_PORT:-8080}:8000"
+    restart: on-failure
