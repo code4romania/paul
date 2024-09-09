@@ -14,6 +14,8 @@ import environ
 import os
 from pathlib import Path
 
+from django.utils.translation import gettext_lazy as _
+
 
 # Constants for memory sizes
 KIBIBYTE = 1024
@@ -142,6 +144,7 @@ AWS_REGION_NAME = env("AWS_REGION_NAME")
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',  # this must be loaded before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -156,6 +159,7 @@ INSTALLED_APPS = [
     # PAUL Apps:
     'accounts',
     'datastore',
+    'hello',
     'plugin_mailchimp',
     # other third-party
     "storages",
@@ -454,7 +458,7 @@ Q_CLUSTER = {
     "save_limit": 200,
     "queue_limit": 4,
     "cpu_affinity": 1,
-    "label": "Django Q2",
+    "label": _("Background Tasks"),
     "orm": "default",
     "poll": 2,
     "guard_cycle": 3,
