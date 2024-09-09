@@ -17,6 +17,8 @@
 
 {% block content %}
     <div class="flex flex-col lg:flex-row lg:gap-8">
-        Placeholder for the account homepage content.
+        {% if app_dashboard %}
+            Placeholder for the account homepage content.
+        {% endif %}
     </div>
 {% endblock %}
