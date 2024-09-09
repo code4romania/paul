@@ -14,16 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import include, path
-from django.utils.translation import gettext_lazy as _
+
+from dashboard.admin import dashboard_site
 
 
 urlpatterns = [
-    path("app/", admin.site.urls),
+    path("admin/", admin.site.urls),  # these URLs use the "admin:" prefix
+    path("app/", dashboard_site.urls),  # these URLs use the "app:" prefix
     path("", include("hello.urls")),
 ]
-
-admin.site.site_header = _("Paul")
-admin.site.site_title = _("Paul")
-admin.site.index_title = _("Index")
