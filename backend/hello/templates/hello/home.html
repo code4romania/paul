@@ -1,0 +1,11 @@
+{% load i18n %}
+
+<html>
+    <head>
+        <title>Paul</title>
+    </head>
+    <body>
+        <p>{% blocktranslate %}Hello.{% endblocktranslate %}</p>
+        <p><a href="{% url 'app:index' %}">{% translate "Login" %}</a></p>
+    </body>
+</html>

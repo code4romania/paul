@@ -1,0 +1,25 @@
+name: paul_prod
+
+services:
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db_base_psql
+    container_name: paul_db
+
+  backend:
+    extends:
+      file: docker-compose.base.yml
+      service: backend_base
+    container_name: paul_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/media:/var/www/paul/backend/media
+    depends_on:
+      - db
+
+volumes:
+  paul_psql:

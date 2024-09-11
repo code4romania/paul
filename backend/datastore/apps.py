@@ -3,6 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 
 class DatastoreConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'datastore'
-    verbose_name = _('Data Store')
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "datastore"
+    verbose_name = _("Data Store")

@@ -1,0 +1,26 @@
+name: paul_dev
+
+services:
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db_base_psql
+
+  backend:
+    extends:
+      file: docker-compose.base.yml
+      service: backend_base
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/var/www/paul/backend
+    depends_on:
+      - db
+    ports:
+      - "5678:5678"
+      - "5677:5677"
+
+volumes:
+  paul_psql:
