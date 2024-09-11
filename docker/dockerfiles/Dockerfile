@@ -1,4 +1,25 @@
-ARG PYTHON_VERSION=3.12.5
+ARG PYTHON_VERSION=3.12.6
+
+
+FROM python:${PYTHON_VERSION}-slim-bookworm AS build
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    gettext git gcc g++ && \
+    python3 -m pip install --upgrade pip setuptools cython
+
+# Python virtualenv paths
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv ${VIRTUAL_ENV}
+ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
+
+WORKDIR /build
+COPY ./backend/requirements.txt ./backend/pyproject.toml ./
+RUN python3 -m pip install --upgrade pip setuptools && \
+    python3 -m pip install -r ./requirements.txt
 
 
 FROM python:${PYTHON_VERSION}-slim-bookworm
@@ -21,9 +42,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    nginx gcc xz-utils gettext build-essential postgresql-client libpq-dev \
-    git g++ && \
-    python3 -m pip install --upgrade pip setuptools cython
+    nginx gcc xz-utils gettext build-essential postgresql-client libpq-dev
 
 
 ARG S6_OVERLAY_VERSION=3.2.0.0
@@ -39,22 +58,20 @@ COPY docker/nginx/nginx.conf /etc/nginx/sites-available/default
 COPY docker/s6-rc.d /etc/s6-overlay/s6-rc.d
 
 
-# Python virtualenv paths
+# Python virtualenv paths:
 ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv ${VIRTUAL_ENV}
-ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-WORKDIR /build
-COPY ./backend/requirements-dev.txt ./backend/requirements.txt ./backend/pyproject.toml ./
-RUN python3 -m pip install --upgrade pip setuptools && \
-    python3 -m pip install -r ./requirements-dev.txt
+
+# copy the backend source code and libraries from the build stage:
+COPY --from=build "${VIRTUAL_ENV}" "${VIRTUAL_ENV}"
 
 WORKDIR /var/www/paul/backend/
 COPY ./backend .
 
 # Make sure scripts in .local are usable:
 ENV PATH=/root/.local/bin:$PATH
-
 
 ARG VERSION
 ARG REVISION
@@ -67,4 +84,4 @@ ENTRYPOINT ["/init"]
 
 WORKDIR /var/www/paul/
 
-EXPOSE 8000
+EXPOSE 80

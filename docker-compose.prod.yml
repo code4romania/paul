@@ -15,11 +15,15 @@ services:
     container_name: paul_backend
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/dockerfiles/Dockerfile
+    environment:
+      DATABASE_HOST: "paul_db"
     volumes:
       - ./backend/media:/var/www/paul/backend/media
     depends_on:
       - db
+    ports:
+      - "${WEBAPP_PORT:-8080}:80"
 
 volumes:
   paul_psql:

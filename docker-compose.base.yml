@@ -13,7 +13,6 @@ services:
       POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
     ports:
       - "${DATABASE_PORT:-5432}:5432"
-    restart: always
 
   backend_base:
     container_name: paul_backend_dev
@@ -27,6 +26,3 @@ services:
       DATABASE_USER: "${DATABASE_USER}"
       DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
       PYTHONUNBUFFERED: "1"
-    ports:
-      - "${WEBAPP_PORT:-8080}:8000"
-    restart: on-failure
