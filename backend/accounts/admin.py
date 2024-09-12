@@ -38,7 +38,7 @@ class GroupAdmin(BaseGroupAdmin, ModelAdmin):
 class UserDashboard(ModelAdmin):
     list_display = ("view_full_name", "view_role", "date_joined", "last_login")
     readonly_fields = ("last_login", "date_joined")
-    exclude = ("password",)
+    exclude = ("password", )
 
     @admin.display(empty_value="", description=_("Full Name"))
     def view_full_name(self, obj):

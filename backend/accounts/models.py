@@ -8,7 +8,7 @@ class User(AbstractUser):
     # We ignore the `username`` field because we will use the `email` for the authentication
     username = models.CharField(
         blank=True,
-        editable=False,
+        editable=True,
         help_text=_("We do not use this field"),
         max_length=150,
         null=True,
