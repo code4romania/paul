@@ -8,23 +8,16 @@
 
                 <h2>
                     <a href="{{ app.app_url }}"
-                        class="block font-semibold mb-2 mt-4 text-font-important-light text-sm truncate dark:text-font-important-dark"
-                        title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">
-                        Accounts
+                        class="block font-semibold mb-2 mt-4 text-font-important-light text-sm truncate dark:text-font-important-dark">
+                        {% translate "Accounts" %}
                     </a>
                 </h2>
 
                 <ol>
                     <li class="model-user {% if 'asdasdasd' in request.path|urlencode %} current-model{% endif %}">
-                        {% comment %}
-                        <h3 class="font-medium my-3 text-gray-900 text-sm dark:text-gray-200">
-                            Users
-                        </h3>
-                        {% endcomment %}
-
-                        <a href="{% url 'app:accounts_user_changelist' %}" id="link-asdasdasd"
-                            class="block -mx-3 px-3 py-3 rounded-md truncate {% if 'asdasdasd' in request.path|urlencode %}bg-gray-100 font-semibold text-primary-600 dark:bg-white/[.06] dark:text-primary-500{% endif %}">
-                            Users
+                        <a href="{% url 'app:accounts_user_changelist' %}" id="link-user-changelist"
+                            class="block -mx-3 px-3 py-3 rounded-md truncate">
+                            {% translate "Users" %}
                         </a>
                     </li>
                 </ol>

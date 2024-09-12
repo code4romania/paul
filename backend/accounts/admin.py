@@ -40,16 +40,17 @@ class UserDashboard(ModelAdmin):
     readonly_fields = ("last_login", "date_joined")
     exclude = ("password",)
 
-    def user_name(self):
-        return "asdasd"
-
     @admin.display(empty_value="", description=_("Full Name"))
     def view_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
 
     @admin.display(empty_value="", description=_("Role"))
     def view_role(self, obj):
-        return ""
+        if obj.is_superuser:
+            return _("Administrator")
+        else:
+            # TODO: other roles Manager/Member/...
+            return _("Member")
 
     def changelist_view(self, request, extra_context=None):
         extra_context = {"title": _("Manage users")}
@@ -57,3 +58,4 @@ class UserDashboard(ModelAdmin):
 
 
 dashboard_site.register(User, UserDashboard)
+
