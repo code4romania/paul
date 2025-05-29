@@ -8,23 +8,29 @@ asgiref==3.8.1
     # via
     #   -r requirements.txt
     #   django
-black==24.8.0
-    # via -r requirements-dev.in
-blessed==1.20.0
+    #   django-cors-headers
+azure-core==1.34.0
+    # via
+    #   -r requirements.txt
+    #   azure-storage-blob
+azure-storage-blob==12.25.1
     # via -r requirements.txt
-boto3==1.35.16
+black==25.1.0
+    # via -r requirements-dev.in
+blessed==1.21.0
+    # via -r requirements.txt
+boto3==1.38.25
     # via
     #   -r requirements.txt
     #   django-ses
-    #   pycognito
-botocore==1.35.16
+botocore==1.38.25
     # via
     #   -r requirements.txt
     #   boto3
     #   s3transfer
-build==1.2.2
+build==1.2.2.post1
     # via pip-tools
-certifi==2024.8.30
+certifi==2025.4.26
     # via
     #   -r requirements.txt
     #   requests
@@ -34,156 +40,223 @@ cffi==1.17.1
     #   -r requirements.txt
     #   cryptography
     #   python-fossil-delta
-charset-normalizer==3.3.2
+cfgv==3.4.0
+    # via pre-commit
+charset-normalizer==3.4.2
     # via
     #   -r requirements.txt
     #   requests
-click==8.1.7
+click==8.2.1
     # via
     #   black
     #   pip-tools
-croniter==3.0.3
-    # via -r requirements.txt
-cryptography==43.0.1
+coverage==7.8.2
+    # via pytest-cov
+cryptography==45.0.3
     # via
     #   -r requirements.txt
-    #   pyjwt
-django==5.1.1
+    #   azure-storage-blob
+debugpy==1.8.14
+    # via -r requirements-dev.in
+distlib==0.3.9
+    # via virtualenv
+django==5.2.1
     # via
     #   -r requirements.txt
     #   django-allauth
+    #   django-auditlog
+    #   django-cors-headers
+    #   django-localflavor
     #   django-picklefield
     #   django-q2
+    #   django-recaptcha
     #   django-ses
     #   django-storages
     #   django-unfold
+    #   django-vite
+    #   inertia-django
 django-allauth==64.2.1
     # via -r requirements.txt
-django-environ==0.11.2
+django-auditlog==3.1.2
     # via -r requirements.txt
-django-picklefield==3.2
+django-cors-headers==4.7.0
+    # via -r requirements.txt
+django-environ==0.12.0
+    # via -r requirements.txt
+django-localflavor==4.0
+    # via -r requirements.txt
+django-picklefield==3.3
     # via
     #   -r requirements.txt
     #   django-q2
-django-q2==1.7.2
+django-q2==1.8.0
     # via -r requirements.txt
-django-ses==4.1.1
+django-recaptcha==4.1.0
     # via -r requirements.txt
-django-storages==1.14.4
+django-ses==4.4.0
+    # via -r requirements.txt
+django-storages==1.14.6
     # via -r requirements.txt
 django-unfold==0.38.0
     # via -r requirements.txt
-envs==1.4
-    # via
-    #   -r requirements.txt
-    #   pycognito
-gevent==24.2.1
+django-vite==3.1.0
     # via -r requirements.txt
-greenlet==3.1.0
+execnet==2.1.1
+    # via pytest-xdist
+faker==37.1.1
+    # via -r requirements-dev.in
+filelock==3.18.0
+    # via virtualenv
+gevent==25.4.2
+    # via -r requirements.txt
+greenlet==3.2.2
     # via
     #   -r requirements.txt
     #   gevent
 gunicorn==23.0.0
     # via -r requirements.txt
-idna==3.8
+identify==2.6.12
+    # via pre-commit
+idna==3.10
     # via
     #   -r requirements.txt
     #   requests
+inertia-django==1.2.0
+    # via -r requirements.txt
+iniconfig==2.1.0
+    # via pytest
+isodate==0.7.2
+    # via
+    #   -r requirements.txt
+    #   azure-storage-blob
 jmespath==1.0.1
     # via
     #   -r requirements.txt
     #   boto3
     #   botocore
-mypy-extensions==1.0.0
+mypy-extensions==1.1.0
     # via black
+ngohub==0.1.0
+    # via -r requirements.txt
+nodeenv==1.9.1
+    # via pre-commit
 oauthlib==3.2.2
     # via
     #   -r requirements.txt
     #   requests-oauthlib
-packaging==24.1
+packaging==25.0
     # via
     #   -r requirements.txt
     #   black
     #   build
     #   gunicorn
+    #   pytest
 pathspec==0.12.1
     # via black
 pip-tools==7.4.1
     # via -r requirements-dev.in
-platformdirs==4.3.2
-    # via black
-psutil==6.0.0
+platformdirs==4.3.8
+    # via
+    #   black
+    #   virtualenv
+pluggy==1.6.0
+    # via pytest
+pre-commit==4.2.0
+    # via -r requirements-dev.in
+psutil==7.0.0
     # via -r requirements.txt
-psycopg2-binary==2.9.9
-    # via -r requirements.txt
-pycognito==2024.5.1
+psycopg2-binary==2.9.10
     # via -r requirements.txt
 pycparser==2.22
     # via
     #   -r requirements.txt
     #   cffi
-pyjwt==2.9.0
-    # via
-    #   -r requirements.txt
-    #   pycognito
-pyproject-hooks==1.1.0
+pyjwt==2.10.1
+    # via -r requirements.txt
+pyproject-hooks==1.2.0
     # via
     #   build
     #   pip-tools
+pytest==8.3.5
+    # via
+    #   -r requirements-dev.in
+    #   pytest-cov
+    #   pytest-django
+    #   pytest-xdist
+pytest-cov==6.0.0
+    # via -r requirements-dev.in
+pytest-django==4.11.1
+    # via -r requirements-dev.in
+pytest-xdist==3.6.1
+    # via -r requirements-dev.in
 python-dateutil==2.9.0.post0
     # via
     #   -r requirements.txt
     #   botocore
-    #   croniter
+    #   django-auditlog
 python-fossil-delta==18.11.27
     # via -r requirements.txt
-pytz==2024.2
+python-stdnum==2.1
     # via
     #   -r requirements.txt
-    #   croniter
+    #   django-localflavor
+pyyaml==6.0.2
+    # via pre-commit
 requests==2.32.3
     # via
     #   -r requirements.txt
-    #   pycognito
+    #   azure-core
+    #   inertia-django
     #   requests-oauthlib
 requests-oauthlib==2.0.0
     # via -r requirements.txt
-ruff==0.6.4
+ruff==0.11.8
     # via -r requirements-dev.in
-s3transfer==0.10.2
+s3transfer==0.13.0
     # via
     #   -r requirements.txt
     #   boto3
-sentry-sdk==2.14.0
+sentry-sdk==2.27.0
     # via -r requirements.txt
-six==1.16.0
+six==1.17.0
     # via
     #   -r requirements.txt
-    #   blessed
+    #   azure-core
     #   python-dateutil
-sqlparse==0.5.1
+sqlparse==0.5.3
     # via
     #   -r requirements.txt
     #   django
-urllib3==2.2.2
+typing-extensions==4.13.2
+    # via
+    #   -r requirements.txt
+    #   azure-core
+    #   azure-storage-blob
+tzdata==2025.2
+    # via faker
+unidecode==1.4.0
+    # via -r requirements.txt
+urllib3==2.4.0
     # via
     #   -r requirements.txt
     #   botocore
     #   requests
     #   sentry-sdk
+virtualenv==20.31.2
+    # via pre-commit
 wcwidth==0.2.13
     # via
     #   -r requirements.txt
     #   blessed
-wheel==0.44.0
+wheel==0.45.1
     # via pip-tools
-whitenoise==6.7.0
+whitenoise==6.9.0
     # via -r requirements.txt
 zope-event==5.0
     # via
     #   -r requirements.txt
     #   gevent
-zope-interface==7.0.3
+zope-interface==7.2
     # via
     #   -r requirements.txt
     #   gevent
