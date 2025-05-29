@@ -1,17 +1,20 @@
-ARG PYTHON_VERSION=3.12.6
+ARG NODE_VERSION=22.15.0
 
 
-FROM python:${PYTHON_VERSION}-slim-bookworm
+FROM node:${NODE_VERSION}-bookworm-slim
 
 ENV PYTHONUNBUFFERED=1
 
-ENV ENVIRONMENT=production
-ENV DEBUG=${DEBUG:-False}
+ENV DEBUG=${DEBUG:-True}
+ENV ENVIRONMENT=${ENVIRONMENT:-development}
 
 ENV RUN_MIGRATIONS=True
 ENV RUN_COMPILE_MESSAGES=True
-ENV RUN_COLLECT_STATIC=True
+ENV RUN_COLLECT_STATIC=False
 ENV RUN_CREATE_SUPER_USER=True
+ENV RUN_CREATE_ADMIN=True
+ENV RUN_SEED_GROUPS=True
+ENV ENABLE_DJANGO_ADMIN=False
 
 ENV IS_CONTAINERIZED=True
 
@@ -21,13 +24,13 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    nginx gcc xz-utils gettext build-essential postgresql-client libpq-dev \
-    git g++ && \
-    python3 -m pip install --upgrade pip setuptools cython
+    locales locales-all cron procps \
+    nginx gcc xz-utils gettext python3 python3-pip python3-venv python3-dev postgresql-client libpq-dev && \
+    apt-get clean
 
 
-ARG S6_OVERLAY_VERSION=3.2.0.0
-ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME 0
+ARG S6_OVERLAY_VERSION=3.2.0.2
+ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
@@ -44,27 +47,37 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv ${VIRTUAL_ENV}
 ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
 
-WORKDIR /build
-COPY ./backend/requirements-dev.txt ./backend/requirements.txt ./backend/pyproject.toml ./
-RUN python3 -m pip install --upgrade pip setuptools && \
-    python3 -m pip install -r ./requirements-dev.txt
 
+# install the backend libraries:
+COPY ./backend/pyproject.toml ./backend/requirements-dev.txt /var/www/paul/backend/
 WORKDIR /var/www/paul/backend/
-COPY ./backend .
-
-# Make sure scripts in .local are usable:
-ENV PATH=/root/.local/bin:$PATH
+RUN python3 -m pip install -v --no-cache-dir -r ./requirements-dev.txt
 
 
-ARG VERSION
-ARG REVISION
+# install the frontend libraries:
+COPY ./frontend/package.json ./frontend/package-lock.json /var/www/paul/frontend/
+WORKDIR /var/www/paul/frontend
+RUN npm ci
 
-RUN touch /var/www/paul/.version && \
-    echo "$VERSION+$(echo ${REVISION} | cut -c 1-7)" > /var/www/paul/.version
+
+# copy the frontend source code:
+COPY ./frontend/ /var/www/paul/frontend/
+
+# copy the backend source code:
+COPY ./backend/ /var/www/paul/backend/
 
 
-ENTRYPOINT ["/init"]
+# make sure scripts in .local are usable:
+ENV PATH=/root/.local/bin:${PATH}
+
+
+# specify a certificate store for the runtime
+# ARG CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+# ENV CURL_CA_BUNDLE=${CURL_CA_BUNDLE}
+
 
 WORKDIR /var/www/paul/
 
-EXPOSE 8000
+ENTRYPOINT ["/init"]
+
+EXPOSE 8000 3000
