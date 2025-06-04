@@ -10,7 +10,7 @@ services:
   backend:
     extends:
       file: docker-compose.base.yml
-      service: backend_base
+      service: backend_dev_base
     build:
       context: .
       dockerfile: docker/dockerfiles/Dockerfile.dev
