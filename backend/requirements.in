@@ -23,7 +23,9 @@ sentry-sdk[django]~=2.27.0
 
 # Misc
 requests~=2.32.3
-python-fossil-delta==18.11.27
+
+# Store the delta between data versions for an "undo" feature
+# python-fossil-delta==18.11.27
 
 # Database drivers
 psycopg2-binary~=2.9.10
