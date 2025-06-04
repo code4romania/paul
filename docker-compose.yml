@@ -21,7 +21,6 @@ services:
     ports:
       - "5678:5678"
       - "5677:5677"
-      - "${WEBAPP_PORT:-8080}:8000"
 
 volumes:
   paul_psql:
