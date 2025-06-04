@@ -1,0 +1,6 @@
+#!/command/with-contenv sh
+set -e
+
+cd /var/www/paul/frontend/
+
+[ "${ENVIRONMENT}" = "development" ] && npm run dev
