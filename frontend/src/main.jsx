@@ -4,12 +4,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { createRoot } from 'react-dom/client';
 import { Fallback } from './components/Fallback';
 import LayoutBackOffice from './layouts/LayoutBackOffice';
-import './fonts/Amalia-Bold.otf';
-import './fonts/Amalia-Bold.ttf';
-import './fonts/Amalia-Medium.otf';
-import './fonts/Amalia-Medium.ttf';
-import './fonts/Amalia-Regular.otf';
-import './fonts/Amalia-Regular.ttf';
 import './index.css';
 
 const pages = import.meta.glob('./pages/**/*.tsx');
