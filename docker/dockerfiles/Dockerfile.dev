@@ -1,5 +1,4 @@
 ARG NODE_VERSION=22.15.0
-ARG UV_VERSION=0.7.12
 ARG S6_OVERLAY_VERSION=3.2.1.0
 
 FROM node:${NODE_VERSION}-bookworm-slim
@@ -31,8 +30,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Download the latest UV installer
-ARG UV_VERSION
-ADD https://astral.sh/uv/${UV_VERSION}/install.sh /uv-installer.sh
+ADD ./docker/third-party/uv/installer.sh /uv-installer.sh
 
 # Run the installer then remove it
 RUN sh /uv-installer.sh && rm /uv-installer.sh

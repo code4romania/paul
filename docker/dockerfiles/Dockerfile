@@ -1,5 +1,4 @@
 ARG PYTHON_VERSION=3.13.4
-ARG UV_VERSION=0.7.12
 ARG S6_OVERLAY_VERSION=3.2.1.0
 
 
@@ -15,8 +14,7 @@ RUN apt-get update && \
     python3 -m pip install --upgrade pip setuptools cython
 
 # Download the latest UV installer
-ARG UV_VERSION
-ADD https://astral.sh/uv/${UV_VERSION}/install.sh /uv-installer.sh
+ADD ./docker/third-party/uv/installer.sh /uv-installer.sh
 
 # Run the installer then remove it
 RUN sh /uv-installer.sh && rm /uv-installer.sh
@@ -59,8 +57,7 @@ RUN apt-get update && \
     nginx gcc xz-utils gettext build-essential postgresql-client libpq-dev
 
 # Download the latest UV installer
-ARG UV_VERSION
-ADD https://astral.sh/uv/${UV_VERSION}/install.sh /uv-installer.sh
+ADD ./docker/third-party/uv/installer.sh /uv-installer.sh
 
 # Run the installer then remove it
 RUN sh /uv-installer.sh && rm /uv-installer.sh
