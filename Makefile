@@ -151,20 +151,16 @@ bash:                             ## start a bash shell
 
 
 ## [Requirements management]
-requirements-build:               ## run pip compile and add requirements from the *.in files
+requirements-build:               ## run uv pip compile and add requirements from the *.in files
 	docker exec paul_backend_dev sh -c " \
 		cd ./backend && \
-		pip-compile --strip-extras --resolver=backtracking -o requirements.txt requirements.in && \
-		pip-compile --strip-extras --resolver=backtracking -o requirements-dev.txt requirements-dev.in \
+		uv sync --active \
 	"
 
-requirements-update:              ## run pip compile and rebuild the requirements files
+requirements-update:              ## run uv pip compile and rebuild the requirements files
 	docker exec paul_backend_dev sh -c " \
 		cd ./backend && \
-		pip-compile --strip-extras --resolver=backtracking -r -U -o requirements.txt requirements.in && \
-		pip-compile --strip-extras --resolver=backtracking -r -U -o requirements-dev.txt requirements-dev.in && \
-		chmod a+r requirements.txt && \
-		chmod a+r requirements-dev.txt \
+		uv sync --active -U \
 	"
 
 
@@ -196,4 +192,3 @@ clean-db:                          ## remove the database files
 	rm -rf ./backend/media ./backend/static ./frontend/dist
 
 clean: clean-docker clean-extras clean-db  ## remove all build, test, coverage and Python artifacts
-
