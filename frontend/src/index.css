@@ -1,38 +1,96 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter.ttf');
+@theme {
+  --color-primary-light: #fff0a6;
+  --color-primary-main: #fee600;
+  --color-primary-dark: #ffd403;
+
+  --color-secondary-main: #e3f1ea;
+
+  --color-paul-50: #f9f7fc;
+  --color-paul-100: #f6edfa;
+  --color-paul-200: #ebdbf3;
+  --color-paul-300: #ddbee9;
+  --color-paul-400: #c997db;
+  --color-paul-500: #b06ec7;
+  --color-paul-600: #8f4ca5;
+  --color-paul-700: #7b3e8d;
+  --color-paul-800: #1f2937;
+  --color-paul-900: #111827;
+
+  --color-black: #2b2d33;
+  --color-warm-grey: #f1ede6;
+  --color-off-black: #2b2d33;
+  --color-green-highlight: #a3e2cc;
+  --color-green-mid-tone: #67d0ab;
+  --color-purple-highlight: #9d88d9;
+  --color-purple-mid-tone: #6a4cad;
+  --color-error: #c65c4a;
+
+  --font-sans: Amalia-Regular, sans-serif;
+  --font-amalia-medium: Amalia-Medium, sans-serif;
+  --font-amalia-bold: Amalia-Bold, sans-serif;
+
+  --text-2xs: 0.625rem;
+  --text-xs: 0.75rem;
 }
 
-@font-face {
-  font-family: 'Inter-Italic';
-  src: url('/fonts/Inter-Italic.ttf');
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
 }
 
-html, body, #app {
-  height: 100vh;
-  scroll-padding-top: 64px;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  margin: 0 !important;
-}
-
-@layer components {
-  .text-marker-underline {
-    --underline-intrinsic-width: 8;
-    --underline-cap-width: 1px;
-    --underline-width: 12;
-    --underline-width-scale: calc(var(--underline-width) / var(--underline-intrinsic-width));
-    --underline-offset-y: -2px;
-    background-position-x: calc(var(--underline-width-scale)),
-    0,
-    100%;
-    background-position-y: calc(100% - var(--underline-offset-y) * -1);
-    background-size: calc(100% - calc(var(--underline-cap-width) * var(--underline-width-scale) * 2)) calc(var(--underline-width) * 1px),
+@utility text-marker-underline {
+  --underline-intrinsic-width: 8;
+  --underline-cap-width: 1px;
+  --underline-width: 12;
+  --underline-width-scale: calc(
+    var(--underline-width) / var(--underline-intrinsic-width)
+  );
+  --underline-offset-y: -2px;
+  background-position-x: calc(var(--underline-width-scale)), 0, 100%;
+  background-position-y: calc(100% - var(--underline-offset-y) * -1);
+  background-size:
+    calc(
+        100% -
+          calc(var(--underline-cap-width) * var(--underline-width-scale) * 2)
+      )
+      calc(var(--underline-width) * 1px),
     auto calc(var(--underline-width) * 1px),
     auto calc(var(--underline-width) * 1px);
-    @apply bg-gradient-to-t from-[#9D88D980] to-[#9D88D980] bg-no-repeat inline
+  @apply bg-linear-to-t from-[#9D88D980] to-[#9D88D980] bg-no-repeat inline;
+}
+
+@layer utilities {
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter.ttf');
+  }
+
+  @font-face {
+    font-family: 'Inter-Italic';
+    src: url('/fonts/Inter-Italic.ttf');
+  }
+
+  html,
+  body,
+  #app {
+    height: 100vh;
+    scroll-padding-top: 64px;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    margin: 0 !important;
   }
 }

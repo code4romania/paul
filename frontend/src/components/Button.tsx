@@ -32,12 +32,12 @@ export function Button({
     <button
       className={classNames(
         coreClasses,
-        disabled && 'bg-gray-200 border text-gray-500',
+        disabled && 'border bg-gray-200 text-gray-500',
         variant === 'outlined' && !disabled && outlined,
         variant === 'contained' && !disabled && contained,
         variant === 'contained-error' && containedError,
         size,
-        size === 'text-xs' && '!py-1.5 !px-2',
+        size === 'text-xs' && 'px-2! py-1.5!',
         fullWidth ? 'w-full' : 'w-fit',
       )}
       disabled={disabled}

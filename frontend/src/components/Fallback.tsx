@@ -36,15 +36,15 @@ export function Fallback({ error }: { error: Error }) {
                     </div>
                     <div className='flex gap-2'>
                       <div className='font-amalia-medium'>Property:</div>
-                      <pre className='bg-slate-100 rounded'>{e.key}</pre>
+                      <pre className='bg-slate-100 rounded-sm'>{e.key}</pre>
                     </div>
                     <div className='flex gap-2'>
                       <div className='font-amalia-medium'>Type:</div>
-                      <pre className='bg-slate-100 rounded'>{e.type}</pre>
+                      <pre className='bg-slate-100 rounded-sm'>{e.type}</pre>
                     </div>
                     <div className='flex gap-2'>
                       <div className='font-amalia-medium'>Received value:</div>
-                      <pre className='bg-slate-100 rounded break-all whitespace-normal'>
+                      <pre className='bg-slate-100 rounded-sm break-all whitespace-normal'>
                         {e.value
                           ? JSON.stringify(e.value)
                           : 'undefined or null'}

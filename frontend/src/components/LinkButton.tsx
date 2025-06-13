@@ -9,7 +9,7 @@ export const outlined = 'border border-gray-300 text-gray-700 bg-white';
 const white = 'bg-white text-black';
 
 export const coreClasses =
-  'flex items-center font-amalia-medium px-4 py-2.5 rounded-md text-black justify-center gap-x-2 text-sm whitespace-nowrap shadow hover:shadow-md';
+  'flex items-center font-amalia-medium px-4 py-2.5 rounded-md text-black justify-center gap-x-2 text-sm whitespace-nowrap shadow-sm hover:shadow-md';
 
 type PrimaryButtonProps = {
   children: ReactNode;
