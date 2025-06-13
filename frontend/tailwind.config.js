@@ -13,14 +13,17 @@ module.exports = {
         secondary: {
           main: '#E3F1EA',
         },
-        yellow: {
-          600: '#F9BB30',
-          500: '#FEE600',
-          400: '#FFF0A6',
-        },
-        gray: {
-          400: '#F1EDE6',
-          500: '#7E827F',
+        paul: {
+          50: '#F9F7FC',
+          100: '#F6EDFA',
+          200: '#EBDBF3',
+          300: '#DDBEE9',
+          400: '#C997DB',
+          500: '#B06EC7',
+          600: '#8F4CA5',
+          700: '#7B3E8D',
+          800: '#1F2937',
+          900: '#111827',
         },
         black: '#2B2D33',
         'warm-grey': '#F1EDE6',
