@@ -20,7 +20,7 @@ ADD ./docker/third-party/uv/installer.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 
 # Make sure scripts in .local are usable:
-ENV PATH="/root/.local/bin:$PATH"
+ENV PATH="/root/.local/bin:${PATH}"
 
 # Python virtualenv paths
 ENV VIRTUAL_ENV=/opt/venv
@@ -63,7 +63,7 @@ ADD ./docker/third-party/uv/installer.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 
 # Make sure scripts in .local are usable:
-ENV PATH="/root/.local/bin:$PATH"
+ENV PATH="/root/.local/bin:${PATH}"
 
 ARG S6_OVERLAY_VERSION
 ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0

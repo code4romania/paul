@@ -151,13 +151,13 @@ bash:                             ## start a bash shell
 
 
 ## [Requirements management]
-requirements-build:               ## run uv pip compile and add requirements from the *.in files
+requirements-build:               ## run uv to build the requirements files using the active venv
 	docker exec paul_backend_dev sh -c " \
 		cd ./backend && \
 		uv sync --active \
 	"
 
-requirements-update:              ## run uv pip compile and rebuild the requirements files
+requirements-update:              ## run uv with the -U flag to update the requirements files using the active venv
 	docker exec paul_backend_dev sh -c " \
 		cd ./backend && \
 		uv sync --active -U \

@@ -1,6 +1,6 @@
 [project]
-name = ""
-version = "0.0.1"
+name = "Paul - The Database Management Tool"
+version = "2.0.0-alpha.1"
 dependencies = [
     "django~=5.2.0",
     "django-allauth[socialaccount]~=64.2.0",
@@ -119,7 +119,7 @@ filterwarnings = [
 
 [tool.black]
 line-length = 120
-target-version = ["py312"]
+target-version = ["py313"]
 extend-exclude = '''
 /(
   | _appengine_legacy
