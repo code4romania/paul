@@ -1,5 +1,5 @@
 [project]
-name = "Paul - The Database Management Tool"
+name = "paul"
 version = "2.0.0-alpha.1"
 dependencies = [
     "django~=5.2.0",
