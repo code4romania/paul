@@ -16,6 +16,15 @@ def home(request: HttpRequest) -> Dict[str, Any]:
     return {"ok": True}
 
 
+@cache_control(private=False)
+@inertia("Public/Home/TestMenu")
+def test_menu(request: HttpRequest) -> Dict[str, Any]:
+    """
+    TODO: Remove this test page once the menu is implemented
+    """
+    return {"ok": True}
+
+
 @never_cache
 def health(request: HttpRequest) -> HttpResponse:
     """

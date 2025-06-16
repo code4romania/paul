@@ -24,7 +24,8 @@ from dashboard.admin import dashboard_site
 urlpatterns = [
     # TODO: Remove the next couple of rules because they were intended for an Unfold based site
     path("admin/", admin.site.urls),  # these URLs use the "admin:" prefix
-    path("app/", dashboard_site.urls),  # these URLs use the "app:" prefix
+    # path("app/", dashboard_site.urls),  # these URLs use the "app:" prefix
     #
+    path("app/user/", include("users.urls")),
     path("", include("hello.urls")),
 ]
