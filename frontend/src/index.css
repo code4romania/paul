@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter.ttf');
+}
+
+@font-face {
+  font-family: 'Inter-Italic';
+  src: url('/fonts/Inter-Italic.ttf');
+}
+
+html, body, #app {
+  height: 100vh;
+  scroll-padding-top: 64px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  margin: 0 !important;
+}
+
+@layer components {
+  .text-marker-underline {
+    --underline-intrinsic-width: 8;
+    --underline-cap-width: 1px;
+    --underline-width: 12;
+    --underline-width-scale: calc(var(--underline-width) / var(--underline-intrinsic-width));
+    --underline-offset-y: -2px;
+    background-position-x: calc(var(--underline-width-scale)),
+    0,
+    100%;
+    background-position-y: calc(100% - var(--underline-offset-y) * -1);
+    background-size: calc(100% - calc(var(--underline-cap-width) * var(--underline-width-scale) * 2)) calc(var(--underline-width) * 1px),
+    auto calc(var(--underline-width) * 1px),
+    auto calc(var(--underline-width) * 1px);
+    @apply bg-gradient-to-t from-[#9D88D980] to-[#9D88D980] bg-no-repeat inline
+  }
+}

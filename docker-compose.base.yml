@@ -26,3 +26,18 @@ services:
       DATABASE_USER: "${DATABASE_USER}"
       DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
       PYTHONUNBUFFERED: "1"
+
+  backend_dev_base:
+    extends:
+      service: backend_base
+    build:
+      context: .
+      dockerfile: ./docker/dockerfiles/Dockerfile.dev
+    volumes:
+      - ./backend:/var/www/paul/backend
+      - ./frontend/src:/var/www/paul/frontend/src
+    env_file:
+      - .env
+    ports:
+      - "${WEBAPP_PORT:-8080}:8000"
+      - "${STATIC_PORT:-3000}:3000"

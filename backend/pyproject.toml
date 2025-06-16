@@ -1,3 +1,50 @@
+[project]
+name = "paul"
+version = "2.0.0-alpha.1"
+dependencies = [
+    "django~=5.2.0",
+    "django-allauth[socialaccount]~=64.2.0",
+    "django-auditlog~=3.1.2",
+    "django-cors-headers~=4.7.0",
+    "django-environ~=0.12.0",
+    "django-localflavor~=4.0.0",
+    "django-unfold~=0.38.0",
+    "django-vite~=3.1.0",
+    "inertia-django~=1.2.0",
+    "unidecode~=1.4.0",
+    "django-q2~=1.8.0",
+    "blessed~=1.21.0",
+    "psutil~=7.0.0",
+    "django-recaptcha~=4.1.0",
+    "django-ses~=4.4.0",
+    "django-storages[azure]~=1.14.6",
+    "sentry-sdk[django]~=2.27.0",
+    "requests~=2.32.3",
+    "psycopg2-binary~=2.9.10",
+    "gevent~=25.4.2",
+    "gunicorn~=23.0.0",
+    "whitenoise~=6.9.0",
+    "ngohub~=0.1.0",
+]
+requires-python = ">=3.13"
+
+[dependency-groups]
+dev = [
+    "faker~=37.1.0",
+    "pre-commit~=4.2.0",
+    "ruff==0.11.8",
+    "black==25.1.0",
+    "pytest~=8.3.5",
+    "pytest-django~=4.11",
+    "pytest-xdist~=3.6.1",
+    "pytest-cov~=6.0.0",
+    "debugpy~=1.8.14",
+]
+
+[tool.uv]
+package = false
+
+
 [tool.ruff]
 # Enable the following rules
 # More info: https://docs.astral.sh/ruff/rules/
@@ -32,10 +79,6 @@ exclude = [
 # Same as Black.
 line-length = 120
 
-# Assume Python 3.12.
-target-version = "py312"
-
-
 [lint]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
@@ -53,15 +96,12 @@ select = [
 fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
 unfixable = []
 
-
 [tool.ruff.lint.mccabe]
 # Unlike Flake8, default to a complexity level of 10.
 max-complexity = 10
 
-
 [tool.ruff.lint.extend-per-file-ignores]
 "_legacy_v1/**" = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
-
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "paul.settings"
@@ -77,10 +117,9 @@ filterwarnings = [
     "ignore:The django.utils.baseconv module is deprecated."
 ]
 
-
 [tool.black]
 line-length = 120
-target-version = ["py312"]
+target-version = ["py313"]
 extend-exclude = '''
 /(
   | _appengine_legacy

@@ -2,6 +2,9 @@
 node_modules
 dist
 
+# ignore the static files destination directory
+backend/static
+
 # local env files
 .env.*
 !.env*.example
